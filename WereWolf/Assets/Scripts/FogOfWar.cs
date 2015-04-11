@@ -5,12 +5,17 @@ public class FogOfWar : MonoBehaviour {
 
 
 	public float distanceToSee;
+	public bool visible;
 	public SpriteRenderer thisRenderer;
+	public Sprite thisSprite;
 
 	// Use this for initialization
 	void Start () {
 
 		thisRenderer = this.gameObject.GetComponent<SpriteRenderer>();
+		distanceToSee = 10.0f;
+		visible = false;
+
 	
 	}
 	
@@ -18,31 +23,24 @@ public class FogOfWar : MonoBehaviour {
 	void Update () {
 
 
-		// Very not optimal, works for now.
-		Vector3 playerPos = GameObject.Find ("Player").transform.position;
-		float distX = Mathf.Abs(this.gameObject.transform.position.x - playerPos.x);
-		float distY = Mathf.Abs(this.gameObject.transform.position.y - playerPos.y);
-
-
-		print (distX + ", " + distY);
-		if (distX < distanceToSee && distY < distanceToSee) {
-			setVisible ();
-		} else
-			setInvisible ();
-
+		thisRenderer.color = new Color (1f, 1f, 1f, 0f);
 	
 	}
 
 
 	void setInvisible()
 		    {
+			print ("hiding");
 			thisRenderer.color = new Color (1f, 1f, 1f, 0f);
-
+			visible = false;
 		}
 
 		void setVisible()
 		{
-			thisRenderer.color = new Color (1f, 1f, 1f, 1f);
+;
+		thisRenderer.color = new Color (1f, 1f, 1f, 1f);
+		visible = true;
+		print (this.gameObject.name + " is visible!");
 
 		}
 }

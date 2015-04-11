@@ -5,6 +5,8 @@ public class PlayerController : MonoBehaviour {
 
 	public float speed;			// Set speed here.
 
+	Rigidbody2D thisBody;
+
 	public bool dashOnCD;		// 
 	public bool dashing;
 	public float dashCoolDown;
@@ -40,7 +42,8 @@ public class PlayerController : MonoBehaviour {
 		dashing = true;
 		timeBetweenActivation = 0.2f;
 
-		currSprite = GameObject.Find ("Player").GetComponent<SpriteRenderer>();
+		currSprite = this.GetComponent<SpriteRenderer>();
+		thisBody = this.GetComponent<Rigidbody2D> ();
 	
 	}
 	
@@ -115,8 +118,8 @@ public class PlayerController : MonoBehaviour {
 		
 			if (doubleTapRight) {
 				print ("Right Dash");
-				Rigidbody2D temp = GameObject.Find ("Player").GetComponent<Rigidbody2D> ();
-				temp.AddForce (new Vector3 (0.05f, 0.0f));	
+				// Rigidbody2D temp = GameObject.Find ("Player").GetComponent<Rigidbody2D> ();
+			thisBody.AddForce (new Vector3 (0.05f, 0.0f));	
 				// AFTER ADDING FORCE, SET THE TIME
 				trackDashCD = Time.time + dashCoolDown;
 				dashOnCD = true;		// on coolDown
@@ -124,8 +127,8 @@ public class PlayerController : MonoBehaviour {
 		
 			else if (doubleTapLeft) {
 				print ("Left Dash");
-				Rigidbody2D temp = GameObject.Find ("Player").GetComponent<Rigidbody2D> ();
-				temp.AddForce (new Vector3 (-0.05f, 0.0f));	
+				//Rigidbody2D temp = GameObject.Find ("Player").GetComponent<Rigidbody2D> ();
+				thisBody.AddForce (new Vector3 (-0.05f, 0.0f));	
 				trackDashCD = Time.time + dashCoolDown;
 				dashOnCD = true;		// on coolDown
 		}
@@ -133,8 +136,8 @@ public class PlayerController : MonoBehaviour {
 		
 			else if (doubleTapUp) {
 				print ("Up Dash");
-				Rigidbody2D temp = GameObject.Find ("Player").GetComponent<Rigidbody2D> ();
-				temp.AddForce (new Vector3 (0.0f, 0.05f));	
+				//Rigidbody2D temp = GameObject.Find ("Player").GetComponent<Rigidbody2D> ();
+				thisBody.AddForce (new Vector3 (0.0f, 0.05f));	
 				trackDashCD = Time.time + dashCoolDown;
 				dashOnCD = true;		// on coolDown
 			
@@ -142,8 +145,8 @@ public class PlayerController : MonoBehaviour {
 		
 			else if (doubleTapDown) {
 				print ("Down Dash");
-				Rigidbody2D temp = GameObject.Find ("Player").GetComponent<Rigidbody2D> ();
-				temp.AddForce (new Vector3 (0.0f, -0.05f));	
+				// Rigidbody2D temp = GameObject.Find ("Player").GetComponent<Rigidbody2D> ();
+				thisBody.AddForce (new Vector3 (0.0f, -0.05f));	
 				trackDashCD = Time.time + dashCoolDown;
 				dashOnCD = true;		// on coolDown
 		}
@@ -199,15 +202,8 @@ public class PlayerController : MonoBehaviour {
 	{
 		if (Input.GetKeyDown("space"))
 		{
-			// send appropriate message to approproate script skill.
-			print ("Attempting to dash");
-			this.SendMessage("dash", 0);
-
-			// Temp workaround
-
-			// if (f == 0)  // dash up 
-			Rigidbody2D temp = GameObject.Find("Player").GetComponent<Rigidbody2D>();
-				temp.AddForce(new Vector3(0.0f, 0.1f,0.0f));	
+			// interact with building.
+			print ("Interacting with item.");
 
 		}
 
