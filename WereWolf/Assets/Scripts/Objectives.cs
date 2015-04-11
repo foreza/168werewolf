@@ -34,6 +34,11 @@ public class Objectives : MonoBehaviour {
 
 	}
 
+	void summonHorde()
+	{
+		print ("Beware players! A horde of WereWolves have caught your scent.");
+	}
+
 	void activateHaven()
 	{
 		print ("Activating Haven...");
@@ -47,6 +52,7 @@ public class Objectives : MonoBehaviour {
 			havenOpen = true;
 			print ("Explorers, the Haven is open! You have __ seconds before it closes.");
 			activateHaven();
+			summonHorde();
 		}
 	
 	}
