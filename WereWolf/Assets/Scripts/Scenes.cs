@@ -4,7 +4,8 @@ using System.Collections;
 public class Scenes : MonoBehaviour 
 {
     //For testing! CURRENTLY SHARED; DANGEROUS
-    string TESTSCENE = "TestScene";
+    public const string TESTSCENE = "TestScene";
+
     //Connor's Scene for testing
-    string CONNORSCENE = "ConnorScene";
+    public const string CONNORSCENE = "ConnorScene";
 }
