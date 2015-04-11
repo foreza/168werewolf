@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Trap1 : MonoBehaviour {
+public class TrapTrigger : MonoBehaviour {
 
     public GameObject mainTrapObject;
     Trap mainTrap;

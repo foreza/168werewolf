@@ -6,6 +6,8 @@ public class TrapAOE : MonoBehaviour {
     public GameObject mainTrapObject;
     Trap mainTrap;
 
+    ArrayList humansInside;    
+
 	// Use this for initialization
 	void Start () 
     {
@@ -19,11 +21,18 @@ public class TrapAOE : MonoBehaviour {
 
     void onTriggerEnter2D(Collider2D other)
     {
-
+        if (other.tag == Tags.HUMAN)
+            humansInside.Add(other.gameObject);
     }
 
     void onTriggerExit2D(Collider2D other)
     {
+        if (other.tag == Tags.HUMAN)
+            humansInside.Remove(other.gameObject);
+    }
 
+    public ArrayList getHumansInTrapAOE()
+    {
+        return humansInside;
     }
 }
