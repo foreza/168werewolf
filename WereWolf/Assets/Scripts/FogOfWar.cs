@@ -4,7 +4,7 @@ using System.Collections;
 public class FogOfWar : MonoBehaviour {
 
 	public bool visible;
-
+    public bool sendDebugMessages = false;
 
 	// Use this for initialization
 	void Start () {
@@ -19,7 +19,8 @@ public class FogOfWar : MonoBehaviour {
 
 	void setInvisible()
 		    {
-			print ("hiding");
+			if(sendDebugMessages)
+                print ("hiding");
 			SpriteRenderer rend = this.gameObject.GetComponent<SpriteRenderer>();
 			rend.color = new Color (1f, 1f, 1f, 0f);
 			visible = false;
@@ -31,7 +32,8 @@ public class FogOfWar : MonoBehaviour {
 		SpriteRenderer rend = this.gameObject.GetComponent<SpriteRenderer>();
 		rend.color = new Color (1f, 1f, 1f, 1f);
 		visible = true;
-		print (this.gameObject.name + " is visible!");
+        if(sendDebugMessages)
+		    print (this.gameObject.name + " is visible!");
 
 		}
 }

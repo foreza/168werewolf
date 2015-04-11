@@ -3,7 +3,8 @@ using System.Collections;
 
 public class PlayerVision : MonoBehaviour {
 
-	private Vector3 playerPosition;		// Vector storing player Position 
+	public bool sendDebugMessages = false;
+    private Vector3 playerPosition;		// Vector storing player Position 
 	GameObject thePlayer;				// Store player gameobject here
 	ArrayList visibleObjects;			// Array of visible objects at any time.
 
@@ -31,20 +32,23 @@ public class PlayerVision : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D other)
 	{
-		print ("Illuminating: [" + other.gameObject.name + "]");
+		if (sendDebugMessages)
+            print ("Illuminating: [" + other.gameObject.name + "]");
 		revealObject (other.gameObject);
 	}
 
 	void OnTriggerExit2D(Collider2D other)
 	{
-		print ("Hiding: [" + other.gameObject.name + "]");
+		if (sendDebugMessages)
+            print ("Hiding: [" + other.gameObject.name + "]");
 		hideObject (other.gameObject);
 
 	}
 
 	void revealObject(GameObject obj)
 	{
-		print ("Sending message");
+		if (sendDebugMessages)
+            print ("Sending message");
 		obj.SendMessage ("setVisible");
 	}
 
