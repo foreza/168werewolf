@@ -3,29 +3,39 @@ using System.Collections;
 
 public class PlayerController : MonoBehaviour {
 
-	public float speed;			// Set speed here.	
+	public float speed;			// Set speed here.
 
+	public bool dashOnCD;		// 
+	public bool dashing;
 	public float dashCoolDown;
-
+	public float dashDuration;
+	public float trackDashCD;
+	public float endDashTime;		// not sure if necessary
 	public float timeBetweenActivation;
 
 
-	public float _doubleTapTimeD;
+	public float _doubleTapTimeD1;
+	public float _doubleTapTimeD2;
+	public float _doubleTapTimeD3;
+	public float _doubleTapTimeD4;
 
 	// Use this for initialization
 	void Start () {
 
 		speed = .05f; 					// toggle this off
-		dashCoolDown = 5.0f;			// Cooldown.
-		timeBetweenActivation = 0.5f;	// time between keyPresses
-		// tapTime = 0.0f;
+		dashCoolDown = 2.0f;			// Cooldown.
+		dashDuration = 1.0f;
+		trackDashCD = 0.0f;				// Init just in case.
+		dashOnCD = false;				// not on CD at start!
+		dashing = true;
+		timeBetweenActivation = 0.2f;
 	
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
-
+		getCoolDowns ();
 		getControlMovement();	// function that reads basic control movement.	
 		getSkill();				// function that reads basic skill usage.
 
@@ -37,30 +47,102 @@ public class PlayerController : MonoBehaviour {
 	void getControlMovement()
 	{
 
-		bool doubleTapD = false;
+		bool doubleTapRight = false;
+		bool doubleTapLeft = false;
+		bool doubleTapUp = false;
+		bool doubleTapDown = false;
 
-		if (Input.GetKeyDown(KeyCode.D))
+
+		if (Input.GetKeyDown("right") && !dashOnCD)
 		{
-			if (Time.time < _doubleTapTimeD + .3f)
+			if (Time.time < _doubleTapTimeD1 + timeBetweenActivation)
 			{
-				doubleTapD = true;
+				doubleTapRight = true;
+				endDashTime = Time.time + dashDuration;
+				dashing = true;
 			}
-			_doubleTapTimeD = Time.time;
+			_doubleTapTimeD1 = Time.time;
 		}
 
-		if (doubleTapD)
+		if (Input.GetKeyDown("left") && !dashOnCD)
 		{
-			Debug.Log("DoubleTapD");
+			if (Time.time < _doubleTapTimeD2 + timeBetweenActivation)
+			{
+				doubleTapLeft = true;
+				endDashTime = Time.time + dashDuration;
+				dashing = true;
+			}
+			_doubleTapTimeD2 = Time.time;
 		}
 
+		if (Input.GetKeyDown("up") && !dashOnCD)
+		{
+			if (Time.time < _doubleTapTimeD3 + timeBetweenActivation)
+			{
+				doubleTapUp = true;
+				endDashTime = Time.time + dashDuration;
+				dashing = true;
+			}
+			_doubleTapTimeD3 = Time.time;
+		}
+
+		if (Input.GetKeyDown("down") && !dashOnCD)
+		{
+			if (Time.time < _doubleTapTimeD4 + timeBetweenActivation)
+			{
+				doubleTapDown = true;
+				endDashTime = Time.time + dashDuration;
+				dashing = true;
+			}
+			_doubleTapTimeD4 = Time.time;
+		}
+
+	
+		// Dashing code.
+
+		
+			if (doubleTapRight) {
+				print ("Right Dash");
+				Rigidbody2D temp = GameObject.Find ("Player").GetComponent<Rigidbody2D> ();
+				temp.AddForce (new Vector3 (0.05f, 0.0f));	
+				// AFTER ADDING FORCE, SET THE TIME
+				trackDashCD = Time.time + dashCoolDown;
+				dashOnCD = true;		// on coolDown
+		}
+		
+			else if (doubleTapLeft) {
+				print ("Left Dash");
+				Rigidbody2D temp = GameObject.Find ("Player").GetComponent<Rigidbody2D> ();
+				temp.AddForce (new Vector3 (-0.05f, 0.0f));	
+				trackDashCD = Time.time + dashCoolDown;
+				dashOnCD = true;		// on coolDown
+		}
+		
+		
+			else if (doubleTapUp) {
+				print ("Up Dash");
+				Rigidbody2D temp = GameObject.Find ("Player").GetComponent<Rigidbody2D> ();
+				temp.AddForce (new Vector3 (0.0f, 0.05f));	
+				trackDashCD = Time.time + dashCoolDown;
+				dashOnCD = true;		// on coolDown
+			
+			}
+		
+			else if (doubleTapDown) {
+				print ("Down Dash");
+				Rigidbody2D temp = GameObject.Find ("Player").GetComponent<Rigidbody2D> ();
+				temp.AddForce (new Vector3 (0.0f, -0.05f));	
+				trackDashCD = Time.time + dashCoolDown;
+				dashOnCD = true;		// on coolDown
+		}
+
+
+
+	
 		// Basic controller, allows for up/down/left/right movement.
 
 		if (Input.GetKey ("right")) {
-			// If the player pressed "right" again
-			// have the player dash in the specified direction.
-			// Get the time of press
 			this.transform.position += new Vector3 (speed, 0.0f, 0.0f); 
-
 		}
 		
 		else if (Input.GetKey("left"))
@@ -71,6 +153,28 @@ public class PlayerController : MonoBehaviour {
 		
 		else if (Input.GetKey("down"))
 			this.transform.position -= new Vector3(0.0f,speed,0.0f);  
+
+
+
+
+
+	}
+
+	void getCoolDowns()
+	{
+		if (endDashTime < Time.time && dashing) {
+			Rigidbody2D temp = GameObject.Find ("Player").GetComponent<Rigidbody2D> ();
+			temp.velocity = new Vector3(0f,0f,0f);
+			dashing = false;
+
+		}
+
+
+		if (dashOnCD && trackDashCD < Time.time) {
+			dashOnCD = false;
+			print ("Dash is off cooldown.");
+		}
+
 
 
 	}
