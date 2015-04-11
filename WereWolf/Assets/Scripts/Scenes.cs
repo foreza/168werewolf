@@ -8,4 +8,7 @@ public class Scenes : MonoBehaviour
 
     //Connor's Scene for testing
     public const string CONNORSCENE = "ConnorScene";
+
+    //Game Over Screen
+    public const string GAMEOVER = "GameOver";
 }

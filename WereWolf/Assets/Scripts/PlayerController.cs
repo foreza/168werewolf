@@ -23,7 +23,6 @@ public class PlayerController : MonoBehaviour {
 	public float _doubleTapTimeD4;
 
 
-
 	public SpriteRenderer currSprite;
 
 	public Sprite fowardSprite;
@@ -31,6 +30,9 @@ public class PlayerController : MonoBehaviour {
 	public Sprite leftSprite;
 	public Sprite rightSprite;
 
+    public bool isDead = false;
+
+    Animator anim;
 
 	// Use this for initialization
 	void Start () {
@@ -45,6 +47,8 @@ public class PlayerController : MonoBehaviour {
 
 		currSprite = this.GetComponent<SpriteRenderer>();
 		thisBody = this.GetComponent<Rigidbody2D> ();
+
+        anim = GetComponent<Animator>();
 	
 	}
 	
@@ -55,139 +59,148 @@ public class PlayerController : MonoBehaviour {
 		getControlMovement();	// function that reads basic control movement.	
 		getSkill();				// function that reads basic skill usage.
 
-	
-
 	}
 	
 
 	void getControlMovement()
 	{
+        if (!isDead)
+        {
 
-		bool doubleTapRight = false;
-		bool doubleTapLeft = false;
-		bool doubleTapUp = false;
-		bool doubleTapDown = false;
+            bool doubleTapRight = false;
+            bool doubleTapLeft = false;
+            bool doubleTapUp = false;
+            bool doubleTapDown = false;
 
 
-		if (Input.GetKeyDown("right") && !dashOnCD)
-		{
-			if (Time.time < _doubleTapTimeD1 + timeBetweenActivation)
-			{
-				doubleTapRight = true;
-				endDashTime = Time.time + dashDuration;
-				dashing = true;
-			}
-			_doubleTapTimeD1 = Time.time;
-		}
+            if (Input.GetKeyDown("right") && !dashOnCD)
+            {
+                if (Time.time < _doubleTapTimeD1 + timeBetweenActivation)
+                {
+                    doubleTapRight = true;
+                    endDashTime = Time.time + dashDuration;
+                    dashing = true;
+                }
+                _doubleTapTimeD1 = Time.time;
+            }
 
-		if (Input.GetKeyDown("left") && !dashOnCD)
-		{
-			if (Time.time < _doubleTapTimeD2 + timeBetweenActivation)
-			{
-				doubleTapLeft = true;
-				endDashTime = Time.time + dashDuration;
-				dashing = true;
-			}
-			_doubleTapTimeD2 = Time.time;
-		}
+            if (Input.GetKeyDown("left") && !dashOnCD)
+            {
+                if (Time.time < _doubleTapTimeD2 + timeBetweenActivation)
+                {
+                    doubleTapLeft = true;
+                    endDashTime = Time.time + dashDuration;
+                    dashing = true;
+                }
+                _doubleTapTimeD2 = Time.time;
+            }
 
-		if (Input.GetKeyDown("up") && !dashOnCD)
-		{
-			if (Time.time < _doubleTapTimeD3 + timeBetweenActivation)
-			{
-				doubleTapUp = true;
-				endDashTime = Time.time + dashDuration;
-				dashing = true;
-			}
-			_doubleTapTimeD3 = Time.time;
-		}
+            if (Input.GetKeyDown("up") && !dashOnCD)
+            {
+                if (Time.time < _doubleTapTimeD3 + timeBetweenActivation)
+                {
+                    doubleTapUp = true;
+                    endDashTime = Time.time + dashDuration;
+                    dashing = true;
+                }
+                _doubleTapTimeD3 = Time.time;
+            }
 
-		if (Input.GetKeyDown("down") && !dashOnCD)
-		{
-			if (Time.time < _doubleTapTimeD4 + timeBetweenActivation)
-			{
-				doubleTapDown = true;
-				endDashTime = Time.time + dashDuration;
-				dashing = true;
-			}
-			_doubleTapTimeD4 = Time.time;
-		}
+            if (Input.GetKeyDown("down") && !dashOnCD)
+            {
+                if (Time.time < _doubleTapTimeD4 + timeBetweenActivation)
+                {
+                    doubleTapDown = true;
+                    endDashTime = Time.time + dashDuration;
+                    dashing = true;
+                }
+                _doubleTapTimeD4 = Time.time;
+            }
 
-	
-		// Dashing code.
 
-		
-			if (doubleTapRight) {
-				if(sendDebugMessages)
-                    print ("Right Dash");
-				// Rigidbody2D temp = GameObject.Find ("Player").GetComponent<Rigidbody2D> ();
-			thisBody.AddForce (new Vector3 (0.05f, 0.0f));	
-				// AFTER ADDING FORCE, SET THE TIME
-				trackDashCD = Time.time + dashCoolDown;
-				dashOnCD = true;		// on coolDown
-		}
-		
-			else if (doubleTapLeft) {
+            // Dashing code.
+
+
+            if (doubleTapRight)
+            {
                 if (sendDebugMessages)
-                    print ("Left Dash");
-				//Rigidbody2D temp = GameObject.Find ("Player").GetComponent<Rigidbody2D> ();
-				thisBody.AddForce (new Vector3 (-0.05f, 0.0f));	
-				trackDashCD = Time.time + dashCoolDown;
-				dashOnCD = true;		// on coolDown
-		}
-		
-		
-			else if (doubleTapUp) {
+                    print("Right Dash");
+                // Rigidbody2D temp = GameObject.Find ("Player").GetComponent<Rigidbody2D> ();
+                thisBody.AddForce(new Vector3(0.05f, 0.0f));
+                // AFTER ADDING FORCE, SET THE TIME
+                trackDashCD = Time.time + dashCoolDown;
+                dashOnCD = true;		// on coolDown
+            }
+
+            else if (doubleTapLeft)
+            {
                 if (sendDebugMessages)
-                    print ("Up Dash");
-				//Rigidbody2D temp = GameObject.Find ("Player").GetComponent<Rigidbody2D> ();
-				thisBody.AddForce (new Vector3 (0.0f, 0.05f));	
-				trackDashCD = Time.time + dashCoolDown;
-				dashOnCD = true;		// on coolDown
-			
-			}
-		
-			else if (doubleTapDown) {
+                    print("Left Dash");
+                //Rigidbody2D temp = GameObject.Find ("Player").GetComponent<Rigidbody2D> ();
+                thisBody.AddForce(new Vector3(-0.05f, 0.0f));
+                trackDashCD = Time.time + dashCoolDown;
+                dashOnCD = true;		// on coolDown
+            }
+
+
+            else if (doubleTapUp)
+            {
                 if (sendDebugMessages)
-                    print ("Down Dash");
-				// Rigidbody2D temp = GameObject.Find ("Player").GetComponent<Rigidbody2D> ();
-				thisBody.AddForce (new Vector3 (0.0f, -0.05f));	
-				trackDashCD = Time.time + dashCoolDown;
-				dashOnCD = true;		// on coolDown
-		}
+                    print("Up Dash");
+                //Rigidbody2D temp = GameObject.Find ("Player").GetComponent<Rigidbody2D> ();
+                thisBody.AddForce(new Vector3(0.0f, 0.05f));
+                trackDashCD = Time.time + dashCoolDown;
+                dashOnCD = true;		// on coolDown
 
+            }
 
-
-	
-		// Basic controller, allows for up/down/left/right movement.
-
-		if (Input.GetKey ("right")) {
-			currSprite.sprite = rightSprite;
-			this.transform.position += new Vector3 (speed, 0.0f, 0.0f); 
-		} else if (Input.GetKey ("left")) {
-			currSprite.sprite = leftSprite;
-			this.transform.position -= new Vector3 (speed, 0.0f, 0.0f); 
-		}
-		
-		if (Input.GetKey ("up")) {
-			currSprite.sprite = fowardSprite;
-			this.transform.position += new Vector3 (0.0f, speed, 0.0f); 
-		} 
-		else if (Input.GetKey ("down")) {
-			currSprite.sprite = downSprite;
-			this.transform.position -= new Vector3 (0.0f, speed, 0.0f);  
-		}
+            else if (doubleTapDown)
+            {
+                if (sendDebugMessages)
+                    print("Down Dash");
+                // Rigidbody2D temp = GameObject.Find ("Player").GetComponent<Rigidbody2D> ();
+                thisBody.AddForce(new Vector3(0.0f, -0.05f));
+                trackDashCD = Time.time + dashCoolDown;
+                dashOnCD = true;		// on coolDown
+            }
 
 
 
 
+            // Basic controller, allows for up/down/left/right movement.
 
+            if (Input.GetKey("right"))
+            {
+                currSprite.sprite = rightSprite;
+                this.transform.position += new Vector3(speed, 0.0f, 0.0f);
+            }
+            else if (Input.GetKey("left"))
+            {
+                currSprite.sprite = leftSprite;
+                this.transform.position -= new Vector3(speed, 0.0f, 0.0f);
+            }
+
+            if (Input.GetKey("up"))
+            {
+                currSprite.sprite = fowardSprite;
+                this.transform.position += new Vector3(0.0f, speed, 0.0f);
+            }
+            else if (Input.GetKey("down"))
+            {
+                currSprite.sprite = downSprite;
+                this.transform.position -= new Vector3(0.0f, speed, 0.0f);
+            }
+
+
+
+
+        }
 	}
 
 	void getCoolDowns()
 	{
 		if (endDashTime < Time.time && dashing) {
-			Rigidbody2D temp = GameObject.Find ("Player").GetComponent<Rigidbody2D> ();
+			Rigidbody2D temp = this.GetComponent<Rigidbody2D> ();
 			temp.velocity = new Vector3(0f,0f,0f);
 			dashing = false;
 
@@ -216,6 +229,16 @@ public class PlayerController : MonoBehaviour {
 
 	}
 
+    public void triggerDeath()
+    {
+        if (sendDebugMessages) Debug.Log(this.name + " the " + this.tag + " has been slain.");
+        anim.SetTrigger("isDead");
+        isDead = true;
+    }
 
+    void transitionSceneToGameOver()
+    {
+        Application.LoadLevel(Scenes.GAMEOVER); 
+    }
 
 }

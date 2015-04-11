@@ -5,6 +5,8 @@ public class Trap : MonoBehaviour {
 
     //This is the base class from which all traps will inherit. 
 
+    public bool sendDebugMessages = false;
+
     //All traps require an "activation" trigger collider. If the players enter this trigger, the trap is activated.
     //The trigger collider is attached to a gameobject that has a TrapTrigger script, which sends a message when a player enters it.
     public GameObject triggerZone;
@@ -44,32 +46,44 @@ public class Trap : MonoBehaviour {
     //Timestamp for reactivation
     float timestampForReactivation;
 
-    
+    Animator anim;
+
     // Use this for initialization
 	void Start () 
     {
         triggerZoneScript = triggerZone.GetComponent<TrapTrigger>();
         AreaOfEffectZoneScript = areaOfEffectZone.GetComponent<TrapAOE>();
+
+        anim = GetComponent<Animator>();
 	}
 	
 	// Update is called once per frame
 	void Update () 
     {
 
-        if (triggered)
+        if (triggered && canActivate)
         {
             ArrayList humans = AreaOfEffectZoneScript.getHumansInTrapAOE();
+            
+            //For each human inside the trap's death radius...
             foreach (GameObject human in humans)
             {
-                Debug.Log(human.name);
+                if(sendDebugMessages) Debug.Log(human.name + " has been slain!");
+
+                //Get the human's player controller, and use it to trigger their death.
+                human.GetComponent<PlayerController>().triggerDeath();
+                
             }
+
+            canActivate = false;
         }
 	}
 
     public void triggerTrap()
     {
-        Debug.Log(this.gameObject.name + ": Trap.cs : triggerTrap()");
+        if (sendDebugMessages) Debug.Log(this.gameObject.name + ": Trap.cs : triggerTrap()");
         triggered = true;
+        anim.SetBool("Triggered", true);
     }
 
     public bool getTriggered()

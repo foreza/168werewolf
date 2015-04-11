@@ -2,6 +2,7 @@
 using System.Collections;
 
 public class TrapAOE : MonoBehaviour {
+    public bool sendDebugMessages = false;
 
     public GameObject mainTrapObject;
     Trap mainTrap;
