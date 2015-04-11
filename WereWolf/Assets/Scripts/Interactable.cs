@@ -45,7 +45,7 @@ public class Interactable : MonoBehaviour {
 	void trigger() // player will call this
 	{
 		// if the player can interact and the item has not been triggered yet
-		if (canInteract == true && !triggered) {
+		if (canInteract == true && !triggered && this.gameObject.name != "Haven") {
 			print ("Interactable item has been triggered!");
 			thisRender.sprite = triggeredSprite;
 			triggered = true;
