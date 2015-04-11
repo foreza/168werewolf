@@ -19,6 +19,16 @@ public class PlayerController : MonoBehaviour {
 	public float _doubleTapTimeD3;
 	public float _doubleTapTimeD4;
 
+
+
+	public SpriteRenderer currSprite;
+
+	public Sprite fowardSprite;
+	public Sprite downSprite;
+	public Sprite leftSprite;
+	public Sprite rightSprite;
+
+
 	// Use this for initialization
 	void Start () {
 
@@ -29,6 +39,8 @@ public class PlayerController : MonoBehaviour {
 		dashOnCD = false;				// not on CD at start!
 		dashing = true;
 		timeBetweenActivation = 0.2f;
+
+		currSprite = GameObject.Find ("Player").GetComponent<SpriteRenderer>();
 	
 	}
 	
@@ -142,17 +154,21 @@ public class PlayerController : MonoBehaviour {
 		// Basic controller, allows for up/down/left/right movement.
 
 		if (Input.GetKey ("right")) {
+			currSprite.sprite = rightSprite;
 			this.transform.position += new Vector3 (speed, 0.0f, 0.0f); 
+		} else if (Input.GetKey ("left")) {
+			currSprite.sprite = leftSprite;
+			this.transform.position -= new Vector3 (speed, 0.0f, 0.0f); 
 		}
 		
-		else if (Input.GetKey("left"))
-			this.transform.position -= new Vector3(speed,0.0f,0.0f); 
-		
-		if (Input.GetKey("up"))
-			this.transform.position += new Vector3(0.0f,speed,0.0f); 
-		
-		else if (Input.GetKey("down"))
-			this.transform.position -= new Vector3(0.0f,speed,0.0f);  
+		if (Input.GetKey ("up")) {
+			currSprite.sprite = fowardSprite;
+			this.transform.position += new Vector3 (0.0f, speed, 0.0f); 
+		} 
+		else if (Input.GetKey ("down")) {
+			currSprite.sprite = downSprite;
+			this.transform.position -= new Vector3 (0.0f, speed, 0.0f);  
+		}
 
 
 
