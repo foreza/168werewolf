@@ -3,7 +3,8 @@ using System.Collections;
 
 public class PlayerController : MonoBehaviour {
 
-	public float speed;			// Set speed here.
+    public bool sendDebugMessages = false;
+    public float speed;			// Set speed here.
 
 	Rigidbody2D thisBody;
 
@@ -117,7 +118,8 @@ public class PlayerController : MonoBehaviour {
 
 		
 			if (doubleTapRight) {
-				print ("Right Dash");
+				if(sendDebugMessages)
+                    print ("Right Dash");
 				// Rigidbody2D temp = GameObject.Find ("Player").GetComponent<Rigidbody2D> ();
 			thisBody.AddForce (new Vector3 (0.05f, 0.0f));	
 				// AFTER ADDING FORCE, SET THE TIME
@@ -126,7 +128,8 @@ public class PlayerController : MonoBehaviour {
 		}
 		
 			else if (doubleTapLeft) {
-				print ("Left Dash");
+                if (sendDebugMessages)
+                    print ("Left Dash");
 				//Rigidbody2D temp = GameObject.Find ("Player").GetComponent<Rigidbody2D> ();
 				thisBody.AddForce (new Vector3 (-0.05f, 0.0f));	
 				trackDashCD = Time.time + dashCoolDown;
@@ -135,7 +138,8 @@ public class PlayerController : MonoBehaviour {
 		
 		
 			else if (doubleTapUp) {
-				print ("Up Dash");
+                if (sendDebugMessages)
+                    print ("Up Dash");
 				//Rigidbody2D temp = GameObject.Find ("Player").GetComponent<Rigidbody2D> ();
 				thisBody.AddForce (new Vector3 (0.0f, 0.05f));	
 				trackDashCD = Time.time + dashCoolDown;
@@ -144,7 +148,8 @@ public class PlayerController : MonoBehaviour {
 			}
 		
 			else if (doubleTapDown) {
-				print ("Down Dash");
+                if (sendDebugMessages)
+                    print ("Down Dash");
 				// Rigidbody2D temp = GameObject.Find ("Player").GetComponent<Rigidbody2D> ();
 				thisBody.AddForce (new Vector3 (0.0f, -0.05f));	
 				trackDashCD = Time.time + dashCoolDown;
@@ -191,7 +196,8 @@ public class PlayerController : MonoBehaviour {
 
 		if (dashOnCD && trackDashCD < Time.time) {
 			dashOnCD = false;
-			print ("Dash is off cooldown.");
+            if (sendDebugMessages)
+                print ("Dash is off cooldown.");
 		}
 
 
@@ -200,7 +206,13 @@ public class PlayerController : MonoBehaviour {
 
 	void getSkill()
 	{
-	
+		if (Input.GetKeyDown("space"))
+		{
+			// interact with building.
+            if (sendDebugMessages)
+                print ("Interacting with item.");
+
+		}
 
 	}
 

@@ -12,8 +12,11 @@ public class TrapTrigger : MonoBehaviour {
         mainTrap = mainTrapObject.GetComponent<Trap>();
 	}
 
-    void onTriggerEnter2D(Collider2D other)
+    void OnTriggerEnter2D(Collider2D other)
     {
+        //DEBUG LOG DELETE LATER:
+        Debug.Log(other.name + " has entered the trap");
+
         //If a human enters the trap's trigger area, and it hasn't already been triggered...
         if (other.tag == Tags.HUMAN && !mainTrap.getTriggered())
             mainTrap.triggerTrap();
