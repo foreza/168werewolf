@@ -6,8 +6,8 @@ public class Interactable : MonoBehaviour {
 	public bool canInteract;
 	public bool triggered;
 
-	Sprite notTriggeredSprite;		// Sprite for triggered state
-	Sprite triggeredSprite;			// Sprite for untriggered state
+	public Sprite notTriggeredSprite;		// Sprite for triggered state
+	public Sprite triggeredSprite;			// Sprite for untriggered state
 
 	SpriteRenderer thisRender;
 
