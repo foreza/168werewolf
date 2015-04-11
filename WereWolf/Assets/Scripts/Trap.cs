@@ -7,11 +7,11 @@ public class Trap : MonoBehaviour {
 
     //All traps require an "activation" trigger collider. If the players enter this trigger, the trap is activated.
     //The trigger collider is attached to a gameobject that has a TrapTrigger script, which sends a message when a player enters it.
-    public GameObject activationZone;
+    public GameObject triggerZone;
 
     //All traps require an "area of effect" trigger collider. This represents the effected area of a trap's effect; if a player is in this area when the trap is dealing damage, the player dies. 
     //This trigger collier is attached to a gameobject that has a TrapAOE script, which can be queried for an array players currently inside the zone.
-    public Collider2D areaOfEffectZone;
+    public GameObject areaOfEffectZone;
 
     //Traps have a duration of time between being triggered and dealing damage. (Though for some traps, it may be zero)
     public float timeToActivate;
