@@ -35,7 +35,7 @@ public class PlayerController : MonoBehaviour {
 	void Start () {
 
 		speed = .05f; 					// toggle this off
-		dashCoolDown = 2.0f;			// Cooldown.
+		dashCoolDown = 0.0f;			// Cooldown.
 		dashDuration = 1.0f;
 		trackDashCD = 0.0f;				// Init just in case.
 		dashOnCD = false;				// not on CD at start!
@@ -200,13 +200,7 @@ public class PlayerController : MonoBehaviour {
 
 	void getSkill()
 	{
-		if (Input.GetKeyDown("space"))
-		{
-			// interact with building.
-			print ("Interacting with item.");
-
-		}
-
+	
 
 	}
 

@@ -16,18 +16,9 @@ public class PlayerVision : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+	}
 	
-		playerPosition = updatePlayerPosition ();	// update Player position per loop 
-
-
-	}
-
-
-	Vector3 updatePlayerPosition()
-	{
-		return thePlayer.transform.position;
-	}
-
 
 	void OnTriggerEnter2D(Collider2D other)
 	{
