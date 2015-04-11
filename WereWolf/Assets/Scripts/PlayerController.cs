@@ -10,9 +10,7 @@ public class PlayerController : MonoBehaviour {
 	public float timeBetweenActivation;
 
 
-	public bool tapping;
-	public float LastTap;
-	public float tapTime;
+	public float _doubleTapTimeD;
 
 	// Use this for initialization
 	void Start () {
@@ -20,28 +18,13 @@ public class PlayerController : MonoBehaviour {
 		speed = .05f; 					// toggle this off
 		dashCoolDown = 5.0f;			// Cooldown.
 		timeBetweenActivation = 0.5f;	// time between keyPresses
-		tapTime = 0.0f;
+		// tapTime = 0.0f;
 	
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
-		if(Input.GetKeyDown("up")){
-			print ("test");
-			if(!tapping){
-				tapping = true;
-				SingleTap();
-			}
-			if((Time.time - LastTap) < tapTime){
-				print("DoubleTap");
-				tapping = false;
-			}
-			LastTap = Time.time;
-		}
-
-
-	
 
 		getControlMovement();	// function that reads basic control movement.	
 		getSkill();				// function that reads basic skill usage.
@@ -49,28 +32,26 @@ public class PlayerController : MonoBehaviour {
 	
 
 	}
-
-	IEnumerator SingleTap()
-	{
-		yield return new WaitForSeconds(tapTime);
-
-		if(tapping)
-		{
-			print("SingleTap");
-			tapping = false;
-		}
-
-
-
-		
-	}
+	
 
 	void getControlMovement()
 	{
 
-		float beginTime = Time.time; 	// stores the current time
+		bool doubleTapD = false;
 
+		if (Input.GetKeyDown(KeyCode.D))
+		{
+			if (Time.time < _doubleTapTimeD + .3f)
+			{
+				doubleTapD = true;
+			}
+			_doubleTapTimeD = Time.time;
+		}
 
+		if (doubleTapD)
+		{
+			Debug.Log("DoubleTapD");
+		}
 
 		// Basic controller, allows for up/down/left/right movement.
 
