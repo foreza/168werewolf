@@ -1,11 +1,9 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Interactable.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\WerewolfAI.cs">
     <Files>
-      <File FileName="Assets/Scripts/PlayerInteract.cs" Line="22" Column="38" />
-      <File FileName="Assets/Scripts/PlayerVision.cs" Line="52" Column="1" />
-      <File FileName="Assets/Scripts/Interactable.cs" Line="21" Column="2" />
-      <File FileName="Assets/Scripts/PlayerController.cs" Line="222" Column="1" />
+      <File FileName="Assets\Scripts\WerewolfAI.cs" Line="31" Column="4" />
+      <File FileName="Assets\Scripts\PlayerController.cs" Line="166" Column="59" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
