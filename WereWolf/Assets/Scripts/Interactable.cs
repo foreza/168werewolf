@@ -3,6 +3,7 @@ using System.Collections;
 
 public class Interactable : MonoBehaviour {
 
+	public bool isEndObjective;
 	public bool canInteract;
 	public bool triggered;
 
@@ -11,10 +12,15 @@ public class Interactable : MonoBehaviour {
 
 	SpriteRenderer thisRender;
 
+	GameObject global;
+
 	// Use this for initialization
 	void Start () {
 
 		thisRender = this.gameObject.GetComponent<SpriteRenderer>();
+
+		global = GameObject.Find ("GlobalObjectives");
+
 
 		canInteract = false;		// objects should be non-interactable at start
 		triggered = false;			// objects should not be triggered at start
@@ -42,7 +48,20 @@ public class Interactable : MonoBehaviour {
 		if (canInteract == true && !triggered) {
 			print ("Interactable item has been triggered!");
 			thisRender.sprite = triggeredSprite;
+			triggered = true;
+			global.SendMessage("modifyGlobal", this.gameObject.name);
 		}
+
+		if (canInteract == false && !triggered && this.gameObject.name == "Haven") {
+			print ("Interactable item has been triggered!");
+			thisRender.sprite = triggeredSprite;
+			triggered = true;
+			// global.SendMessage("modifyGlobal", this.gameObject.name);
+		}
+
+
+
+
 
 
 

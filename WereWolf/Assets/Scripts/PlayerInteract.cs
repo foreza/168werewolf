@@ -5,11 +5,12 @@ public class PlayerInteract : MonoBehaviour {
 
 	bool canInteract;
 	GameObject toInteract;
+	GameObject global;
 	// Use this for initialization
 	void Start () {
 
 		canInteract = false;
-	
+		global = GameObject.Find ("GlobalObjectives");
 	}
 	
 	// Update is called once per frame
