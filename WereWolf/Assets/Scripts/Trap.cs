@@ -13,6 +13,10 @@ public class Trap : MonoBehaviour {
     //This trigger collier is attached to a gameobject that has a TrapAOE script, which can be queried for an array players currently inside the zone.
     public GameObject areaOfEffectZone;
 
+    //Associated scripts of the two above objects, to be assigned at start.
+    TrapTrigger triggerZoneScript;
+    TrapAOE AreaOfEffectZoneScript;
+
     //Traps have a duration of time between being triggered and dealing damage. (Though for some traps, it may be zero)
     public float timeToActivate;
 
@@ -42,14 +46,24 @@ public class Trap : MonoBehaviour {
 
     
     // Use this for initialization
-	void Start () {
-	
+	void Start () 
+    {
+        triggerZoneScript = triggerZone.GetComponent<TrapTrigger>();
+        AreaOfEffectZoneScript = areaOfEffectZone.GetComponent<TrapAOE>();
 	}
 	
 	// Update is called once per frame
 	void Update () 
     {
-	
+
+        if (triggered)
+        {
+            ArrayList humans = AreaOfEffectZoneScript.getHumansInTrapAOE();
+            foreach (GameObject human in humans)
+            {
+                Debug.Log(human.name);
+            }
+        }
 	}
 
     public void triggerTrap()
