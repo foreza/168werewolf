@@ -2,8 +2,8 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/FogOfWar.cs">
     <Files>
-      <File FileName="Assets/Scripts/PlayerController.cs" Line="43" Column="3" />
-      <File FileName="Assets/Scripts/FogOfWar.cs" Line="18" Column="18" />
+      <File FileName="Assets/Scripts/PlayerController.cs" Line="143" Column="16" />
+      <File FileName="Assets/Scripts/FogOfWar.cs" Line="14" Column="19" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
