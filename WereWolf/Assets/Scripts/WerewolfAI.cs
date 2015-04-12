@@ -4,8 +4,7 @@ using System.Collections;
 public class WerewolfAI : MonoBehaviour {
 
 	public float speed;			// Set speed here.
-	public bool chasing;
-	public bool wandering;
+	bool chasing;
 
 	public SpriteRenderer currSprite;
 
@@ -14,20 +13,17 @@ public class WerewolfAI : MonoBehaviour {
 	public Sprite leftSprite;
 	public Sprite rightSprite;
 
-	bool movingUp = false;
-	bool movingDown = false;
-	bool movingLeft = false;
-	bool movingRight = false;
-
+    public GameObject target;
+    
 	float currentAngle,x,y;
 	int updateTimer;
 
 	// Use this for initialization
 	void Start () {
 		speed = .10f; 					// toggle this off
-		chasing = false;
 
 		updateTimer = 0;
+        target = GameObject.FindWithTag("Player");
 
 		currSprite = this.GetComponent<SpriteRenderer>();
 
@@ -35,12 +31,15 @@ public class WerewolfAI : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        if (Vector3.Distance(this.transform.position, target.transform.position) < 10) {
+            chasing = true;
+        } else {
+            chasing = false;
+        }
 		if (chasing) {
 			chase ();
-		} else if (wandering) {
-			wander ();
 		} else {
-			//do nothing
+			wander ();
 		}
 	}
 
@@ -52,19 +51,6 @@ public class WerewolfAI : MonoBehaviour {
 			currentAngle = Mathf.Deg2Rad * (Random.value * 360); //randomly choose
 			x = Mathf.Cos (currentAngle) * speed;
 			y = Mathf.Sin (currentAngle) * speed;
-			if (Mathf.Abs (x) > Mathf.Abs (y)) {
-				if (x > 0) {
-					currSprite.sprite = rightSprite;
-				} else {
-					currSprite.sprite = leftSprite;
-				}
-			} else {
-				if (y > 0) {
-					currSprite.sprite = forwardSprite;
-				} else {
-					currSprite.sprite = downSprite;
-				}
-			}
 		}
 
 		move(x,y);
@@ -77,13 +63,28 @@ public class WerewolfAI : MonoBehaviour {
 	}
 
 	void chase(){
-		//find player position
-		//calculate dx and dy
-		//move(dx,dy);
+        print(this.name + " is chasing " + target.name + "!!");
+
+        Vector3 toMove = Vector3.MoveTowards(this.transform.position, target.transform.position, speed);
+        move(toMove.x - this.transform.position.x, toMove.y - this.transform.position.y);
 	}
 
 
 	void move(float dx, float dy){
+        if (Mathf.Abs(dx) > Mathf.Abs(dy)){
+            if (dx > 0){
+                currSprite.sprite = rightSprite;
+            } else {
+                currSprite.sprite = leftSprite;
+            }
+        } else {
+            if (dy > 0) {
+                currSprite.sprite = forwardSprite;
+            } else {
+                currSprite.sprite = downSprite;
+            }
+        }
+
 		this.transform.position += new Vector3 (dx, dy, 0.0f);
 	}
 
