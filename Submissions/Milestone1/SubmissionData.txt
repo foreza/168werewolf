@@ -1,0 +1,49 @@
+
+SUBMISSION #1
+
+Team Members:
+75717625 Connor
+80193366 Evie
+82595644 Jason
+
+Create a git repository on github.com and inform the TA. 
+Place on that repository the code you found and/or wrote for a single-user version of your game.
+
+
+Our git repo can be found at: https://github.com/foreza/168werewolf
+
+
+Submit on EEE Dropbox, one per team, the "final" version of your requirements document. (Submitted by Connor)
+
+Additionally, include a high level architecture of the source code you wrote/found. You should know what each file/class/method is for (even if you don’t yet grasp all the details of its inner working). 
+
+The high level architecture description can be textual and/or diagram-based.
+
+
+Big Components:
+
+Player, Environment, Enemies, Objectives, GlobalGameState
+
+The Player has 3 primary modules 
+- Vision (interacts with environment and enemies)
+- Interaction (interacts with objectives and environment)
+- Controller (Allows player to control character)
+
+Environment has 2 primary modules
+- Fog of war system (cannot be seen unless near a player)
+- Collision handling/rendering
+
+Enemies have 3 primary modules
+- Fog of war system
+- Collision handling/rendering
+- Player following (and eventually combat)
+
+Objectives have 2 primary modules
+- Interactable (with the player)
+- Communication with both player and Global game state
+
+GlobalGameState has 3 primary states.
+- 1) Haven Inactive (aka the two towers have not been activated)
+- 2) Haven Active (countdown begin, all players need to reach exit)
+- 3) Game Over (countdown finish, players either win or lose)
+
