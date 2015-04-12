@@ -29,6 +29,7 @@ public class PlayerController : MonoBehaviour {
 	public Sprite downSprite;
 	public Sprite leftSprite;
 	public Sprite rightSprite;
+    public Sprite deadSprite;
 
     public bool isDead = false;
 
@@ -233,8 +234,11 @@ public class PlayerController : MonoBehaviour {
     public void triggerDeath()
     {
         if (sendDebugMessages) Debug.Log(this.name + " the " + this.tag + " has been slain.");
-        anim.SetTrigger("isDead");
+        //anim.SetTrigger("isDead");
+        currSprite.sprite = deadSprite;
         isDead = true;
+
+        Invoke("transitionSceneToGameOver", 3);
     }
 
     void transitionSceneToGameOver()

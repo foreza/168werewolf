@@ -11,4 +11,7 @@ public class Scenes : MonoBehaviour
 
     //Game Over Screen
     public const string GAMEOVER = "GameOver";
+
+    //Title Screen
+    public const string TITLE = "Title";
 }

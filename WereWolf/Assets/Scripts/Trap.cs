@@ -63,27 +63,32 @@ public class Trap : MonoBehaviour {
 
         if (triggered && canActivate && Time.time > timestampForActivation)
         {
-            ArrayList humans = AreaOfEffectZoneScript.getHumansInTrapAOE();
-            
-            //For each human inside the trap's death radius...
-            foreach (GameObject human in humans)
-            {
-                if(sendDebugMessages) Debug.Log(human.name + " has been slain!");
-
-                //Get the human's player controller, and use it to trigger their death.
-                human.GetComponent<PlayerController>().triggerDeath();
-                
-            }
-
-            canActivate = false;
+            activateTrap();
         }
 	}
 
+    void activateTrap()
+    {
+        ArrayList humans = AreaOfEffectZoneScript.getHumansInTrapAOE();
+
+        //For each human inside the trap's death radius...
+        foreach (GameObject human in humans)
+        {
+            if (sendDebugMessages) Debug.Log(human.name + " has been slain!");
+
+            //Get the human's player controller, and use it to trigger their death.
+            human.GetComponent<PlayerController>().triggerDeath();
+
+        }
+
+        anim.SetBool("Activated", true);
+        canActivate = false;
+    }
+    
     public void triggerTrap()
     {
         if (sendDebugMessages) Debug.Log(this.gameObject.name + ": Trap.cs : triggerTrap()");
         triggered = true;
-        anim.SetBool("Triggered", true);
         timestampForActivation = Time.time + timeToActivate;
     }
 

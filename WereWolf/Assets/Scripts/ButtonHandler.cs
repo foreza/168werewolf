@@ -20,8 +20,13 @@ public class ButtonHandler : MonoBehaviour {
 	// Method that is run to start the game.
 	public void startGame()
 	{
-		Application.LoadLevel ("TestScene");					// Change the name of scene as necessary.
+		Application.LoadLevel (Scenes.TESTSCENE);					// Change the name of scene as necessary.
 	}
+
+    public void transitionToTitle()
+    {
+        Application.LoadLevel(Scenes.TITLE);
+    }
 
 	// Method that is run to quit the game from title screen.
 	public void exit()

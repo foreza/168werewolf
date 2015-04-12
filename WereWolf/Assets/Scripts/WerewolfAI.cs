@@ -3,7 +3,8 @@ using System.Collections;
 
 public class WerewolfAI : MonoBehaviour {
 
-	public float speed;			// Set speed here.
+    public bool sendDebugMessages = false;
+    public float speed;			// Set speed here.
 	bool chasing;
 
 	public SpriteRenderer currSprite;
@@ -23,7 +24,7 @@ public class WerewolfAI : MonoBehaviour {
 		speed = .10f; 					// toggle this off
 
 		updateTimer = 0;
-        target = GameObject.FindWithTag("Player");
+        target = GameObject.FindWithTag(Tags.HUMAN);
 
 		currSprite = this.GetComponent<SpriteRenderer>();
 
@@ -88,4 +89,13 @@ public class WerewolfAI : MonoBehaviour {
 		this.transform.position += new Vector3 (dx, dy, 0.0f);
 	}
 
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.tag == Tags.HUMAN)
+        {
+            if (sendDebugMessages) Debug.Log(this.name + " has eaten " + other.name);
+
+            other.GetComponent<PlayerController>().triggerDeath();
+        }
+    }
 }

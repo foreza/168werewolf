@@ -3,7 +3,8 @@ using System.Collections;
 
 public class PlayerInteract : MonoBehaviour {
 
-	bool havenActivated;
+    bool sendDebugMessages = false;
+    bool havenActivated;
 	bool isInHaven;
 	bool canInteract;
 	GameObject toInteract;
@@ -24,7 +25,8 @@ public class PlayerInteract : MonoBehaviour {
 		if (Input.GetKeyDown("space") && canInteract)
 		{
 			// interact with building.
-			print ("Attemping to interact with item.");
+			
+            if(sendDebugMessages) print ("Attemping to interact with item.");
 			toInteract.SendMessage("trigger");
 			
 		}
@@ -35,7 +37,7 @@ public class PlayerInteract : MonoBehaviour {
 	// This will be broadcast to all players/werewolves!
 	void havenActivate()
 	{
-		print (this.gameObject.name + " knows that haven has been activated!");
+        if (sendDebugMessages) print(this.gameObject.name + " knows that haven has been activated!");
 		havenActivated = true;
 	}
 
@@ -44,10 +46,10 @@ public class PlayerInteract : MonoBehaviour {
 		havenActivated = false;
 
 		if (isInHaven) {
-			print (this.gameObject.name + " has passed!");
+            if (sendDebugMessages) print(this.gameObject.name + " has passed!");
 			global.SendMessage("playerWin");
 		} else
-			print ("You have failed...");
+            if (sendDebugMessages) print("You have failed...");
 			global.SendMessage("playerLose");
 
 	}
@@ -56,7 +58,7 @@ public class PlayerInteract : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D other)
 	{
-		print ("Can interact with : [" + other.gameObject.name + "]");
+        if (sendDebugMessages) print("Can interact with : [" + other.gameObject.name + "]");
 		canInteract = true;
 		toInteract = other.gameObject;
 		//revealObject (other.gameObject);
@@ -68,7 +70,7 @@ public class PlayerInteract : MonoBehaviour {
 	
 	void OnTriggerExit2D(Collider2D other)
 	{
-		print ("Can no longer interact with: [" + other.gameObject.name + "]");
+        if (sendDebugMessages) print("Can no longer interact with: [" + other.gameObject.name + "]");
 		canInteract = false;
 		//hideObject (other.gameObject);
 
