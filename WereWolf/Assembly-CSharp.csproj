@@ -46,7 +46,9 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\ButtonHandler.cs" />
      <Compile Include="Assets\Scripts\FogOfWar.cs" />
+     <Compile Include="Assets\Scripts\HavenWin.cs" />
      <Compile Include="Assets\Scripts\Interactable.cs" />
      <Compile Include="Assets\Scripts\Objectives.cs" />
      <Compile Include="Assets\Scripts\PlayerController.cs" />
@@ -59,6 +61,7 @@
      <Compile Include="Assets\Scripts\Trap.cs" />
      <Compile Include="Assets\Scripts\TrapAOE.cs" />
      <Compile Include="Assets\Scripts\TrapTrigger.cs" />
+     <Compile Include="Assets\Scripts\WereWolfSpawner.cs" />
      <Compile Include="Assets\Scripts\WerewolfAI.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>

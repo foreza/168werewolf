@@ -191,6 +191,7 @@ public class PlayerController : MonoBehaviour {
                 this.transform.position -= new Vector3(0.0f, speed, 0.0f);
             }
 
+		// Admin controller, allows for system-wide modifications.
 
 
 

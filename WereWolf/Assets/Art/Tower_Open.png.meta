@@ -1,9 +1,11 @@
 fileFormatVersion: 2
 guid: 2a1da9563127534428723634aa5d5950
-timeCreated: 1428727458
+timeCreated: 1428796479
 licenseType: Free
 TextureImporter:
-  fileIDToRecycleName: {}
+  fileIDToRecycleName:
+    21300000: Tower_Open_0
+    21300002: Tower_Open_1
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -48,7 +50,27 @@ TextureImporter:
   textureType: 8
   buildTargetSettings: []
   spriteSheet:
-    sprites: []
+    sprites:
+    - name: Tower_Open_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 350
+        width: 500
+        height: 350
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: Tower_Open_1
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 500
+        height: 350
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
   spritePackingTag: 
   userData: 
   assetBundleName: 
