@@ -53,19 +53,17 @@ public class Interactable : MonoBehaviour {
 		}
 
 		if (canInteract == false && !triggered && this.gameObject.name == "Haven") {
-			print ("Interactable item has been triggered!");
+			print ("Haven has been triggered!");
 			thisRender.sprite = triggeredSprite;
 			triggered = true;
-			// global.SendMessage("modifyGlobal", this.gameObject.name);
+			global.SendMessage("beginCountDown", this.gameObject.name);
 		}
+	}
 
-
-
-
-
-
-
-
+	void reset()
+	{
+		thisRender.sprite = notTriggeredSprite;
+		triggered = false;
 	}
 
 	void OnTriggerEnter2D(Collider2D other)
