@@ -61,7 +61,7 @@ public class Trap : MonoBehaviour {
 	void Update () 
     {
 
-        if (triggered && canActivate)
+        if (triggered && canActivate && Time.time > timestampForActivation)
         {
             ArrayList humans = AreaOfEffectZoneScript.getHumansInTrapAOE();
             
@@ -84,6 +84,7 @@ public class Trap : MonoBehaviour {
         if (sendDebugMessages) Debug.Log(this.gameObject.name + ": Trap.cs : triggerTrap()");
         triggered = true;
         anim.SetBool("Triggered", true);
+        timestampForActivation = Time.time + timeToActivate;
     }
 
     public bool getTriggered()

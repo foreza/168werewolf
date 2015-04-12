@@ -3,18 +3,24 @@ using System.Collections;
 
 public class Interactable : MonoBehaviour {
 
+	public bool isEndObjective;
 	public bool canInteract;
 	public bool triggered;
 
-	Sprite notTriggeredSprite;		// Sprite for triggered state
-	Sprite triggeredSprite;			// Sprite for untriggered state
+	public Sprite notTriggeredSprite;		// Sprite for triggered state
+	public Sprite triggeredSprite;			// Sprite for untriggered state
 
 	SpriteRenderer thisRender;
+
+	GameObject global;
 
 	// Use this for initialization
 	void Start () {
 
 		thisRender = this.gameObject.GetComponent<SpriteRenderer>();
+
+		global = GameObject.Find ("GlobalObjectives");
+
 
 		canInteract = false;		// objects should be non-interactable at start
 		triggered = false;			// objects should not be triggered at start
@@ -39,10 +45,23 @@ public class Interactable : MonoBehaviour {
 	void trigger() // player will call this
 	{
 		// if the player can interact and the item has not been triggered yet
-		if (canInteract == true && !triggered) {
+		if (canInteract == true && !triggered && this.gameObject.name != "Haven") {
 			print ("Interactable item has been triggered!");
 			thisRender.sprite = triggeredSprite;
+			triggered = true;
+			global.SendMessage("modifyGlobal", this.gameObject.name);
 		}
+
+		if (canInteract == false && !triggered && this.gameObject.name == "Haven") {
+			print ("Interactable item has been triggered!");
+			thisRender.sprite = triggeredSprite;
+			triggered = true;
+			// global.SendMessage("modifyGlobal", this.gameObject.name);
+		}
+
+
+
+
 
 
 
