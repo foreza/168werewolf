@@ -15,8 +15,8 @@ public class HavenWin : MonoBehaviour {
 	bool activated;			// activated?
 	float timeToClose;		// This time will reflect the exact time Haven closes.
 		
-	// Not in use 
-	//GameObject players;	// array of players who have successfully made it to the haven.
+	
+	ArrayList humansInsideHaven;	// array of players who are inside Haven
 
 
 	// Use this for initialization
@@ -60,4 +60,16 @@ public class HavenWin : MonoBehaviour {
 		
 		}
 	}
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.tag == Tags.HUMAN)
+            humansInsideHaven.Add(other.gameObject);
+    }
+
+    void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.tag == Tags.HUMAN)
+            humansInsideHaven.Remove(other.gameObject);
+    }
 }
