@@ -1,18 +1,11 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-<<<<<<< HEAD
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Interactable.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/WereWolfSpawner.cs">
     <Files>
       <File FileName="Assets/Scripts/PlayerInteract.cs" Line="13" Column="22" />
       <File FileName="Assets/Scripts/Interactable.cs" Line="48" Column="66" />
-      <File FileName="Assets/Scripts/PlayerController.cs" Line="190" Column="48" />
-      <File FileName="Assets/Scripts/Objectives.cs" Line="49" Column="20" />
-=======
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\WerewolfAI.cs">
-    <Files>
-      <File FileName="Assets\Scripts\WerewolfAI.cs" Line="31" Column="4" />
-      <File FileName="Assets\Scripts\PlayerController.cs" Line="166" Column="59" />
->>>>>>> 5aec7fb5d61f07df5a550b388165d97b2065f6c7
+      <File FileName="Assets/Scripts/WereWolfSpawner.cs" Line="43" Column="67" />
+      <File FileName="Assets/Scripts/Objectives.cs" Line="55" Column="18" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
