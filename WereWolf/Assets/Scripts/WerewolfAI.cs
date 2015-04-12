@@ -5,6 +5,7 @@ public class WerewolfAI : MonoBehaviour {
 
     public bool sendDebugMessages = false;
     public float speed;			// Set speed here.
+    public float chaseRange;
 	bool chasing;
 
 	public SpriteRenderer currSprite;
@@ -21,8 +22,6 @@ public class WerewolfAI : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		speed = .10f; 					// toggle this off
-
 		updateTimer = 0;
         target = GameObject.FindWithTag(Tags.HUMAN);
 
@@ -32,7 +31,7 @@ public class WerewolfAI : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (Vector3.Distance(this.transform.position, target.transform.position) < 10) {
+        if (Vector3.Distance(this.transform.position, target.transform.position) < chaseRange) {
             chasing = true;
         } else {
             chasing = false;

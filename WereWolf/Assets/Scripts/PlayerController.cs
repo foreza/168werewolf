@@ -38,9 +38,9 @@ public class PlayerController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
-		speed = .05f; 					// toggle this off
-		dashCoolDown = 0.0f;			// Cooldown.
-		dashDuration = 1.0f;
+		//speed = .05f; 					// toggle this off
+		//dashCoolDown = 0.0f;			// Cooldown.
+		//dashDuration = 1.0f;
 		trackDashCD = 0.0f;				// Init just in case.
 		dashOnCD = false;				// not on CD at start!
 		dashing = true;
