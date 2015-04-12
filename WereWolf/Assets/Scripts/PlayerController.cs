@@ -239,7 +239,7 @@ public class PlayerController : MonoBehaviour {
         //anim.SetTrigger("isDead");
         currSprite.sprite = deadSprite;
         isDead = true;
-        deathNoiseSource.PlayOneShot(deathNoise, 100);
+        //deathNoiseSource.PlayOneShot(deathNoise, 100);
 
         Invoke("transitionSceneToGameOver", 3);
     }
