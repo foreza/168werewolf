@@ -14,7 +14,7 @@ public class HavenWin : MonoBehaviour {
 	void Start () {
 
 		activated = false;
-		timeSet = 20.0f;		// default time is 30s
+		timeSet = 10.0f;		// default time is 30s
 		
 	}
 	
@@ -34,6 +34,9 @@ public class HavenWin : MonoBehaviour {
 		print ("Players have 30 seconds to reach the endpoint.");
 		timeToClose = Time.time + timeSet; 		// time
 
+		GameObject.Find ("Interact").SendMessage ("havenActivate");
+
+		// GameObject.FindGameObjectsWithTag("Interact").SendMessage ("havenActivate");
 	}
 
 	void checkHavenClose()
@@ -42,6 +45,9 @@ public class HavenWin : MonoBehaviour {
 			activated = false;
 			print ("Haven has closed.");
 			this.SendMessage("closeHaven");
+
+			GameObject.Find ("Interact").SendMessage ("havenDeactivated");
+		
 		}
 	}
 }

@@ -1,14 +1,13 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/ButtonHandler.cs">
     <Files>
-      <File FileName="Assets/Scripts/Objectives.cs" Line="22" Column="19" />
-      <File FileName="Assets/Scripts/PlayerInteract.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Interactable.cs" Line="51" Column="21" />
-      <File FileName="Assets/Scripts/PlayerController.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/FogOfWar.cs" Line="29" Column="11" />
+      <File FileName="Assets/Scripts/Objectives.cs" Line="41" Column="3" />
+      <File FileName="Assets/Scripts/Interactable.cs" Line="66" Column="21" />
+      <File FileName="Assets/Scripts/HavenWin.cs" Line="17" Column="15" />
+      <File FileName="Assets/Scripts/PlayerInteract.cs" Line="70" Column="28" />
+      <File FileName="Assets/Scripts/WerewolfAI.cs" Line="50" Column="17" />
       <File FileName="Assets/Scripts/ButtonHandler.cs" Line="19" Column="18" />
-      <File FileName="Assets/Scripts/PlayerVision.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
