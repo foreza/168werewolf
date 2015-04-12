@@ -44,9 +44,12 @@ public class PlayerInteract : MonoBehaviour {
 		havenActivated = false;
 
 		if (isInHaven) {
-			print (this.gameObject.name + " has passed!"); 
+			print (this.gameObject.name + " has passed!");
+			global.SendMessage("playerWin");
 		} else
 			print ("You have failed...");
+			global.SendMessage("playerLose");
+
 	}
 
 	// Mainly for debug purposes.

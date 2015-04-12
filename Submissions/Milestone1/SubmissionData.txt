@@ -16,7 +16,6 @@ Our git repo can be found at: https://github.com/foreza/168werewolf
 Submit on EEE Dropbox, one per team, the "final" version of your requirements document. (Submitted by Connor)
 
 Additionally, include a high level architecture of the source code you wrote/found. You should know what each file/class/method is for (even if you don’t yet grasp all the details of its inner working). 
-
 The high level architecture description can be textual and/or diagram-based.
 
 
