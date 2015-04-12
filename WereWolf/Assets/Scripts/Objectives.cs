@@ -3,25 +3,30 @@ using System.Collections;
 
 public class Objectives : MonoBehaviour {
 
-	public bool tower1Active;
-	public bool tower2Active;
-	public bool havenOpen;
-	public bool gameOver;
+	// This script keeps track of the global game state.
+	// HavenWin is a similar script, and was moved from this one to retain clarity
+
+	public bool tower1Active;			// NorthTower active?
+	public bool tower2Active;			// SouthTower active?
+	public bool havenOpen;				// has haven been activated?
+	public bool gameOver;				// game state
 
 	// Use this for initialization
 	void Start () {
 
+		// All initialized as false initially.
 		tower1Active = false;
 		tower2Active = false;
 		havenOpen = false;
 		gameOver = false;
-
 	
 	}
 
 	void modifyGlobal(string s)
 	{
-		// Crude!
+		// Crude. but works.
+		// If any object with the interactable script is then activated/interacted with properly
+		// This script recieves the message, and changes the game state accordingly.
 
 		if (s == "NorthTower") {
 			tower1Active = true;
@@ -41,11 +46,9 @@ public class Objectives : MonoBehaviour {
 
 	}
 
-	void summonHorde()
-	{
-		print ("Beware players! A horde of WereWolves have caught your scent.");
-	}
-
+	// HavenWin -> Objectives -> haven.interactable
+	// This function is run by the global state to trigger Haven.
+	// Haven cannot be triggered by humans directly.
 	void activateHaven()
 	{
 		print ("Activating Haven...");
@@ -53,6 +56,7 @@ public class Objectives : MonoBehaviour {
 
 	}
 
+	// This function is run to turn off Haven.
 	void closeHaven()
 	{
 		print ("Haven closing doors...");
@@ -62,12 +66,24 @@ public class Objectives : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+		// This is only ever called once.
 		if (!havenOpen && tower1Active && tower2Active) {
 			havenOpen = true;
 			print ("Explorers, the Haven is open! You have __ seconds before it closes.");
 			activateHaven();
-			summonHorde();
+			summonHorde();			// You got me. Haha.
 		}
 	
 	}
+
+	// Sample events/sudden death occurances would be done here.
+	void summonHorde()
+	{
+		print ("Beware players! A horde of WereWolves have caught your scent.");
+
+		// Spawn a horde of werewolves here.
+	}
+
+
+	
 }

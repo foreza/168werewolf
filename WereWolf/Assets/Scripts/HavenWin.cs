@@ -3,22 +3,30 @@ using System.Collections;
 
 public class HavenWin : MonoBehaviour {
 
-	GameObject players;		// array of players who have successfully made it to the haven.
+	// A semi-redundant script that should be part of Objectives, but was kept seperate to avoid confusion.
+	// This script (original intention) was to keep track of all players who have made it into the objective.
+	// This script is also in charge of setting the count-down, and opening/closing the end objective.
 
+
+	// Public vars
+	public float timeSet;	// Length of the duration of Haven opening time, in seconds.
+
+	// Private Vars
 	bool activated;			// activated?
-	float timeToClose;		// time is set when countDown begins.
-	float timeSet;			// set time before end of haven.
+	float timeToClose;		// This time will reflect the exact time Haven closes.
 		
+	// Not in use 
+	//GameObject players;	// array of players who have successfully made it to the haven.
+
 
 	// Use this for initialization
 	void Start () {
 
-		activated = false;
-		timeSet = 20.0f;		// default time is 30s
+		activated = false;	// Starts deactivated.
+		timeSet = 10.0f;	// default time is 30s, modify as necessary.
 		
 	}
 	
-	// Update is called once per frame
 	void Update () {
 
 		if (activated) {
@@ -28,20 +36,28 @@ public class HavenWin : MonoBehaviour {
 	
 	}
 
+	// This method is called to start a global countdown.
+
 	void beginCountDown()
 	{
-		activated = true;
-		print ("Players have 30 seconds to reach the endpoint.");
-		timeToClose = Time.time + timeSet; 		// time
+		activated = true;											// Activated
+		print ("Players have 30 seconds to reach the endpoint."); 	
+		timeToClose = Time.time + timeSet; 							// Get current time, add time set, and use that as our reference
+		GameObject.Find ("Interact").SendMessage ("havenActivate");	// Send a message to the player/players indicating that "Haven is active!"
 
+		// TODO: Optimize this so that the countdown is sent to all players, not just one.
+		// GameObject.FindGameObjectsWithTag("Interact").SendMessage ("havenActivate");
 	}
 
+	// This method is called to end the global countdown and reset the Haven.
 	void checkHavenClose()
 	{
 		if (timeToClose < Time.time) {
 			activated = false;
 			print ("Haven has closed.");
-			this.SendMessage("closeHaven");
+			this.SendMessage("closeHaven");			// Sends a message to the globalobjectives tracker 
+			GameObject.Find ("Interact").SendMessage ("havenDeactivated"); // Send message to the player/players that Havfen is deactivated"
+		
 		}
 	}
 }

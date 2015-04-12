@@ -45,7 +45,7 @@ public class WerewolfAI : MonoBehaviour {
 
 
 	void wander (){ //Random Walk
-		print (this.gameObject.name + " is wandering.");
+		// print (this.gameObject.name + " is wandering.");
 
 		if (updateTimer == 0) {
 			currentAngle = Mathf.Deg2Rad * (Random.value * 360); //randomly choose
@@ -63,7 +63,7 @@ public class WerewolfAI : MonoBehaviour {
 	}
 
 	void chase(){
-        print(this.name + " is chasing " + target.name + "!!");
+        // print(this.name + " is chasing " + target.name + "!!");
 
         Vector3 toMove = Vector3.MoveTowards(this.transform.position, target.transform.position, speed);
         move(toMove.x - this.transform.position.x, toMove.y - this.transform.position.y);

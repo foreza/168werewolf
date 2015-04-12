@@ -3,44 +3,46 @@ using System.Collections;
 
 public class ButtonHandler : MonoBehaviour {
 
-	bool showInstruction;
-	GameObject instructions;
+	// This script is used by the TITLE scene.
+	// Any additional button functionality should use this script. 
 
-	// Use this for initialization
+	bool showInstruction;										// indicates whether instructions are showing
+	GameObject instructions;									// gets a reference to the instructions object
+
 	void Start () {
 
-		showInstruction = false;
-		instructions = GameObject.Find("InstructionHelper");
-		hideInstruction ();
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-
+		// showInstruction = false;								// Initialize as false
+		instructions = GameObject.Find("InstructionHelper");	// Save reference to the game object
+		hideInstruction ();										// Hide the instructions at start
 	
 	}
 
+	// Method that is run to start the game.
 	public void startGame()
 	{
-		Application.LoadLevel ("TestScene");
+		Application.LoadLevel ("TestScene");					// Change the name of scene as necessary.
 	}
 
+	// Method that is run to quit the game from title screen.
 	public void exit()
 	{
-		Application.Quit ();
+		Application.Quit ();									// Add any other exit things here.
 	}
 
-
+	// Method that shows the instructions.
 	public void viewInstruction()
 	{
-		showInstruction = true;
 		instructions.SetActive(true);
 	}
 
+	// Method that hides the instructions.
 	public void hideInstruction()
 	{
-		showInstruction = false;
 		instructions.SetActive(false);
+	}
+
+	// Empty update loop.
+	void Update () {
+		
 	}
 }

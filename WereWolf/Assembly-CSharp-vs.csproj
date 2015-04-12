@@ -48,6 +48,7 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\ButtonHandler.cs" />
      <Compile Include="Assets\Scripts\FogOfWar.cs" />
+     <Compile Include="Assets\Scripts\GameEndHandler.cs" />
      <Compile Include="Assets\Scripts\HavenWin.cs" />
      <Compile Include="Assets\Scripts\Interactable.cs" />
      <Compile Include="Assets\Scripts\Objectives.cs" />
