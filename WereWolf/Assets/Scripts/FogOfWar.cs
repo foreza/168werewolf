@@ -3,37 +3,38 @@ using System.Collections;
 
 public class FogOfWar : MonoBehaviour {
 
-	public bool visible;
-    public bool sendDebugMessages = false;
+	// This script is primarily in use by any non-player object.
+	// All environment/traps/enemies use this script.
 
-	// Use this for initialization
+	// Rather than illuminate just for each particular player
+	// Players illuminate for each other.
+	// (Strength in numbers.)
+
+	public bool visible;										// Indicates whether players are able to view this particular object.
+ 	SpriteRenderer rend;										// Gets a reference to the object's spriteRenderer
+
+
 	void Start () {
-	
-		setInvisible ();
-	}
-	
-	// Update is called once per frame
-	void Update () {
+		rend = this.gameObject.GetComponent<SpriteRenderer>(); 	// Bind the component
+		setInvisible ();										// All objects should start as "hidden" unless revealed by player.
 	}
 
-
+	// Hide the object.
 	void setInvisible()
-		    {
-			if(sendDebugMessages)
-                print ("hiding");
-			SpriteRenderer rend = this.gameObject.GetComponent<SpriteRenderer>();
-			rend.color = new Color (1f, 1f, 1f, 0f);
-			visible = false;
-		}
-
-		void setVisible()
 		{
-
-		SpriteRenderer rend = this.gameObject.GetComponent<SpriteRenderer>();
-		rend.color = new Color (1f, 1f, 1f, 1f);
-		visible = true;
-        if(sendDebugMessages)
-		    print (this.gameObject.name + " is visible!");
-
+			rend.color = new Color (1f, 1f, 1f, 0f);			// Turn the opacity to 0, hiding the object.
+			visible = false;									// No longer visible to any players.
 		}
+
+	// Show the object.
+	void setVisible()
+		{
+		rend.color = new Color (1f, 1f, 1f, 1f);				// Turn the opacity to 0, hiding the object.
+		visible = true;											// Is now visible to ALL players.
+		}
+
+			// Update is called once per frame
+	void Update () {
+		}
+
 }

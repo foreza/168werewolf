@@ -3,33 +3,40 @@ using System.Collections;
 
 public class PlayerController : MonoBehaviour {
 
+    // This is the player controller script.
+    // It allows for basic up/down/l/r movement, along with double tapping to dash, and space to interact.
+
     public bool sendDebugMessages = false;
     public float speed;			// Set speed here.
 
-	Rigidbody2D thisBody;
 
-	public bool dashOnCD;		// 
+    // Dash implementation variables along with cooldowns/rules.
+	public bool dashOnCD;		 
 	public bool dashing;
 	public float dashCoolDown;
 	public float dashDuration;
 	public float trackDashCD;
-	public float endDashTime;		// not sure if necessary
+	public float endDashTime;				// not sure if necessary
 	public float timeBetweenActivation;
 
 
-	public float _doubleTapTimeD1;
-	public float _doubleTapTimeD2;
-	public float _doubleTapTimeD3;
-	public float _doubleTapTimeD4;
+	// Keeps track of the doubletaptimes.
+	float _doubleTapTimeD1;
+	float _doubleTapTimeD2;
+	float _doubleTapTimeD3;
+	float _doubleTapTimeD4;
 
 
 
-	public SpriteRenderer currSprite;
+	public SpriteRenderer currSprite;		//Get a reference to the Sprite renderer.
 
+	// Set the sprites in the editor.
 	public Sprite fowardSprite;
 	public Sprite downSprite;
 	public Sprite leftSprite;
 	public Sprite rightSprite;
+
+	Rigidbody2D thisBody;					// Get a reference to the rigidbody.
 
 
 	// Use this for initialization
