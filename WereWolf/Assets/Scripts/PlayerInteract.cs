@@ -45,12 +45,21 @@ public class PlayerInteract : MonoBehaviour {
 	{	
 		havenActivated = false;
 
-		if (isInHaven) {
+        //TEMPORARY CODE ------------------------------------------------------------
+        if (isInHaven)
+        {
             if (sendDebugMessages) print(this.gameObject.name + " has passed!");
-			global.SendMessage("playerWin");
-		} else
+            //global.SendMessage("playerWin");
+            Application.LoadLevel(Scenes.VICTORY);
+        }
+        else
+        {
             if (sendDebugMessages) print("You have failed...");
-			global.SendMessage("playerLose");
+            //global.SendMessage("playerLose");
+            Application.LoadLevel(Scenes.GAMEOVER);
+        }
+
+        //----------------------------------------------------------------------------
 
 	}
 

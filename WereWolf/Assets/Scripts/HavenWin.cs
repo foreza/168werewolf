@@ -16,7 +16,7 @@ public class HavenWin : MonoBehaviour {
 	float timeToClose;		// This time will reflect the exact time Haven closes.
 		
 	
-	ArrayList humansInsideHaven;	// array of players who are inside Haven
+	ArrayList humansInsideHaven = new ArrayList();	// array of players who are inside Haven
 
 
 	// Use this for initialization
@@ -30,7 +30,7 @@ public class HavenWin : MonoBehaviour {
 	void Update () {
 
 		if (activated) {
-			print ("Time left before haven closes: " + (timeToClose - Time.time));
+			//print ("Time left before haven closes: " + (timeToClose - Time.time));
 			checkHavenClose();
 		}
 	
@@ -57,19 +57,36 @@ public class HavenWin : MonoBehaviour {
 			print ("Haven has closed.");
 			this.SendMessage("closeHaven");			// Sends a message to the globalobjectives tracker 
 			GameObject.Find ("Interact").SendMessage ("havenDeactivated"); // Send message to the player/players that Havfen is deactivated"
-		
+
+            humanWin();
 		}
 	}
+
+    //This function should check to see which humans are inside Haven, and then send the appropriate
+    //players a message indicating their victory. 
+    //TEMPORARY: If there is a human inside Haven, the single player wins.
+    void humanWin()
+    {
+       //TEMPORARY SINGLE PLAYER CODE 
+        if (humansInsideHaven.Count > 0)
+            Application.LoadLevel(Scenes.VICTORY);
+    }
 
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.tag == Tags.HUMAN)
+        {
+            Debug.Log(other.name + " has entered the Haven");
             humansInsideHaven.Add(other.gameObject);
+        }
     }
 
     void OnTriggerExit2D(Collider2D other)
     {
         if (other.tag == Tags.HUMAN)
+        {
+            Debug.Log(other.name + " has left the Haven");
             humansInsideHaven.Remove(other.gameObject);
+        }
     }
 }

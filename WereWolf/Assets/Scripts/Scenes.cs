@@ -14,4 +14,7 @@ public class Scenes : MonoBehaviour
 
     //Title Screen
     public const string TITLE = "Title";
+
+    //Victory Screen
+    public const string VICTORY = "Victory";
 }
