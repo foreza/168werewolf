@@ -32,15 +32,17 @@ public class PlayerController : MonoBehaviour {
     public Sprite deadSprite;
 
     public bool isDead = false;
+    public AudioClip deathNoise;
+    private AudioSource deathNoiseSource;
 
     Animator anim;
 
 	// Use this for initialization
 	void Start () {
 
-		speed = .05f; 					// toggle this off
-		dashCoolDown = 0.0f;			// Cooldown.
-		dashDuration = 1.0f;
+		//speed = .05f; 					// toggle this off
+		//dashCoolDown = 0.0f;			// Cooldown.
+		//dashDuration = 1.0f;
 		trackDashCD = 0.0f;				// Init just in case.
 		dashOnCD = false;				// not on CD at start!
 		dashing = true;
@@ -237,6 +239,7 @@ public class PlayerController : MonoBehaviour {
         //anim.SetTrigger("isDead");
         currSprite.sprite = deadSprite;
         isDead = true;
+        deathNoiseSource.PlayOneShot(deathNoise, 100);
 
         Invoke("transitionSceneToGameOver", 3);
     }
