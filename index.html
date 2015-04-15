@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no"/>
+  
+  <title>Calm. Sooth. Bliss.</title>
+
+  <!-- CSS  -->
+  <link href="webContent/css/materialize.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+  <link href="webContent/css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+
+
+<!-- FIREBASE + FUN STUFF-->
+
+<script src="https://cdn.firebase.com/js/client/2.1.1/firebase.js"></script>
+
+</head>
+
+
+
+
+<body class="green lighten-4" >
+<!--  AUDIO HERE -->
+
+<audio id="scream" src="audio/scream.mp3" ></audio>
+
+
+  <nav class="blue darken-1" role="navigation">
+    <div class="container">
+      <div class="nav-wrapper"><a id="logo-container" href="#" class="brand-logo">Stress no more.</a>
+        <ul id="nav-mobile" class="right side-nav">
+          <li><a href="../index.html">Back to Projects</a></li>
+        </ul><a href="#" data-activates="nav-mobile" class="button-collapse"><i class="mdi-navigation-menu"></i></a>
+      </div>
+    </div>
+  </nav>
+  <div class="section no-pad-bot" id="index-banner">
+    <div class="container">
+      <br><br>
+      <h1 class="header center blue-text"></h1> 
+        <div class="row center">
+         <h2>Daily dose of cute?<span id="setDeath"></span></h2><a class ="waves-effect waves-light"><img onclick="scream()" class="responsive-img circle" src="webContent/images/aww.jpg"></a>
+         <h2>It's what you need.<span id="setOnline"></span></h2>
+        </div>
+      <div class="row center ">
+  <!-- Modal Trigger -->
+	          <a href="#modal1" onclick="play()" id="download-button" class="btn-large waves-effect waves-light blue modal-trigger">Click for more cuteness and destessing options..</a>
+        
+        <!-- Modal Structure -->
+  <div id="modal1" class="modal">
+    <img class="responsive-img circle" src="webContent/images/cute.gif">
+    <h5>--* Here are some options* --</h5>
+    <p>
+    <ul class="flow-text">
+    <li>Take a walk.</li>
+    <li><a href="http://www.reddit.com/r/aww">Reddit's /r Aww.</li>
+    <li><a href="https://www.youtube.com/watch?v=5MbN81MAJFM">Yiruma's playlist of calming music.</li>
+    <li><a href="https://www.youtube.com/watch?v=wxd4bY_o_4k">Joe Hisaishi's Golden Collection.</li>
+    <li><a href="http://8tracks.com/explore/calm">8-tracks calm soundtracks.</li>
+    
+    </ul>
+
+    </p>
+
+    <a href="#modal1" class="waves-effect waves-light white btn-flat modal-close">Back to that puppy.</a>
+  </div>
+        
+
+
+
+        </div>
+      </div>
+      <br><br>
+
+    </div>
+  </div>
+
+
+  <div class="container">
+  
+
+    <br><br>
+
+     <div class="row center">
+        <h5 class="header col s12 light"><b>Credits:</b></h5> <br>
+        <p> <ul>
+        <li>Jason Chiu - Developer</li>
+        </ul></p>
+      </div>
+
+    <div class="section">
+
+    </div>
+  </div>
+
+  <footer class="black">
+    <div class="container">
+      <div class="row">
+        <div class="col l12 s12">
+          <h5 class="white-text">Bio</h5>
+          <p class="grey-text text-lighten-4">Just a fun site I made to practice some web development.</p>
+        </div>
+        
+      
+      </div>
+    </div>
+    <div class="footer-copyright">
+      <div class="container">
+      Made by <a class="orange-text lighten-3" href="http://materializecss.com">Materialize. Please check out their work!</a>
+      </div>
+    </div>
+  </footer>
+
+
+  <!--  Scripts-->
+  <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  <script src="webContent/js/materialize.js"></script>
+  <script src="webContent/js/init.js"></script>
+
+  <script type="text/javascript">
+    // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+    // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+  
+  $(document).ready(function(){
+    // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
+    $('.modal-trigger').leanModal();
+  });
+          
+          </script>
+
+
+
+
+
+
+  </body>
+</html>
+
+
