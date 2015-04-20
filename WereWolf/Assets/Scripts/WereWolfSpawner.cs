@@ -39,8 +39,8 @@ public class WereWolfSpawner : MonoBehaviour {
 
 	void spawnSingle()
 	{
-		GameObject spawned = Instantiate (toSpawn);
-		spawned.transform.position = this.gameObject.transform.position;
+		// GameObject spawned = Instantiate (toSpawn);
+		// spawned.transform.position = this.gameObject.transform.position;
 
 	}
 
