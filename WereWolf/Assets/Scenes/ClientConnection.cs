@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System;
 using System.Net;
@@ -8,56 +8,113 @@ using System.Text;
 
 
 public class ClientConnection : MonoBehaviour {
-	
-		// The port number for the remote device.
-		private const int port = 11000;
+
+
+		public static bool loggedIn = false;						// We are not logged in at the start.
+		public bool logMessage = false;
+		public static string userDisplayName;
+		private const int port = 11000;						// The port number for the remote device.
 
 		
-		// ManualResetEvent instances signal completion.
-		private static ManualResetEvent connectDone = 
-			new ManualResetEvent(false);
-		private static ManualResetEvent sendDone = 
-			new ManualResetEvent(false);
-		private static ManualResetEvent receiveDone = 
-			new ManualResetEvent(false);
-		
+	// ManualResetEvent instances signal completion.
+	private static ManualResetEvent connectDone = 
+		new ManualResetEvent(false);
+	private static ManualResetEvent sendDone = 
+		new ManualResetEvent(false);
+	private static ManualResetEvent receiveDone = 
+		new ManualResetEvent(false);
 		// The response from the remote device.
 		private static String response = "";
+
+
+	// Use this for initialization
+	void Start () {
+
+		loggedIn = false;									// Redundant, but I'll do it here anyway.
+		//StartClient ();
+
 		
+	}
+	
+	// Update is called once per frame
+	void Update () {
+
+		// Print a message once in the update loop indicating we are now logged in.
+		if (loggedIn && !logMessage) {
+			print("You are logged in!");
+			logMessage = true;
+		}
+
+		if (!loggedIn) {
+			//print("You are NOT LOGGED IN");
+		}
+			
+
+	}
+
+
+	// We have this method called when the user hits "login" on the client window. 
+	// The method is given an object array that has two values - username and password.
+	// It then searches it up in the DB.
+	public void handleLogIn(String[] login){
+
+		// Handle the parameters.
+		String user = login [0];
+		String pass = login [1];
+
+		print ("yay!");
+		// Pass to the database here...
+
+		// Return confirm message on success.
+		// TODO: IMPLEMENT DATABASE
+		if (true) {
+			userDisplayName = login[0];
+			print ("Confirmed! Logging in...");
+			StartClient();
+		}
+
+		print ("Incorrect! Not logging in...");
+	}
 		private static void StartClient() {
+
+		print ("Starting connection. Connection!");
 			// Connect to a remote device.
 
 			try {
 				// Establish the remote endpoint for the socket.
 				// The name of the 
 				// remote device is "host.contoso.com".
-			string iNeedanAddress = "174.77.35.116";
-			print ("Starting connection. connection: " + iNeedanAddress);
-
-			IPHostEntry ipHostInfo = Dns.GetHostEntry(iNeedanAddress);
+			// This is hard coded in for now.
+			string address = "174.77.35.116";
+			print ("Starting connection. Connection: " + address);
+		
+			IPHostEntry ipHostInfo = Dns.GetHostEntry(address);
 			// print ("Starting connection. connection: " + iNeedanAddress);
 
 				// IPHostEntry ipHostInfo = Dns.Resolve("host.contoso.com");
 				IPAddress ipAddress = ipHostInfo.AddressList[0];
 				IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
-			print ("Starting connection");
 
 				// Create a TCP/IP socket.
 				Socket client = new Socket(AddressFamily.InterNetwork,
 				                           SocketType.Stream, ProtocolType.Tcp);
 				
-			print ("Starting connection");
 
 				// Connect to the remote endpoint.
 				client.BeginConnect( remoteEP, 
 				                    new AsyncCallback(ConnectCallback), client);
 				connectDone.WaitOne();
 
-			print ("Starting connection");
+
+
+			print ("Connected to server! Welcome.");
+				loggedIn = true;
 
 				
 				// Send test data to the remote device.
-				Send(client,"This is a test<EOF>");
+			Send(client,"Player [" + userDisplayName + "] says: This is a test! Hello, server.<EOF>");
+			// YOU NEED TO END IT WITH <EOF> OMG.
+			//Send(client,"This is a test<EOF>");
 				sendDone.WaitOne();
 				
 				// Receive the response from the remote device.
@@ -70,6 +127,8 @@ public class ClientConnection : MonoBehaviour {
 				// Release the socket.
 				client.Shutdown(SocketShutdown.Both);
 				client.Close();
+
+				print("Client closed connection");
 				
 			} catch (Exception e) {
 				print(e.ToString());
@@ -163,6 +222,7 @@ public class ClientConnection : MonoBehaviour {
 			}
 		}
 
+	// State object for receiving data from remote device.
 	public class StateObject {
 		// Client socket.
 		public Socket workSocket = null;
@@ -174,18 +234,6 @@ public class ClientConnection : MonoBehaviour {
 		public StringBuilder sb = new StringBuilder();
 	}
 
-	// Use this for initialization
-	void Start () {
-		print ("Connecting to server..");
-		StartClient ();
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-
-		
-	}
 	
 
 }

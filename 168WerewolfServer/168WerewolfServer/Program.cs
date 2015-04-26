@@ -14,6 +14,13 @@ namespace _168WerewolfServer
 
     // https://msdn.microsoft.com/en-us/vstudio/aa496123
     // Below Code is from https://msdn.microsoft.com/en-us/library/fx6588te%28v=vs.110%29.aspx
+    using System;
+    using System.Net;
+    using System.Net.Sockets;
+    using System.Text;
+    using System.Threading;
+
+    // State object for reading client data asynchronously
     public class StateObject
     {
         // Client  socket.
@@ -25,7 +32,6 @@ namespace _168WerewolfServer
         // Received data string.
         public StringBuilder sb = new StringBuilder();
     }
-
 
     public class AsynchronousSocketListener
     {
@@ -177,4 +183,5 @@ namespace _168WerewolfServer
             return 0;
         }
     }
+
 }
