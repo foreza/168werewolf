@@ -11,7 +11,7 @@ public class LoginForm : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 	
-		loginPackage = new string[2];
+		loginPackage = new string[3];
 		handler = GameObject.Find ("SceneHandler");
 
 	}
@@ -24,7 +24,7 @@ public class LoginForm : MonoBehaviour {
 	public void getUserName()
 	{
 		InputField s = GameObject.Find ("Username").GetComponent<InputField> ();
-		print ("You typed in: " + s.text);
+		print ("User: You typed in: " + s.text);
 		loginPackage [0] = s.text;
 
 	}
@@ -32,14 +32,22 @@ public class LoginForm : MonoBehaviour {
 	public void getPassword()
 	{
 		InputField s = GameObject.Find ("Password").GetComponent<InputField> ();
-		print ("You typed in: " + s.text);
+		print ("Pass: You typed in: " + s.text);
 		loginPackage [1] = s.text;
 	}
+
+	public void getMyIP()
+	{
+		InputField s = GameObject.Find ("IpAddress").GetComponent<InputField> ();
+		print ("IP: You typed in: " + s.text);
+		loginPackage [2] = s.text;
+	}
+
 
 	public void submitForm()
 	{
 		// Access the reference to the handler and calls the function
-		print ("Submitting to server: " + loginPackage [0] + " " + loginPackage [1]);
+		print ("Submitting to server: " + loginPackage [0] + " " + loginPackage [1] + " to IP: " + loginPackage[2]);
 		handler.SendMessage ("handleLogIn", loginPackage);
 		print ("Submitted");
 
