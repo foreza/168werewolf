@@ -46,8 +46,8 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scenes\ClientConnection.cs" />
      <Compile Include="Assets\Scripts\ButtonHandler.cs" />
+     <Compile Include="Assets\Scripts\ClientConnection.cs" />
      <Compile Include="Assets\Scripts\FogOfWar.cs" />
      <Compile Include="Assets\Scripts\GameEndHandler.cs" />
      <Compile Include="Assets\Scripts\HavenWin.cs" />
