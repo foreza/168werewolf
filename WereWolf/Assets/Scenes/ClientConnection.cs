@@ -14,7 +14,8 @@ public class ClientConnection : MonoBehaviour {
 		public bool logMessage = false;
 		public static string userDisplayName;
 		private const int port = 11000;						// The port number for the remote device.
-
+		// private static bool connectToServer = false;	
+		public static string address = "174.77.35.116";
 		
 	// ManualResetEvent instances signal completion.
 	private static ManualResetEvent connectDone = 
@@ -25,8 +26,7 @@ public class ClientConnection : MonoBehaviour {
 		new ManualResetEvent(false);
 		// The response from the remote device.
 		private static String response = "";
-
-
+	
 	// Use this for initialization
 	void Start () {
 
@@ -61,6 +61,7 @@ public class ClientConnection : MonoBehaviour {
 		// Handle the parameters.
 		String user = login [0];
 		String pass = login [1];
+		address = login [2];
 
 		print ("yay!");
 		// Pass to the database here...
@@ -70,27 +71,30 @@ public class ClientConnection : MonoBehaviour {
 		if (true) {
 			userDisplayName = login[0];
 			print ("Confirmed! Logging in...");
-			StartClient();
+			StartCoroutine(StartClient());
 		}
 
 		print ("Incorrect! Not logging in...");
 	}
-		private static void StartClient() {
-
-		print ("Starting connection. Connection!");
+	IEnumerator StartClient() {
 			// Connect to a remote device.
-
 			try {
 				// Establish the remote endpoint for the socket.
 				// The name of the 
 				// remote device is "host.contoso.com".
 			// This is hard coded in for now.
+<<<<<<< HEAD
 			//string address = "174.77.35.116"; //Jason's hardcoded IP
                 string address = "169.234.54.128"; //Connor's hardcoded IP
+=======
+>>>>>>> 358ca0ddb28b8e6e086dcad42f6f1b83ab0b49b3
 			print ("Starting connection. Connection: " + address);
 		
 			IPHostEntry ipHostInfo = Dns.GetHostEntry(address);
 			// print ("Starting connection. connection: " + iNeedanAddress);
+
+			// This is where the client will hang if it can't get the DNS host entry.
+			//TODO: Have a way for the client to "safe fail" out of the state.
 
 				// IPHostEntry ipHostInfo = Dns.Resolve("host.contoso.com");
 				IPAddress ipAddress = ipHostInfo.AddressList[0];
@@ -133,8 +137,13 @@ public class ClientConnection : MonoBehaviour {
 				
 			} catch (Exception e) {
 				print(e.ToString());
+			print ("FAILED HERE1");
+			Application.Quit();
+
 			}
-		}
+
+		yield return new WaitForSeconds(1);
+	}
 		
 		private static void ConnectCallback(IAsyncResult ar) {
 			try {
@@ -151,6 +160,9 @@ public class ClientConnection : MonoBehaviour {
 				connectDone.Set();
 			} catch (Exception e) {
 				print(e.ToString());
+			print ("FAILED HERE2");
+			Application.Quit();
+
 			}
 		}
 		
@@ -165,6 +177,8 @@ public class ClientConnection : MonoBehaviour {
 				                    new AsyncCallback(ReceiveCallback), state);
 			} catch (Exception e) {
 				print(e.ToString());
+			print ("FAILED HERE3");
+			Application.Quit();
 			}
 		}
 		
@@ -195,6 +209,8 @@ public class ClientConnection : MonoBehaviour {
 				}
 			} catch (Exception e) {
 				print(e.ToString());
+			print ("FAILED HERE4");
+			Application.Quit();
 			}
 		}
 		
@@ -220,6 +236,8 @@ public class ClientConnection : MonoBehaviour {
 				sendDone.Set();
 			} catch (Exception e) {
 				print(e.ToString());
+				print ("FAILED HERE5");
+				Application.Quit();
 			}
 		}
 
