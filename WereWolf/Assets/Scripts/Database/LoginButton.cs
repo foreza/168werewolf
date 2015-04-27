@@ -3,16 +3,16 @@ using System.Collections;
 
 
 public class LoginButton : MonoBehaviour {
-    dbAccess db = new dbAccess();
-    public string DBName = "TEST.db";
-    public string TableName = "LOGINS";
-    public UnityEngine.UI.InputField un;
-    public UnityEngine.UI.InputField pw;
-    public UnityEngine.UI.Text title;
+    dbAccess db = new dbAccess(); //database object
+    public string DBName = "Database.db"; //name of database
+    public string TableName = "LOGINS"; //name of login table
+    public UnityEngine.UI.InputField un; //username from input field
+    public UnityEngine.UI.InputField pw; //password from input field
+    public UnityEngine.UI.Text title; //text title for editing
     
 
     void Awake() {
-        db.OpenDB(TableName);
+        db.OpenDB(TableName); //open table
         ArrayList columnNames = new ArrayList();
         columnNames.Add("usernames"); columnNames.Add("passwords");
         ArrayList columnValues = new ArrayList();
