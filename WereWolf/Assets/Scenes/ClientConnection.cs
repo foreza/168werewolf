@@ -83,11 +83,9 @@ public class ClientConnection : MonoBehaviour {
 				// The name of the 
 				// remote device is "host.contoso.com".
 			// This is hard coded in for now.
-<<<<<<< HEAD
+
 			//string address = "174.77.35.116"; //Jason's hardcoded IP
                 string address = "169.234.54.128"; //Connor's hardcoded IP
-=======
->>>>>>> 358ca0ddb28b8e6e086dcad42f6f1b83ab0b49b3
 			print ("Starting connection. Connection: " + address);
 		
 			IPHostEntry ipHostInfo = Dns.GetHostEntry(address);
