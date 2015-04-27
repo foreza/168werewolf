@@ -13,6 +13,8 @@ public class LoginButton : MonoBehaviour {
 	public string un;
 	public string pw;
 
+    public GameObject frowny;
+
     
 
     void Awake() {
@@ -63,6 +65,8 @@ public class LoginButton : MonoBehaviour {
 			print ("Welcome back, friend!");
 			SendMessage("AcceptLogin");
         }
+        Debug.Log("Load new scene");
+        Application.LoadLevel(Scenes.TITLE);
     }
 
     void incorrectLogin() {
@@ -70,6 +74,7 @@ public class LoginButton : MonoBehaviour {
        // title.color = Color.red;
 		print ("DIE INSECT!");
 		SendMessage("RejectLogin");
+        frowny.SetActive(true);
     }
 
 	public void AccessDB(string [] log){
