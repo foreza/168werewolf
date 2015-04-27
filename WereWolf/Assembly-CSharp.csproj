@@ -52,6 +52,7 @@
      <Compile Include="Assets\Scripts\GameEndHandler.cs" />
      <Compile Include="Assets\Scripts\HavenWin.cs" />
      <Compile Include="Assets\Scripts\Interactable.cs" />
+     <Compile Include="Assets\Scripts\LoginButton.cs" />
      <Compile Include="Assets\Scripts\LoginForm.cs" />
      <Compile Include="Assets\Scripts\Objectives.cs" />
      <Compile Include="Assets\Scripts\PlayerController.cs" />
@@ -66,8 +67,15 @@
      <Compile Include="Assets\Scripts\TrapTrigger.cs" />
      <Compile Include="Assets\Scripts\WereWolfSpawner.cs" />
      <Compile Include="Assets\Scripts\WerewolfAI.cs" />
+     <Compile Include="Assets\Scripts\dbAccess.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
+ </Reference>
+ <Reference Include="Mono.Data.SqliteClient">
+ <HintPath>C:/EviesTablet/SchoolStuff/ICS168/168werewolf/WereWolf/Assets/Plugins/Mono.Data.SqliteClient.dll</HintPath>
+ </Reference>
+ <Reference Include="System.Data">
+ <HintPath>C:/EviesTablet/SchoolStuff/ICS168/168werewolf/WereWolf/Assets/Plugins/System.Data.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.iOS.Extensions.Xcode">
  <HintPath>C:/Program Files/Unity/Editor/Data/PlaybackEngines/iossupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
