@@ -37,6 +37,7 @@ public class dbAccess {
         dbcmd.CommandText = query;
         reader = dbcmd.ExecuteReader();
         DataTable toReturn = reader.GetSchemaTable();
+		Debug.Log("ReadFullTable");
         return toReturn;
     }
 
@@ -58,6 +59,8 @@ public class dbAccess {
         dbcmd = dbcon.CreateCommand(); // create empty command
         dbcmd.CommandText = query; // fill the command
         reader = dbcmd.ExecuteReader(); // execute command which returns a reader
+
+	Debug.Log ("Table created!");
     }
 
     public void InsertIntoSingle(string tableName, string colName, string value) { // single insert 
@@ -65,6 +68,7 @@ public class dbAccess {
         dbcmd = dbcon.CreateCommand(); // create empty command
         dbcmd.CommandText = query; // fill the command
         reader = dbcmd.ExecuteReader(); // execute command which returns a reader
+		Debug.Log("InsertIntoSingle");
     }
 
     public void InsertIntoSpecific(string tableName, ArrayList col, ArrayList values) { // Specific insert with col and values
@@ -80,6 +84,7 @@ public class dbAccess {
         dbcmd = dbcon.CreateCommand();
         dbcmd.CommandText = query; 
         reader = dbcmd.ExecuteReader();
+		Debug.Log("InsertIntoSpecific");
     }
 
     public void InsertInto(string tableName, ArrayList values) { // basic Insert with just values
@@ -91,6 +96,7 @@ public class dbAccess {
         dbcmd = dbcon.CreateCommand();
         dbcmd.CommandText = query; 
         reader = dbcmd.ExecuteReader(); 
+		Debug.Log("InsertInto");
     }
 
     // This function reads a single column
@@ -119,5 +125,6 @@ public class dbAccess {
         dbcmd = null;
         dbcon.Close();
         dbcon = null;
+		Debug.Log("CloseDB");
     }
 }

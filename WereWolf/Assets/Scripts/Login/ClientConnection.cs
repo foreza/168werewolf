@@ -52,7 +52,18 @@ public class ClientConnection : MonoBehaviour {
 
 	}
 
+	public void AcceptLogin()
+	{
+		print ("Confirmed! Logging in...");
+		StartCoroutine(StartClient());
+		
+	}
 
+	public void RejectLogin()
+	{
+		print ("Your password is incorrect! Try again...");
+	}
+	
 	// We have this method called when the user hits "login" on the client window. 
 	// The method is given an object array that has two values - username and password.
 	// It then searches it up in the DB.
@@ -62,20 +73,16 @@ public class ClientConnection : MonoBehaviour {
 		String user = login [0];
 		String pass = login [1];
 		address = login [2];
-
-		print ("yay!");
+		
 		// Pass to the database here...
 
-		// Return confirm message on success.
-		// TODO: IMPLEMENT DATABASE
-		if (true) {
-			userDisplayName = login[0];
-			print ("Confirmed! Logging in...");
-			StartCoroutine(StartClient());
-		}
+		print (login [0]);
 
-		print ("Incorrect! Not logging in...");
+		SendMessage ("AccessDB", login);
+		//userDisplayName = login[0];
 	}
+
+
 	IEnumerator StartClient() {
 			// Connect to a remote device.
 			try {
