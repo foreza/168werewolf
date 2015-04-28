@@ -4,7 +4,7 @@ using System.Collections;
 public class Scenes : MonoBehaviour 
 {
     //For testing! CURRENTLY SHARED; DANGEROUS
-    public const string TESTSCENE = "TestScene";
+    public const string GAMELEVEL = "GameLevel";
 
     //Connor's Scene for testing
     public const string CONNORSCENE = "ConnorScene";
@@ -17,4 +17,7 @@ public class Scenes : MonoBehaviour
 
     //Victory Screen
     public const string VICTORY = "Victory";
+
+    //Login Screen
+    public const string LOGIN = "LoginScreen";
 }
