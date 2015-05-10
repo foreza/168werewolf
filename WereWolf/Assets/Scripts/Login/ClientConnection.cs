@@ -9,6 +9,15 @@ using System.Text;
 
 public class ClientConnection : MonoBehaviour {
 
+<<<<<<< HEAD
+=======
+		// The playerID will be given by the server, based on the current number of logins. 
+		public static int playerID;
+
+
+		public static bool loggedIn = false;						// We are not logged in at the start.
+		public bool logMessage = false;
+>>>>>>> 3bdd8fb03a884046f7644b5d19a5df3562ae7bc2
 		public static string userDisplayName;
 		private const int port = 11000;						// The port number for the remote device.
 		// private static bool connectToServer = false;	
@@ -31,7 +40,42 @@ public class ClientConnection : MonoBehaviour {
             responseHandler = GameObject.Find("ResponseHandler");
         }
 
+<<<<<<< HEAD
 	IEnumerator StartClient(string[] LoginPackage) {
+=======
+	public void AcceptLogin()
+	{
+		print ("Confirmed! Logging in...");
+		StartCoroutine(StartClient());
+		
+	}
+
+	public void RejectLogin()
+	{
+		print ("Your password is incorrect! Try again...");
+	}
+	
+	// We have this method called when the user hits "login" on the client window. 
+	// The method is given an object array that has two values - username and password.
+	// It then searches it up in the DB.
+	public void handleLogIn(String[] login){
+
+		// Handle the parameters.
+		String user = login [0];
+		String pass = login [1];
+		address = login [2];
+		
+		// Pass to the database here...
+
+		print (login [0]);
+
+		SendMessage ("AccessDB", login);
+		userDisplayName = login[0];
+	}
+
+
+	IEnumerator StartClient() {
+>>>>>>> 3bdd8fb03a884046f7644b5d19a5df3562ae7bc2
 			// Connect to a remote device.
 			try {
                 address = LoginPackage[2];
@@ -63,6 +107,14 @@ public class ClientConnection : MonoBehaviour {
 				client.BeginConnect( remoteEP, 
 				                    new AsyncCallback(ConnectCallback), client);
 				connectDone.WaitOne(5000);
+<<<<<<< HEAD
+=======
+
+
+
+			print ("Connected to server! Welcome.");
+				loggedIn = true;
+>>>>>>> 3bdd8fb03a884046f7644b5d19a5df3562ae7bc2
 
 				
 				// Send test data to the remote device.
@@ -85,7 +137,11 @@ public class ClientConnection : MonoBehaviour {
 				
 			} catch (Exception e) {
 				print(e.ToString());
+<<<<<<< HEAD
 			print ("FAILED TO CONNECT");
+=======
+
+>>>>>>> 3bdd8fb03a884046f7644b5d19a5df3562ae7bc2
 			Application.Quit();
 
 			}

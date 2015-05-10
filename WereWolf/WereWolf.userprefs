@@ -2,10 +2,12 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Login\ClientConnection.cs">
     <Files>
-      <File FileName="Assets\Scripts\Database\dbAccess.cs" Line="87" Column="35" />
-      <File FileName="Assets\Scripts\Database\LoginButton.cs" Line="83" Column="22" />
-      <File FileName="Assets\Scripts\Login\ClientConnection.cs" Line="68" Column="50" />
-      <File FileName="Assets\Scripts\Login\LoginForm.cs" Line="33" Column="3" />
+      <File FileName="Assets\Scripts\Database\LoginButton.cs" Line="14" Column="19" />
+      <File FileName="Assets\Scripts\Login\ClientConnection.cs" Line="139" Column="5" />
+      <File FileName="Assets\Scripts\Login\LoginForm.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\StartScreen\ButtonHandler.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Game\SceneTransition.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Game\Scenes.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
