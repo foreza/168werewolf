@@ -66,7 +66,7 @@ public class LoginButton : MonoBehaviour {
 			SendMessage("AcceptLogin");
         }
         Debug.Log("Load new scene");
-        Application.LoadLevel(Scenes.TITLE);
+        //Application.LoadLevel(Scenes.TITLE);
     }
 
     void incorrectLogin() {

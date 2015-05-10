@@ -9,6 +9,9 @@ using System.Text;
 
 public class ClientConnection : MonoBehaviour {
 
+		// The playerID will be given by the server, based on the current number of logins. 
+		public static int playerID;
+
 
 		public static bool loggedIn = false;						// We are not logged in at the start.
 		public bool logMessage = false;
@@ -79,7 +82,7 @@ public class ClientConnection : MonoBehaviour {
 		print (login [0]);
 
 		SendMessage ("AccessDB", login);
-		//userDisplayName = login[0];
+		userDisplayName = login[0];
 	}
 
 
@@ -113,7 +116,7 @@ public class ClientConnection : MonoBehaviour {
 				// Connect to the remote endpoint.
 				client.BeginConnect( remoteEP, 
 				                    new AsyncCallback(ConnectCallback), client);
-				connectDone.WaitOne();
+				connectDone.WaitOne(5000);
 
 
 
@@ -142,7 +145,7 @@ public class ClientConnection : MonoBehaviour {
 				
 			} catch (Exception e) {
 				print(e.ToString());
-			print ("FAILED HERE1");
+
 			Application.Quit();
 
 			}
