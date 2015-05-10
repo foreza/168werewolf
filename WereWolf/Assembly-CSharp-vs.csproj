@@ -48,6 +48,7 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\Database\LoginButton.cs" />
      <Compile Include="Assets\Scripts\Database\dbAccess.cs" />
+     <Compile Include="Assets\Scripts\Game\Escape.cs" />
      <Compile Include="Assets\Scripts\Game\FogOfWar.cs" />
      <Compile Include="Assets\Scripts\Game\GameEndHandler.cs" />
      <Compile Include="Assets\Scripts\Game\HavenWin.cs" />
