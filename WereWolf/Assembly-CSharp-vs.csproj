@@ -48,6 +48,7 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\Database\LoginButton.cs" />
      <Compile Include="Assets\Scripts\Database\dbAccess.cs" />
+     <Compile Include="Assets\Scripts\Game\Escape.cs" />
      <Compile Include="Assets\Scripts\Game\FogOfWar.cs" />
      <Compile Include="Assets\Scripts\Game\GameEndHandler.cs" />
      <Compile Include="Assets\Scripts\Game\HavenWin.cs" />
@@ -66,15 +67,16 @@
      <Compile Include="Assets\Scripts\Game\WerewolfAI.cs" />
      <Compile Include="Assets\Scripts\Login\ClientConnection.cs" />
      <Compile Include="Assets\Scripts\Login\LoginForm.cs" />
+     <Compile Include="Assets\Scripts\Login\ResponseHandler.cs" />
      <Compile Include="Assets\Scripts\StartScreen\ButtonHandler.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="Mono.Data.SqliteClient">
- <HintPath>C:/Users/Connor/Documents/School/ICS 168/168werewolf/WereWolf/Assets/Plugins/Mono.Data.SqliteClient.dll</HintPath>
+ <HintPath>C:/EviesTablet/SchoolStuff/ICS168/168werewolf/WereWolf/Assets/Plugins/Mono.Data.SqliteClient.dll</HintPath>
  </Reference>
  <Reference Include="System.Data">
- <HintPath>C:/Users/Connor/Documents/School/ICS 168/168werewolf/WereWolf/Assets/Plugins/System.Data.dll</HintPath>
+ <HintPath>C:/EviesTablet/SchoolStuff/ICS168/168werewolf/WereWolf/Assets/Plugins/System.Data.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.iOS.Extensions.Xcode">
  <HintPath>C:/Program Files/Unity/Editor/Data/PlaybackEngines/iossupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>

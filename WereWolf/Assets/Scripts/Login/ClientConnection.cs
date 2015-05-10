@@ -9,13 +9,11 @@ using System.Text;
 
 public class ClientConnection : MonoBehaviour {
 
-
-		public static bool loggedIn = false;						// We are not logged in at the start.
-		public bool logMessage = false;
 		public static string userDisplayName;
 		private const int port = 11000;						// The port number for the remote device.
 		// private static bool connectToServer = false;	
-		public static string address = "174.77.35.116";
+		public static string address = "169.234.59.242";
+        private Socket client;
 		
 	// ManualResetEvent instances signal completion.
 	private static ManualResetEvent connectDone = 
@@ -26,66 +24,17 @@ public class ClientConnection : MonoBehaviour {
 		new ManualResetEvent(false);
 		// The response from the remote device.
 		private static String response = "";
-	
-	// Use this for initialization
-	void Start () {
 
-		loggedIn = false;									// Redundant, but I'll do it here anyway.
-		//StartClient ();
+        GameObject responseHandler;
 
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
+        void Start() {
+            responseHandler = GameObject.Find("ResponseHandler");
+        }
 
-		// Print a message once in the update loop indicating we are now logged in.
-		if (loggedIn && !logMessage) {
-			print("You are logged in!");
-			logMessage = true;
-		}
-
-		if (!loggedIn) {
-			//print("You are NOT LOGGED IN");
-		}
-			
-
-	}
-
-	public void AcceptLogin()
-	{
-		print ("Confirmed! Logging in...");
-		StartCoroutine(StartClient());
-		
-	}
-
-	public void RejectLogin()
-	{
-		print ("Your password is incorrect! Try again...");
-	}
-	
-	// We have this method called when the user hits "login" on the client window. 
-	// The method is given an object array that has two values - username and password.
-	// It then searches it up in the DB.
-	public void handleLogIn(String[] login){
-
-		// Handle the parameters.
-		String user = login [0];
-		String pass = login [1];
-		address = login [2];
-		
-		// Pass to the database here...
-
-		print (login [0]);
-
-		SendMessage ("AccessDB", login);
-		//userDisplayName = login[0];
-	}
-
-
-	IEnumerator StartClient() {
+	IEnumerator StartClient(string[] LoginPackage) {
 			// Connect to a remote device.
 			try {
+                address = LoginPackage[2];
 				// Establish the remote endpoint for the socket.
 				// The name of the 
 				// remote device is "host.contoso.com".
@@ -106,49 +55,65 @@ public class ClientConnection : MonoBehaviour {
 				IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
 
 				// Create a TCP/IP socket.
-				Socket client = new Socket(AddressFamily.InterNetwork,
+				client = new Socket(AddressFamily.InterNetwork,
 				                           SocketType.Stream, ProtocolType.Tcp);
 				
 
 				// Connect to the remote endpoint.
 				client.BeginConnect( remoteEP, 
 				                    new AsyncCallback(ConnectCallback), client);
-				connectDone.WaitOne();
-
-
-
-			print ("Connected to server! Welcome.");
-				loggedIn = true;
+				connectDone.WaitOne(5000);
 
 				
 				// Send test data to the remote device.
-			Send(client,"Player [" + userDisplayName + "] says: This is a test! Hello, server.<EOF>");
+                Send(client, "<login>:" + LoginPackage[0] + ":" + LoginPackage[1] + ":<EOF>");
+			//Send(client,"Player [" + userDisplayName + "] says: This is a test! Hello, server.:<EOF>");
+
 			// YOU NEED TO END IT WITH <EOF> OMG.
 			//Send(client,"This is a test<EOF>");
-				sendDone.WaitOne();
+				sendDone.WaitOne(5000);
 				
 				// Receive the response from the remote device.
 				Receive(client);
-				receiveDone.WaitOne();
+				receiveDone.WaitOne(5000);
 				
 				// Write the response to the console.
-				print("Response received : {0}" + response);
-				
-				// Release the socket.
-				client.Shutdown(SocketShutdown.Both);
-				client.Close();
+				print("Response received : {0}" + response.ToString());
+                // Handle the response
+                responseHandler.SendMessage("HandleResponse", response);
 
-				print("Client closed connection");
 				
 			} catch (Exception e) {
 				print(e.ToString());
-			print ("FAILED HERE1");
+			print ("FAILED TO CONNECT");
 			Application.Quit();
 
 			}
 
 		yield return new WaitForSeconds(1);
 	}
+
+    IEnumerator CloseClient() {
+        // Connect to a remote device.
+        try {
+            // Release the socket.
+            print("Closing client connection...");
+            Send(client, "Goodbye!<EOF>");
+            client.Shutdown(SocketShutdown.Both);
+            client.Close();
+
+            print("Client closed connection");
+
+        }
+        catch (Exception e) {
+            print(e.ToString());
+            print("FAILED TO CLOSE");
+            Application.Quit();
+
+        }
+
+        yield return new WaitForSeconds(1);
+    }
 		
 		private static void ConnectCallback(IAsyncResult ar) {
 			try {
@@ -163,9 +128,10 @@ public class ClientConnection : MonoBehaviour {
 				
 				// Signal that the connection has been made.
 				connectDone.Set();
+                print("Connected to server! Welcome.");
 			} catch (Exception e) {
 				print(e.ToString());
-			print ("FAILED HERE2");
+			print ("FAILED IN CONNECTCALLBACK");
 			Application.Quit();
 
 			}
@@ -182,7 +148,7 @@ public class ClientConnection : MonoBehaviour {
 				                    new AsyncCallback(ReceiveCallback), state);
 			} catch (Exception e) {
 				print(e.ToString());
-			print ("FAILED HERE3");
+			print ("FAILED TO RECEIVE");
 			Application.Quit();
 			}
 		}
@@ -196,7 +162,7 @@ public class ClientConnection : MonoBehaviour {
 				
 				// Read data from the remote device.
 				int bytesRead = client.EndReceive(ar);
-				
+
 				if (bytesRead > 0) {
 					// There might be more data, so store the data received so far.
 					state.sb.Append(Encoding.ASCII.GetString(state.buffer,0,bytesRead));
@@ -204,6 +170,7 @@ public class ClientConnection : MonoBehaviour {
 					// Get the rest of the data.
 					client.BeginReceive(state.buffer,0,StateObject.BufferSize,0,
 					                    new AsyncCallback(ReceiveCallback), state);
+                    response = state.sb.ToString();
 				} else {
 					// All the data has arrived; put it in response.
 					if (state.sb.Length > 1) {
@@ -214,34 +181,41 @@ public class ClientConnection : MonoBehaviour {
 				}
 			} catch (Exception e) {
 				print(e.ToString());
-			print ("FAILED HERE4");
+			print ("FAILED TO RECEIVE CALLBACK");
 			Application.Quit();
 			}
 		}
 		
 		private static void Send(Socket client, String data) {
-			// Convert the string data to byte data using ASCII encoding.
-			byte[] byteData = Encoding.ASCII.GetBytes(data);
-			
-			// Begin sending the data to the remote device.
-			client.BeginSend(byteData, 0, byteData.Length, 0,
-			                 new AsyncCallback(SendCallback), client);
+            try {
+                // Convert the string data to byte data using ASCII encoding.
+                byte[] byteData = Encoding.ASCII.GetBytes(data);
+
+                // Begin sending the data to the remote device.
+                client.BeginSend(byteData, 0, byteData.Length, 0,
+                                 new AsyncCallback(SendCallback), client);
+            }
+            catch (Exception e) {
+                print("FAILED TO SEND");
+                Application.Quit();
+            }
 		}
 		
 		private static void SendCallback(IAsyncResult ar) {
 			try {
 				// Retrieve the socket from the state object.
-				Socket client = (Socket) ar.AsyncState;
-				
+				Socket clientTemp = (Socket) ar.AsyncState;
+
 				// Complete sending the data to the remote device.
-				int bytesSent = client.EndSend(ar);
+				int bytesSent = clientTemp.EndSend(ar);
+
 				print("Sent {0} bytes to server." + bytesSent);
-				
 				// Signal that all bytes have been sent.
 				sendDone.Set();
+
 			} catch (Exception e) {
 				print(e.ToString());
-				print ("FAILED HERE5");
+				print ("FAILED TO SEND CALLBACK");
 				Application.Quit();
 			}
 		}

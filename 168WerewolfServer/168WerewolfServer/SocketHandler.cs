@@ -35,6 +35,33 @@ namespace _168WerewolfServer
 
     public class AsynchronousSocketListener
     {
+
+        static public string HandleInput(string data) {
+            string response;
+            string[] inputs = data.Split(':');
+            try {
+                if (inputs[0] == "<login>") {
+                    LoginHandler lc = new LoginHandler();
+                    string[] loginPackage = new string[] { inputs[1], inputs[2] };
+                    //Determines whether login is correct.
+                    lc.StartDatabase();
+                    response = lc.AccessDB(loginPackage);
+                    lc.CloseDatabase();
+                }
+                else {
+                    Console.WriteLine(data);
+                    response = data;
+                }
+            }
+            catch (IndexOutOfRangeException e) {
+                Console.WriteLine("Indexing was messed up somehow. Did you put the wrong prefix on?");
+                response = "error";
+            }
+            return response;
+        }
+        
+        
+        
         // Thread signal.
         public static ManualResetEvent allDone = new ManualResetEvent(false);
 
@@ -115,6 +142,8 @@ namespace _168WerewolfServer
             StateObject state = (StateObject)ar.AsyncState;
             Socket handler = state.workSocket;
 
+            Console.WriteLine("Receiving data...");
+
             // Read data from the client socket. 
             int bytesRead = handler.EndReceive(ar);
 
@@ -133,8 +162,10 @@ namespace _168WerewolfServer
                     // client. Display it on the console.
                     Console.WriteLine("Read {0} bytes from socket. \n Data : {1}",
                         content.Length, content);
-                    // Echo the data back to the client.
-                    Send(handler, content);
+                    //Decide what to send back based on what was received
+                    string response = HandleInput(content);
+                    // Send designated response.
+                    Send(handler, response);
                 }
                 else
                 {
@@ -145,8 +176,10 @@ namespace _168WerewolfServer
             }
         }
 
+
         private static void Send(Socket handler, String data)
         {
+            Console.WriteLine("Sending: " + data);
             // Convert the string data to byte data using ASCII encoding.
             byte[] byteData = Encoding.ASCII.GetBytes(data);
 
@@ -166,8 +199,8 @@ namespace _168WerewolfServer
                 int bytesSent = handler.EndSend(ar);
                 Console.WriteLine("Sent {0} bytes to client.", bytesSent);
 
-                handler.Shutdown(SocketShutdown.Both);
-                handler.Close();
+                //handler.Shutdown(SocketShutdown.Both);
+                //handler.Close();
 
             }
             catch (Exception e)
@@ -179,6 +212,7 @@ namespace _168WerewolfServer
 
         public static int Main(String[] args)
         {
+            
             StartListening();
             return 0;
         }
