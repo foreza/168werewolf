@@ -84,7 +84,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Class1.cs" />
     <Compile Include="dbAccess.cs" />
+    <Compile Include="GameServer.cs" />
     <Compile Include="LoginHandler.cs" />
     <Compile Include="SocketHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

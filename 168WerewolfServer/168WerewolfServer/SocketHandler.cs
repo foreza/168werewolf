@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -36,6 +37,13 @@ namespace _168WerewolfServer
     public class AsynchronousSocketListener
     {
 
+        public static Socket listener;
+
+        public AsynchronousSocketListener()
+        {
+        }
+
+
         static public string HandleInput(string data) {
             string response;
             string[] inputs = data.Split(':');
@@ -60,15 +68,17 @@ namespace _168WerewolfServer
             return response;
         }
         
+        public static void LobbyInitialize()
+        {
+            Console.WriteLine("Initialized lobby.");
+
+        }
         
         
         // Thread signal.
         public static ManualResetEvent allDone = new ManualResetEvent(false);
 
-        public AsynchronousSocketListener()
-        {
-        }
-
+    
         public static void StartListening()
         {
             // Data buffer for incoming data.
@@ -79,10 +89,10 @@ namespace _168WerewolfServer
             // running the listener is "host.contoso.com".
             IPHostEntry ipHostInfo = Dns.Resolve(Dns.GetHostName());
             IPAddress ipAddress = ipHostInfo.AddressList[0];
-            IPEndPoint localEndPoint = new IPEndPoint(ipAddress, 11000);
+            IPEndPoint localEndPoint = new IPEndPoint(ipAddress,9999);
 
             // Create a TCP/IP socket.
-            Socket listener = new Socket(AddressFamily.InterNetwork,
+            listener = new Socket(AddressFamily.InterNetwork,
                 SocketType.Stream, ProtocolType.Tcp);
 
             // Bind the socket to the local endpoint and listen for incoming connections.
@@ -98,12 +108,10 @@ namespace _168WerewolfServer
 
                     // Start an asynchronous socket to listen for connections.
                     Console.WriteLine("Waiting for a connection...");
-                    listener.BeginAccept(
-                        new AsyncCallback(AcceptCallback),
-                        listener);
+                    listener.BeginAccept( new AsyncCallback(AcceptCallback), listener);
 
-                    // Wait until a connection is made before continuing.
-                    allDone.WaitOne();
+                    // Wait 5s for a connection is made before continuing.
+                    allDone.WaitOne(5000);
                 }
 
             }
@@ -142,7 +150,7 @@ namespace _168WerewolfServer
             StateObject state = (StateObject)ar.AsyncState;
             Socket handler = state.workSocket;
 
-            Console.WriteLine("Receiving data...");
+            Console.WriteLine("Receiving data!");
 
             // Read data from the client socket. 
             int bytesRead = handler.EndReceive(ar);
@@ -160,10 +168,12 @@ namespace _168WerewolfServer
                 {
                     // All the data has been read from the 
                     // client. Display it on the console.
-                    Console.WriteLine("Read {0} bytes from socket. \n Data : {1}",
-                        content.Length, content);
+                    Console.WriteLine("Read {0} bytes from socket. \n Data : {1}", content.Length, content);
+
                     //Decide what to send back based on what was received
                     string response = HandleInput(content);
+
+
                     // Send designated response.
                     Send(handler, response);
                 }
@@ -210,12 +220,7 @@ namespace _168WerewolfServer
         }
 
 
-        public static int Main(String[] args)
-        {
-            
-            StartListening();
-            return 0;
-        }
+      
     }
 
 }
