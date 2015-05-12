@@ -10,7 +10,7 @@ using System.Text;
 public class ClientConnection : MonoBehaviour {
 
 		public static string userDisplayName;
-		private const int port = 11000;						// The port number for the remote device.
+		private const int port = 80;						// The port number for the remote device.
 		// private static bool connectToServer = false;	
 		public static string address = "169.234.59.242";
         private Socket client;
@@ -165,7 +165,7 @@ public class ClientConnection : MonoBehaviour {
 
 				if (bytesRead > 0) {
 					// There might be more data, so store the data received so far.
-					state.sb.Append(Encoding.ASCII.GetString(state.buffer,0,bytesRead));
+					state.sb.Append(Encoding.Unicode.GetString(state.buffer,0,bytesRead));
 					
 					// Get the rest of the data.
 					client.BeginReceive(state.buffer,0,StateObject.BufferSize,0,
@@ -185,11 +185,11 @@ public class ClientConnection : MonoBehaviour {
 			Application.Quit();
 			}
 		}
-		
+
 		private static void Send(Socket client, String data) {
             try {
                 // Convert the string data to byte data using ASCII encoding.
-                byte[] byteData = Encoding.ASCII.GetBytes(data);
+                byte[] byteData = Encoding.Unicode.GetBytes(data);
 
                 // Begin sending the data to the remote device.
                 client.BeginSend(byteData, 0, byteData.Length, 0,

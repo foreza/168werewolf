@@ -41,7 +41,7 @@ public class GameServer
         LoginThread.Start();
 
         Console.WriteLine("Lobby Server Active!");
-        LobbyThread.Start();
+       // LobbyThread.Start();
         
         
         

@@ -256,4 +256,19 @@ public class PlayerController : MonoBehaviour {
         Application.LoadLevel(Scenes.GAMEOVER); 
     }
 
+    public void setState(float x, float y)
+    {
+        GetComponent<Transform>().position = new Vector3(x, y, 0);
+    }
+
+    public humanState getState()
+    {
+        Transform myTransform = GetComponent<Transform>();
+        humanState human;
+        human.x = myTransform.position.x;
+        human.y = myTransform.position.y;
+        human.id = playerID;
+
+        return human;
+    }
 }

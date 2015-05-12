@@ -36,7 +36,7 @@ public class LoginForm : MonoBehaviour {
 		InputField s = GameObject.Find ("Password").GetComponent<InputField> ();
 		print ("Pass: You typed in: " + s.text);
         var hmacMD5 = new HMACMD5(salt); //Hashes Password using MD5 and salt.
-        loginPackage[1] = s.text;//GetString(hmacMD5.ComputeHash(GetBytes(s.text)));
+        loginPackage[1] = GetString(hmacMD5.ComputeHash(GetBytes(s.text)));
 	}
 
     static byte[] GetBytes(string str) { //Converts string to byte array
