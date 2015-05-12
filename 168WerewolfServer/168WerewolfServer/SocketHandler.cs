@@ -150,8 +150,7 @@ namespace _168WerewolfServer
             if (bytesRead > 0)
             {
                 // There  might be more data, so store the data received so far.
-                state.sb.Append(Encoding.ASCII.GetString(
-                    state.buffer, 0, bytesRead));
+                state.sb.Append(Encoding.Unicode.GetString(state.buffer));
 
                 // Check for end-of-file tag. If it is not there, read 
                 // more data.
@@ -180,8 +179,8 @@ namespace _168WerewolfServer
         private static void Send(Socket handler, String data)
         {
             Console.WriteLine("Sending: " + data);
-            // Convert the string data to byte data using ASCII encoding.
-            byte[] byteData = Encoding.ASCII.GetBytes(data);
+            // Convert the string data to byte data using Unicode encoding.
+            byte[] byteData = Encoding.Unicode.GetBytes(data);
 
             // Begin sending the data to the remote device.
             handler.BeginSend(byteData, 0, byteData.Length, 0,
