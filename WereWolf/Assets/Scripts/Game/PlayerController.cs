@@ -4,6 +4,8 @@ using System.Collections;
 public class PlayerController : MonoBehaviour {
 
     public bool sendDebugMessages = false;
+    public int playerID;
+
     public float speed;			// Set speed here.
 
 	Rigidbody2D thisBody;
