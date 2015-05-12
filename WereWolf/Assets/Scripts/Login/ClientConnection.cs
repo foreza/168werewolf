@@ -10,7 +10,7 @@ using System.Text;
 public class ClientConnection : MonoBehaviour {
 
 		public static string userDisplayName;
-		private const int port = 11000;						// The port number for the remote device.
+		private const int port = 80;						// The port number for the remote device.
 		// private static bool connectToServer = false;	
 		public static string address = "169.234.59.242";
         private Socket client;
