@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -37,10 +38,12 @@ namespace _168WerewolfServer
     public class AsynchronousSocketListener
     {
 
-        public static Socket listener;
+        public static Socket listener;              // The endpoint listener on the server.
+        public static Queue endPoints;              //  
 
         public AsynchronousSocketListener()
         {
+
         }
 
 
@@ -50,8 +53,9 @@ namespace _168WerewolfServer
             try {
                 if (inputs[0] == "<login>") {
                     LoginHandler lc = new LoginHandler();
-                    string[] loginPackage = new string[] { inputs[1], inputs[2] };
+                    string[] loginPackage = new string[] { inputs[1], inputs[2] }; //JASON! USE JSON! loginpackage = {'username':un,'password':pw}
                     //Determines whether login is correct.
+                    Console.WriteLine("Accessing Database for login");
                     lc.StartDatabase();
                     response = lc.AccessDB(loginPackage);
                     lc.CloseDatabase();
@@ -71,6 +75,39 @@ namespace _168WerewolfServer
         public static void LobbyInitialize()
         {
             Console.WriteLine("Initialized lobby.");
+            endPoints = new Queue();
+            allDone.WaitOne(2000);
+
+            while(true)
+            {
+
+                int lobbySize = endPoints.Count;
+
+                Console.WriteLine("Players in lobby: " + lobbySize);
+                allDone.WaitOne(1000);
+
+
+                if (lobbySize > 0)            // If there are endpoints to process
+                {
+                    Socket thePlayerEP = (Socket)endPoints.Dequeue();
+                    Console.WriteLine("Attempting to send message to this player with EP: " + thePlayerEP.LocalEndPoint);
+                    Send(thePlayerEP, "Currently in Lobby<EOF>");
+                    Console.WriteLine("Finished sending message to this player with EP: " + thePlayerEP.LocalEndPoint);
+
+                    endPoints.Enqueue(thePlayerEP);
+
+                    lobbySize--;
+
+                    Console.WriteLine("Moving into next player (if existing.");
+
+                }
+
+                Console.WriteLine("Processed all in queue. Restarting check...");
+                allDone.WaitOne(1000);
+
+
+
+            }
 
         }
         
@@ -111,7 +148,7 @@ namespace _168WerewolfServer
                     listener.BeginAccept( new AsyncCallback(AcceptCallback), listener);
 
                     // Wait 5s for a connection is made before continuing.
-                    allDone.WaitOne(5000);
+                    allDone.WaitOne();
                 }
 
             }
@@ -173,9 +210,18 @@ namespace _168WerewolfServer
                     //Decide what to send back based on what was received
                     string response = HandleInput(content);
 
+                    Console.WriteLine("Current response: " + response);
 
                     // Send designated response.
                     Send(handler, response);
+
+                    Console.WriteLine("Log in check deny??? " + response);
+
+                    if(response.Contains("Accepted"))
+                    {
+                        Console.WriteLine("Putting this player into the Lobby.");
+                        endPoints.Enqueue(handler);                                     // Places the player's endpoint into the queue for message sending.
+                    }
                 }
                 else
                 {

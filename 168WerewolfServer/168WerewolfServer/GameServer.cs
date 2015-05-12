@@ -31,7 +31,7 @@ public class GameServer
 
 
 
-    public static int Main(String[] args)
+    public static int Main(String[] args) 
     {
         // Initialize the threads with their proper methods.
         LoginThread = new Thread(AsynchronousSocketListener.StartListening);
