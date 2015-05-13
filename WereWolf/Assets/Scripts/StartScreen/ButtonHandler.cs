@@ -8,17 +8,24 @@ public class ButtonHandler : MonoBehaviour {
 
 	bool showInstruction;										// indicates whether instructions are showing
 	GameObject instructions;									// gets a reference to the instructions object
+	GameObject sceneHandler;
 
 	void Start () {
 
 		// showInstruction = false;								// Initialize as false
 		instructions = GameObject.Find("InstructionHelper");	// Save reference to the game object
+		sceneHandler = GameObject.Find ("SceneHandler");
 		hideInstruction ();										// Hide the instructions at start
 	
 	}
 
 	// Method that is run to start the game.
 	public void startGame()
+	{
+		sceneHandler.SendMessage ("StartGame");
+	}
+
+	public void confirmBeginGame()
 	{
 		Application.LoadLevel (Scenes.GAMELEVEL);					// Change the name of scene as necessary.
 	}

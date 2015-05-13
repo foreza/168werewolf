@@ -12,10 +12,12 @@ public class LobbyNetworking : MonoBehaviour {
 	// The port number for the remote lobby server.
 	private const int portLobby = 11001;
 
+	public static GameObject buttonHandler;
 	// A test integer so we can track the message numbers.
 	public static int test = 0;
 
 	void Start () {
+
 	}
 
 	void Update ()
@@ -38,7 +40,14 @@ public class LobbyNetworking : MonoBehaviour {
 
 	public void ConnectToLobby()
 	{
-		StartLobby ();
+		StartLobby ("joinLobby");
+
+	}
+
+	public void StartGame()
+	{
+		print ("Recieved message; starting game");
+		StartLobby ("joinGame");
 	}
 		
 		// ManualResetEvent instances signal completion.
@@ -52,7 +61,7 @@ public class LobbyNetworking : MonoBehaviour {
 		// The response from the remote device.
 	private static String responseLobby = String.Empty;
 		
-		private static void StartLobby() {
+		private static void StartLobby(String s) {
 			// Connect to a remote device.
 			try {
 				// Establish the remote endpoint for the socket.
@@ -75,8 +84,8 @@ public class LobbyNetworking : MonoBehaviour {
 				print ("Connected to lobby. Sending data.");
 
 				// Send test data to the remote device.
-			// Server will recieve "joinLobby" and will accept the request.
-			SendLobby(client,"joinLobby<EOF>");
+			// Server will recieve "joinLobby or joinGame" and will accept the request.
+			SendLobby(client,s + "<EOF>");
 			sendDoneLobby.WaitOne(1000);
 				
 			// Receive the responseLobby from the remote device.
@@ -84,11 +93,23 @@ public class LobbyNetworking : MonoBehaviour {
 			receiveDoneLobby.WaitOne(1000);
 				
 				// Write the response to the console.
-			print ("Response received : {0}" + responseLobby + test);
+			print ("Response received : {0}" + responseLobby);
 			test++;
 
+			if(s == "joinLobby")
+			{
 				Application.LoadLevel("Title");
-			print ("Loading Title screen");
+				print ("Loading Title screen");
+				// Get the ref to the buttonHandler here.
+
+
+			}
+			else if (s =="joinGame")
+			{
+				print("Confirmed, beginning game instance");
+				buttonHandler = GameObject.Find ("ButtonHandler");
+				buttonHandler.SendMessage("confirmBeginGame");
+			}
 				// Release the socket.
 				client.Shutdown(SocketShutdown.Both);
 				client.Close();
