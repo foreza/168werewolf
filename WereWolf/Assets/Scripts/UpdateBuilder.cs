@@ -1,4 +1,4 @@
-﻿/*
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,28 +21,28 @@ namespace Assets.Scripts {
         PlayerUpdate pu = new PlayerUpdate();
 
         //Constructor requires ID of player who will send the update
-        UpdateBuilder(int initID) {
+        public UpdateBuilder(int initID) {
             pu.ID = initID;
         }
         
-        void setxCoord(float newXCoord) {
+        public void setxCoord(float newXCoord) {
             pu.xCoord = newXCoord;
         }
-        void setyCoord(float newYCoord) {
+        public void setyCoord(float newYCoord) {
             pu.yCoord = newYCoord;
         }
 
-        void setWerewolfState(bool iswolf) {
+        public void setWerewolfState(bool iswolf) {
             pu.isWerewolf = iswolf;
         }
 
 
 
-        string BuildUpdate() {
+        public string BuildUpdate() {
             string update = JsonConvert.SerializeObject(pu);
 
             return update;
         }
     }
 }
-*/
+
