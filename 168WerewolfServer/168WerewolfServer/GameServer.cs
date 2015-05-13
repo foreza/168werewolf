@@ -18,6 +18,7 @@ public class GameServer
 {
      public static Thread LoginThread;              // Single Thread to handle logins.
      public static Thread LobbyThread;              // Single Thread to handle lobby.   
+     public static Thread LobbyCheckThread;         // Single Thread to handle lobby statuses/debug/print.
 
      public static Queue GameThreads;               // An Queue of GameThreads.
 
@@ -25,7 +26,7 @@ public class GameServer
 
 	public GameServer()
 	{
-
+        Players = new ArrayList();
  
 	}
 
@@ -35,14 +36,14 @@ public class GameServer
     {
         // Initialize the threads with their proper methods.
         LoginThread = new Thread(AsynchronousSocketListener.StartListening);
-      //  LobbyThread = new Thread(AsynchronousSocketListener.LobbyInitialize);
-
+        LobbyThread = new Thread(LobbyAsynchronousSocketListener.StartLobbyListening);
+        LobbyCheckThread = new Thread(LobbyAsynchronousSocketListener.StartLobbyStatusCheck);
         Console.WriteLine("Login Server Active!");
         LoginThread.Start();
 
         Console.WriteLine("Lobby Server Active!");
-       // LobbyThread.Start();
-        
+        LobbyThread.Start();
+        LobbyCheckThread.Start();
         
         
    

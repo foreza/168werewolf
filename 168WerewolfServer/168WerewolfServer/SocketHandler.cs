@@ -31,6 +31,10 @@ public class AsynchronousSocketListener
 
     public static void StartListening()
     {
+
+        Console.WriteLine("Login is now running.");
+
+
         // Data buffer for incoming data.
         byte[] bytes = new Byte[1024];
 
@@ -120,10 +124,24 @@ public class AsynchronousSocketListener
             {
                 // All the data has been read from the 
                 // client. Display it on the console.
-                Console.WriteLine("Read {0} bytes from socket. \n Data : {1}",
-                    content.Length, content);
-                // Echo the data back to the client.
-                Send(handler, content);
+                Console.WriteLine("Read {0} bytes from socket. \n Data : {1}", content.Length, content);
+
+
+                // PROCESS LOGIN HERE. 
+
+                Console.WriteLine("Processing this login request:" + content);
+
+                if(true)
+                {
+                    Send(handler, "success");
+                }
+
+                    
+                    // Send(handler, "failure");
+
+
+
+
             }
             else
             {
