@@ -352,7 +352,7 @@ public class GameAsynchronousSocketListener
                     playersInGame.Insert(newPlayer.playerID, newPlayer);     // Player is now added to GameServer and is active!
                     Console.WriteLine("Player has been added to Game! Player ID[" + newPlayer.playerID + "with IP Endpoint {" + newPlayer.IPEndPoint );
 
-                    SendGame(handler, "[welcome]" + newPlayer.playerID);            // Send the player the ID that they will use to keep track of things.
+                    SendGame(handler, "[welcome]" + newPlayer.playerID + "|" + playersInGame.Count);            // Send the player the ID that they will use to keep track of things.
 
                 }
                 // CASE 2: If player gave a "position" update, the game server, game server will update ALL coordinates/situations.
@@ -386,7 +386,7 @@ public class GameAsynchronousSocketListener
                     for (int i = 0; i < playersInGame.Count; i++)
                     {
                          Player k = (Player)playersInGame[i];
-                         updateS += k.playerID + "{" + k.positionX + "|" + k.positionY + "}";
+                         updateS += "*" + k.playerID + "|" + k.positionX + "|" + k.positionY + "|";
                     }
 
                     SendGame(handler, "[update]" + updateS);

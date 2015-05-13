@@ -22,7 +22,8 @@ public class ButtonHandler : MonoBehaviour {
 	// Method that is run to start the game.
 	public void startGame()
 	{
-		sceneHandler.SendMessage ("StartGame");
+		print ("Attempting to begin game instance");
+		sceneHandler.SendMessage ("StartTheGame");
 	}
 
 	public void confirmBeginGame()

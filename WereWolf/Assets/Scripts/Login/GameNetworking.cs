@@ -10,15 +10,61 @@ using System.Text;
 public class GameNetworking : MonoBehaviour {
 	
 	// The port number for the remote lobby server.
-	private const int portGame = 11002;
+	public const int portGame = 11002;
+	public GameObject myself;
+	public bool noSpawn = true;
+	public int loginSize;
 
+	public  ArrayList playersTracking; // fill with PlayerObjects and iterate.
 	void Start () {
-		
+	
+		myself = GameObject.Find ("SceneHandler");
+		playersTracking = new ArrayList();
 	}
 	
 	void Update ()
 	{
+
+		if (Input.GetMouseButtonDown (0)) { 
+		}
 	}
+
+	public class PlayerObj
+	{
+		public String playerID;
+		public GameObject g;
+
+		public PlayerObj()
+		{
+			// Empty constructor.
+			playerID = "new";
+		}
+		public PlayerObj(String id, GameObject game)
+		{
+			playerID = id;
+			g = game;
+		}
+
+		public void updatePosition(float x, float y)
+		{
+			g.transform.position = new Vector3 (x, y);
+			print ("Moving other player (not me): " + g.transform.position);
+		}
+
+		public String getID()
+		{
+			return playerID;
+		}
+
+		public GameObject getObj()
+		{
+			return g;
+		}
+		// Shouldn't need to get the position, we're just settting.
+
+	}
+
+
 	
 	
 	// State object for receiving data from remote device.
@@ -35,17 +81,19 @@ public class GameNetworking : MonoBehaviour {
 	
 
 	// ManualResetEvent instances signal completion.
-	private static ManualResetEvent connectDoneGame = 
+	public static ManualResetEvent connectDoneGame = 
 		new ManualResetEvent(false);
-	private static ManualResetEvent sendDoneGame = 
+	public static ManualResetEvent sendDoneGame = 
 		new ManualResetEvent(false);
-	private static ManualResetEvent receiveDoneGame = 
+	public static ManualResetEvent receiveDoneGame = 
+		new ManualResetEvent(false);
+	public static ManualResetEvent receiveDoneSpawn = 
 		new ManualResetEvent(false);
 
 	// The response from the remote device.
-	private static String responseGame = String.Empty;
+	public String responseGame = String.Empty;
 
-	public static String myPlayerID;
+	public  String myPlayerID;
 
 
 	public void BeginGame()
@@ -57,8 +105,25 @@ public class GameNetworking : MonoBehaviour {
 	{
 		StartGame ("position" + "|" + myPlayerID + "|" + s + "|");
 	}
+
+	public GameObject toSpawn;
+
+	public void SpawnNew(int n)
+	{
+		print ("Recieved param: " + n);
+
+		for (int i = 0; i < n; i++)
+		{
+
+			GameObject go = new GameObject();
+			go = (GameObject)Instantiate(Resources.Load("OtherPlayer")); ;
+			PlayerObj p = new PlayerObj("new", go);
+			playersTracking.Add(p); // Add several Player objects to aid in expansion!
+		}
+
+	}
 	
-	private static void StartGame(String s) {
+	public void StartGame(String s) {
 		// Connect to a remote device.
 		try {
 			// Establish the remote endpoint for the socket.
@@ -66,7 +131,7 @@ public class GameNetworking : MonoBehaviour {
 			// remote device is "host.contoso.com".
 			print ("Beginning connection to game.");
 			
-			IPHostEntry ipHostInfo = Dns.GetHostEntry("174.77.35.116");
+			IPHostEntry ipHostInfo = Dns.GetHostEntry("128.195.21.135");
 			IPAddress ipAddress = ipHostInfo.AddressList[0];
 			IPEndPoint remoteEP = new IPEndPoint(ipAddress, portGame);
 			
@@ -95,15 +160,48 @@ public class GameNetworking : MonoBehaviour {
 			if(responseGame.Contains("welcome"))
 			{
 				// Assigned played ID here
-				myPlayerID = responseGame.Substring(9);
-				print ("I was assigned this player ID: " + myPlayerID);
+				String [] splitResp = responseGame.Split('|');
+
+				myPlayerID = splitResp[0].Substring(9);
+				loginSize = int.Parse (splitResp[1]);
+				print ("I was assigned this player ID: " + myPlayerID + " , currently this many players: " + loginSize);
+
+				receiveDoneSpawn.WaitOne(1000);
+
 				
 			}
-			else if (s =="joinGame")
+			else if (responseGame.Contains("update"))
 			{
-				print("Confirmed, beginning game instance");
+				// Recieve and parse the data and apply it to the game world as necessary
+				if(noSpawn)
+				{
+				noSpawn = false;
+				int trimm = loginSize - 1;
+					SpawnNew(trimm);
+				}
 
+				print ("I'm processing this: " + responseGame);
+				responseGame = responseGame.Substring(9);
+				String [] split = responseGame.Split('*'); 
+				// Split[0] = [player|pos1|pos2|EOF
+				// * denotes each player.
+
+				for (int p = 0; p < split.Length; p++)
+				{
+					// Split the string by the | delimiter to get player ID, X, and Y.
+					String [] split2 = split[p].Split('|');
+					int givenID = int.Parse(split2[0]);
+					String givenX = split2[1];
+					String givenY = split2[2];
+					// If it isn't my player ID, I need to either add the player to the game world, or update their position.
+					//if (givenID != myPlayerID) // 
+					{
+						// Search into player tracking to see if they exist.
+						((PlayerObj)playersTracking[givenID]).updatePosition(float.Parse(split2[1]),float.Parse(split2[2]));
+						}
+				}
 			}
+
 
 			// Release the socket.
 			client.Shutdown(SocketShutdown.Both);
@@ -114,7 +212,7 @@ public class GameNetworking : MonoBehaviour {
 		}
 	}
 	
-	private static void ConnectCallbackGame(IAsyncResult ar) {
+	public  void ConnectCallbackGame(IAsyncResult ar) {
 		try {
 			// Retrieve the socket from the state object.
 			Socket client = (Socket) ar.AsyncState;
@@ -131,7 +229,7 @@ public class GameNetworking : MonoBehaviour {
 		}
 	}
 	
-	private static void ReceiveGame(Socket client) {
+	public  void ReceiveGame(Socket client) {
 		try {
 			// Create the state object.
 			StateObject state = new StateObject();
@@ -145,7 +243,7 @@ public class GameNetworking : MonoBehaviour {
 		}
 	}
 	
-	private static void ReceiveCallbackGame( IAsyncResult ar ) {
+	public  void ReceiveCallbackGame( IAsyncResult ar ) {
 		try {
 			// Retrieve the state object and the client socket 
 			// from the asynchronous state object.
@@ -178,7 +276,7 @@ public class GameNetworking : MonoBehaviour {
 		}
 	}
 	
-	private static void SendGame(Socket client, String data) {
+	public  void SendGame(Socket client, String data) {
 		// Convert the string data to byte data using ASCII encoding.
 		byte[] byteData = Encoding.ASCII.GetBytes(data);
 		
@@ -187,7 +285,7 @@ public class GameNetworking : MonoBehaviour {
 		                 new AsyncCallback(SendCallbackGame), client);
 	}
 	
-	private static void SendCallbackGame(IAsyncResult ar) {
+	public  void SendCallbackGame(IAsyncResult ar) {
 		try {
 			// Retrieve the socket from the state object.
 			Socket client = (Socket) ar.AsyncState;
@@ -203,7 +301,5 @@ public class GameNetworking : MonoBehaviour {
 		}
 	}
 	
-	public static int Main(String[] args) {
-		return 0;
-	}
+
 }

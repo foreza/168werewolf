@@ -744,6 +744,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 63bb18288cb4ad545a3cb157108d5b90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  myself: {fileID: 0}
+  noSpawn: 1
+  loginSize: 0
+  responseGame: 
+  myPlayerID: 
+  toSpawn: {fileID: 427000, guid: ea60c62529f11c445b6804ff3bfb9808, type: 2}
 --- !u!1 &981045588
 GameObject:
   m_ObjectHideFlags: 0
