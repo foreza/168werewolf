@@ -75,7 +75,8 @@ public class LobbyNetworking : MonoBehaviour {
 				print ("Connected to lobby. Sending data.");
 
 				// Send test data to the remote device.
-			SendLobby(client,"[" + test + "]ActiveInLobby<EOF>");
+			// Server will recieve "joinLobby" and will accept the request.
+			SendLobby(client,"joinLobby<EOF>");
 			sendDoneLobby.WaitOne(1000);
 				
 			// Receive the responseLobby from the remote device.
@@ -149,6 +150,9 @@ public class LobbyNetworking : MonoBehaviour {
 					}
 					// Signal that all bytes have been received.
 				receiveDoneLobby.Set();
+
+				// 
+
 				}
 			} catch (Exception e) {
 				print(e.ToString());

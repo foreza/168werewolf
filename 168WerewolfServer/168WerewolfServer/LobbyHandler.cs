@@ -70,7 +70,9 @@ using System.Collections.Generic;
         }
 
     }
+        
 
+    // This allows players to enter the lobby, storing their information into an available data structure of players that the game instances can run on.
     public static void StartLobbyListening()
     {
         // This is dangerous; make sure to run the lobby listener before the status checks.
@@ -136,9 +138,7 @@ using System.Collections.Generic;
         Socket listener = (Socket)ar.AsyncState;
         Socket handler = listener.EndAccept(ar);
 
-        Console.WriteLine("Accepting the client into the lobby " + handler.LocalEndPoint);
-        // Add the player into the data structure.
-        playersInLobby.Enqueue(handler.LocalEndPoint.ToString());
+        Console.WriteLine("Accepting client lobby request: " + handler.LocalEndPoint);
 
         // Create the state object.
         StateObject state = new StateObject();
@@ -174,7 +174,22 @@ using System.Collections.Generic;
                 // client. Display it on the console.
                 Console.WriteLine("Read {0} bytes from socket. \n Data : {1}",
                     content.Length, content);
-                // Echo the data back to the client.
+
+                // CASE 1: If player gave a "joinLobby" request, the server will enqueue the player.
+                if(content.Contains("joinLobby"))
+                {
+                    playersInLobby.Enqueue(handler.LocalEndPoint.ToString());
+                    Console.WriteLine("Player added to lobby");
+                }
+                // CASE 2: If player gave a "joinGame" request, the server will attempt to place player in active game session
+                if (content.Contains("joinGame"))
+                {
+                    Console.WriteLine("Player: " + handler.LocalEndPoint.ToString() + " is now joining game instance...");
+                }
+
+                // Add the player into the data structure.
+
+                
                 SendLobby(handler, content);
             }
             else

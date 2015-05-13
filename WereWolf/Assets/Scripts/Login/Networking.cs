@@ -20,6 +20,7 @@ public class Networking : MonoBehaviour {
 		//StartClient();
 
 		g = GameObject.Find("SceneHandler");
+		DontDestroyOnLoad(g);
 	}
 
 	void Update ()

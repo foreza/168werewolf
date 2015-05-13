@@ -20,14 +20,15 @@ public class GameServer
      public static Thread LobbyThread;              // Single Thread to handle lobby.   
      public static Thread LobbyCheckThread;         // Single Thread to handle lobby statuses/debug/print.
 
-     public static Queue GameThreads;               // An Queue of GameThreads.
+     public static Thread GameThread;               // Temporary single instance of a game thread.
+
+     public static Queue GameThreads;               // An Queue of GameThreads. Currently Unused
 
      public static ArrayList Players;               // ArrayList of Players.
 
 	public GameServer()
 	{
         Players = new ArrayList();
- 
 	}
 
 
@@ -44,31 +45,15 @@ public class GameServer
         Console.WriteLine("Lobby Server Active!");
         LobbyThread.Start();
         LobbyCheckThread.Start();
-        
+
+        Console.WriteLine("Initializing temporary Game Server!");
+        GameThread = new Thread(GameAsynchronousSocketListener.StartGameListening);
         
    
         return 0;
     }
 
-    // A sample Player class that is created.
-    public class Player
-    {
-        String IPEndPoint;
-        float positionX;
-        float positionY;
-        int playerID;
-
-        Player()
-        {
-
-        }
-
-        public String getIP()
-        {
-            return IPEndPoint;
-        }
-
-    }
+   
 
     public void StartGameThread()
     {
