@@ -46,6 +46,7 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Scripts\Archived\PlayerConnection.cs" />
      <Compile Include="Assets\Scripts\Database\LoginButton.cs" />
      <Compile Include="Assets\Scripts\Database\dbAccess.cs" />
      <Compile Include="Assets\Scripts\Game\Escape.cs" />
@@ -71,16 +72,20 @@
      <Compile Include="Assets\Scripts\Login\LoginForm.cs" />
      <Compile Include="Assets\Scripts\Login\Networking.cs" />
      <Compile Include="Assets\Scripts\Login\ResponseHandler.cs" />
-     <Compile Include="Assets\Scripts\PlayerConnection.cs" />
      <Compile Include="Assets\Scripts\PlayerManager.cs" />
      <Compile Include="Assets\Scripts\PlayerSendState.cs" />
      <Compile Include="Assets\Scripts\StartScreen\ButtonHandler.cs" />
      <Compile Include="Assets\Scripts\StateManager.cs" />
+     <Compile Include="Assets\Scripts\UpdateBuilder.cs" />
+     <None Include="Assets\Plugins\Newtonsoft.Json.xml" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="Mono.Data.SqliteClient">
  <HintPath>C:/Users/Jason/Desktop/168werewolf/WereWolf/Assets/Plugins/Mono.Data.SqliteClient.dll</HintPath>
+ </Reference>
+ <Reference Include="Newtonsoft.Json">
+ <HintPath>C:/Users/Jason/Desktop/168werewolf/WereWolf/Assets/Plugins/Newtonsoft.Json.dll</HintPath>
  </Reference>
  <Reference Include="System.Data">
  <HintPath>C:/Users/Jason/Desktop/168werewolf/WereWolf/Assets/Plugins/System.Data.dll</HintPath>

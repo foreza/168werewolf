@@ -41,9 +41,12 @@ public class GameNetworking : MonoBehaviour {
 		new ManualResetEvent(false);
 	private static ManualResetEvent receiveDoneGame = 
 		new ManualResetEvent(false);
-	
+
 	// The response from the remote device.
 	private static String responseGame = String.Empty;
+
+	public static String myPlayerID;
+
 
 	public void BeginGame()
 	{
@@ -52,7 +55,7 @@ public class GameNetworking : MonoBehaviour {
 
 	public void PassPosition(String s)
 	{
-		StartGame ("position" + s);
+		StartGame ("position" + "|" + myPlayerID + "|" + s + "|");
 	}
 	
 	private static void StartGame(String s) {
@@ -88,13 +91,12 @@ public class GameNetworking : MonoBehaviour {
 			
 			// Write the response to the console.
 			print ("Response received : {0}" + responseGame);
-			/*
-			if(s == "joinGame")
+
+			if(responseGame.Contains("welcome"))
 			{
-				Application.LoadLevel("Title");
-				print ("Loading Title screen");
-				// Get the ref to the buttonHandler here.
-				
+				// Assigned played ID here
+				myPlayerID = responseGame.Substring(9);
+				print ("I was assigned this player ID: " + myPlayerID);
 				
 			}
 			else if (s =="joinGame")
@@ -102,7 +104,7 @@ public class GameNetworking : MonoBehaviour {
 				print("Confirmed, beginning game instance");
 
 			}
-			*/
+
 			// Release the socket.
 			client.Shutdown(SocketShutdown.Both);
 			client.Close();

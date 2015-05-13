@@ -26,8 +26,6 @@ class GameHandler
     }
 
 
-
-
 public class GameAsynchronousSocketListener
 {
 
@@ -90,6 +88,8 @@ public class GameAsynchronousSocketListener
 
 
     public static ArrayList playersInGame;
+
+
     public static IPHostEntry gameipHostInfo;
     public static IPAddress gameipAddress;
     public static IPEndPoint gamelocalEndPoint;
@@ -101,10 +101,6 @@ public class GameAsynchronousSocketListener
         new ManualResetEvent(false);
     private static ManualResetEvent gamereceiveDone =
         new ManualResetEvent(false);
-
-    // Create a TCP/IP socket.
-    public static Socket gamelistener;
-
 
     public GameAsynchronousSocketListener()
     {
@@ -235,8 +231,6 @@ public class GameAsynchronousSocketListener
         }
     }
 
-
-
     // This allows players to enter the Game, storing their information into an available data structure of players that the game instances can run on.
     public static void StartGameListening()
     {
@@ -358,30 +352,50 @@ public class GameAsynchronousSocketListener
                     playersInGame.Insert(newPlayer.playerID, newPlayer);     // Player is now added to GameServer and is active!
                     Console.WriteLine("Player has been added to Game! Player ID[" + newPlayer.playerID + "with IP Endpoint {" + newPlayer.IPEndPoint );
 
+                    SendGame(handler, "[welcome]" + newPlayer.playerID);            // Send the player the ID that they will use to keep track of things.
 
                 }
-                // CASE 2: If player gave a "position" update, the game server, game server will update the coordinates/situations.
-                if(content.Contains("position"))
+                // CASE 2: If player gave a "position" update, the game server, game server will update ALL coordinates/situations.
+                else if(content.Contains("position"))
                 {
-                    // GET THE PLAYER ID
+                    // GET THE PLAYER ID from the packet
 
+                    String[] splitted = content.Split('|');
+
+                   
+
+                    int index = int.Parse(splitted[1]);
                     // Code to add here to extract the string
                     // position[450,230]
                     // we also need playerID
                     // apply position updates to this particular player on the server.
-                    float posXUpdate = 0.0f;
-                    float posYUpdate = 0.0f;
+                    float posXUpdate = float.Parse(splitted[2]);
+                    float posYUpdate = float.Parse(splitted[3]);
 
-                    Player e = (Player)playersInGame[0];                // replace the index 
+                    Player e = (Player)playersInGame[index];                // replace the index 
                     e.setPlayerPosition(posXUpdate, posYUpdate);        // set the updates
-                    Console.WriteLine("Server applied this position update to this player: " + content);
+                    Console.WriteLine("Server applied this position update to player: " + index + "content: " + content);
+
+
+                    // Encode the game data and send it as a very long string to client.
+                    // Example: 
+
+                    // Fomat: playerID{playerPosX|playerPosY}playerID{playerPosX|playerPosY}
+                    String updateS = "";
+
+                    for (int i = 0; i < playersInGame.Count; i++)
+                    {
+                         Player k = (Player)playersInGame[i];
+                         updateS += k.playerID + "{" + k.positionX + "|" + k.positionY + "}";
+                    }
+
+                    SendGame(handler, "[update]" + updateS);
                 }
 
 
-                // Encode the game data and send it as a very long string to client.
-                // Example: 
 
-                SendGame(handler, "[ack] Recieved this: " + content);
+
+               
             }
             else
             {

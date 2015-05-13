@@ -1,4 +1,5 @@
-﻿using System;
+﻿/*
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,10 +9,10 @@ namespace Assets.Scripts {
     struct PlayerUpdate {
         public int ID;
 
-        public float xCoord = 0;
-        public float yCoord = 0;
+		public float xCoord;
+		public float yCoord;
 
-        public bool isWerewolf = false;
+        public bool isWerewolf;
     }
 
     //Allows us to build up an update to send to the server so that
@@ -44,3 +45,4 @@ namespace Assets.Scripts {
         }
     }
 }
+*/

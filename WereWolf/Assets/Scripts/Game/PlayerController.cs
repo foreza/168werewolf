@@ -78,7 +78,12 @@ public class PlayerController : MonoBehaviour {
         }
 
 		// Temp Placeholder
-		string position = transform.position.x + " ," + transform.position.y;
+
+		// Mirroed on server
+		// Fomat: playerID{playerPosX|playerPosY}playerID{playerPosX|playerPosY}
+
+		 
+		string position = "" + transform.position.x + "|" + transform.position.y + "";
 		sceneHandler.SendMessage("PassPosition", position);
 
 	}
