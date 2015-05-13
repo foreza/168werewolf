@@ -5,6 +5,7 @@ public class PlayerController : MonoBehaviour {
 
     public bool sendDebugMessages = false;
     public int playerID;
+    public bool isClientControlled = false;
 
     public float speed;			// Set speed here.
 
@@ -66,8 +67,11 @@ public class PlayerController : MonoBehaviour {
 	void Update () {
 
 		getCoolDowns ();
-		getControlMovement();	// function that reads basic control movement.	
-		getSkill();				// function that reads basic skill usage.
+        if (!isClientControlled)
+        {
+            getControlMovement();	// function that reads basic control movement.	
+            getSkill();				// function that reads basic skill usage.
+        }
 
 	}
 	
