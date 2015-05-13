@@ -74,7 +74,7 @@ public class LobbyNetworking : MonoBehaviour {
 				// remote device is "host.contoso.com".
 				print ("Beginning connection to lobby.");
 
-			IPHostEntry ipHostInfo = Dns.GetHostEntry("128.195.21.135");
+			IPHostEntry ipHostInfo = Dns.GetHostEntry(Networking.IPaddress);
 			IPAddress ipAddress = ipHostInfo.AddressList[0];
 			IPEndPoint remoteEP = new IPEndPoint(ipAddress, portLobby);
 				
