@@ -63,7 +63,7 @@ public class LoginForm : MonoBehaviour {
 	{
 		// Access the reference to the handler and calls the function
 		print ("Submitting to server: " + loginPackage [0] + " " + loginPackage [1] + " to IP: " + loginPackage[2]);
-        handler.SendMessage("StartClient", loginPackage);
+        handler.SendMessage("BeginLogin", loginPackage);
 		//print ("Submitted");
 
 	}

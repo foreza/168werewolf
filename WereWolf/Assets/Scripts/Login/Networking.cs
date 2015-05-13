@@ -11,6 +11,10 @@ public class Networking : MonoBehaviour {
 
 	// The port number for the remote device.
 	private const int port = 11000;
+    // IP address for remote device;
+    public static string IPaddress;
+    public static string username;
+    public static string password;
 
 	// A test integer so we can track the message numbers.
 	public static int test = 0;
@@ -23,15 +27,14 @@ public class Networking : MonoBehaviour {
 		DontDestroyOnLoad(g);
 	}
 
-	void Update ()
+	void BeginLogin (string[] loginPackage)
 	{
-		// TODO: Replace with actual login info.
-		 
-		if (Input.GetMouseButtonDown (0)) {
-			print ("Testing");
-			StartClient ();
-		}
 
+        username = loginPackage[0];
+        password = loginPackage[1];
+        IPaddress = loginPackage[2];        
+
+        StartClient();
 
 	}
 
@@ -71,7 +74,7 @@ public class Networking : MonoBehaviour {
 				// Establish the remote endpoint for the socket.
 				// The name of the 
 				// remote device is "host.contoso.com".
-				IPHostEntry ipHostInfo = Dns.GetHostEntry("174.77.35.116");
+                IPHostEntry ipHostInfo = Dns.GetHostEntry(IPaddress);
 				IPAddress ipAddress = ipHostInfo.AddressList[0];
 				IPEndPoint remoteEP = new IPEndPoint(ipAddress, port);
 				
@@ -86,7 +89,7 @@ public class Networking : MonoBehaviour {
 				print ("Connected. Sending data.");
 
 				// Send test data to the remote device.
-				Send(client,"[" + test + "]LoginDataHere<EOF>");
+				Send(client,username+":"+password+":<EOF>");
 				sendDone.WaitOne(1000);
 				
 				// Receive the response from the remote device.
@@ -164,7 +167,7 @@ public class Networking : MonoBehaviour {
 				
 				if (bytesRead > 0) {
 					// There might be more data, so store the data received so far.
-					state.sb.Append(Encoding.ASCII.GetString(state.buffer,0,bytesRead));
+					state.sb.Append(Encoding.Unicode.GetString(state.buffer,0,bytesRead));
 					
 					// Get the rest of the data.
 					client.BeginReceive(state.buffer,0,StateObject.BufferSize,0,
@@ -183,8 +186,8 @@ public class Networking : MonoBehaviour {
 		}
 		
 		private static void Send(Socket client, String data) {
-			// Convert the string data to byte data using ASCII encoding.
-			byte[] byteData = Encoding.ASCII.GetBytes(data);
+			// Convert the string data to byte data using Unicode encoding.
+			byte[] byteData = Encoding.Unicode.GetBytes(data);
 			
 			// Begin sending the data to the remote device.
 			client.BeginSend(byteData, 0, byteData.Length, 0,

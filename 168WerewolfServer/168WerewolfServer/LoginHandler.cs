@@ -58,20 +58,21 @@ public class LoginHandler {
     string correctLogin(bool newUser) {
         if (newUser) {
             Console.WriteLine("Welcome new user!");
-            return "<login>:accept:new";
+            return "success";
         }
         else {
             Console.WriteLine("Welcome back, friend!");
-            return "<login>:accept:existing";
+            return "success";
         }
     }
 
     string incorrectLogin() {
         Console.WriteLine("Incorrect login! Rejected!");
-        return "<login>:reject";
+        return "failure";
     }
 
 	public string AccessDB(string [] log){
+        StartDatabase();
         Console.WriteLine("Access DB with: " + log[0] + " | " + log[1]);
         string response;
 		if (CheckIfExists(log[0])) {
@@ -80,17 +81,14 @@ public class LoginHandler {
 			}
 			else {
 				response = incorrectLogin();
-
 			}
 		}
 		else {
 			AddPair(log[0], log[1]);
 			response = correctLogin(true);
-
 		}
+        CloseDatabase();
         return response;
-		
-		
 	}
 	
 }

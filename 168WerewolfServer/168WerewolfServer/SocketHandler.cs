@@ -114,7 +114,7 @@ public class AsynchronousSocketListener
         if (bytesRead > 0)
         {
             // There  might be more data, so store the data received so far.
-            state.sb.Append(Encoding.ASCII.GetString(
+            state.sb.Append(Encoding.Unicode.GetString(
                 state.buffer, 0, bytesRead));
 
             // Check for end-of-file tag. If it is not there, read 
@@ -127,20 +127,17 @@ public class AsynchronousSocketListener
                 Console.WriteLine("Read {0} bytes from socket. \n Data : {1}", content.Length, content);
 
 
-                // PROCESS LOGIN HERE. 
-
                 Console.WriteLine("Processing this login request:" + content);
 
-                if(true)
-                {
-                    Send(handler, "success");
+
+                //Assuming request is formatted "username:password:<EOF>"
+                string[] loginInfo = content.Split(':');
+                LoginHandler lh = new LoginHandler();
+                string loginStatus = lh.AccessDB(loginInfo);
+                Send(handler, loginStatus);
+                if (loginStatus == "success") {
+
                 }
-
-                    
-                    // Send(handler, "failure");
-
-
-
 
             }
             else
@@ -154,8 +151,8 @@ public class AsynchronousSocketListener
 
     private static void Send(Socket handler, String data)
     {
-        // Convert the string data to byte data using ASCII encoding.
-        byte[] byteData = Encoding.ASCII.GetBytes(data);
+        // Convert the string data to byte data using Unicode encoding.
+        byte[] byteData = Encoding.Unicode.GetBytes(data);
 
         // Begin sending the data to the remote device.
         handler.BeginSend(byteData, 0, byteData.Length, 0,
