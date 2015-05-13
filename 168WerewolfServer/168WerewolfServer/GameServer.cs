@@ -48,6 +48,7 @@ public class GameServer
 
         Console.WriteLine("Initializing temporary Game Server!");
         GameThread = new Thread(GameAsynchronousSocketListener.StartGameListening);
+        GameThread = new Thread(GameAsynchronousSocketListener.SendPositionUpdates);
         
    
         return 0;

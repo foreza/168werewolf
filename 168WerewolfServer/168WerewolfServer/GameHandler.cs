@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System.Collections;
 using System.Collections.Generic;
 
 class GameHandler
@@ -24,16 +25,36 @@ class GameHandler
         public StringBuilder sb = new StringBuilder();
     }
 
+
+
+
+public class GameAsynchronousSocketListener
+{
+
+    public static int GamePort = 11002;             // Port is increased, client will know to connect to this.
+    // Thread signal.
+    public static ManualResetEvent allDoneGame = new ManualResetEvent(false);
+    public static ManualResetEvent GameMessageRound = new ManualResetEvent(false);
+
+    public static bool GameStart = false;
+
+
     // A sample Player class that is created.
     public class Player
     {
-        String IPEndPoint;
-        float positionX;
-        float positionY;
-        int playerID;
+        public String IPEndPoint;
+        public Socket sock;
+        public float positionX;
+        public float positionY;
+        public int playerID;
 
-        Player()
-        {}
+        public Player()
+        { }
+
+        public Socket getSock()
+        {
+            return sock;
+        }
 
         public String getIP()
         {
@@ -65,55 +86,50 @@ class GameHandler
     }
 
 
-public class GameAsynchronousSocketListener
-{
+    public static ArrayList playersInGame;
+    public static IPHostEntry gameipHostInfo;
+    public static IPAddress gameipAddress;
+    public static IPEndPoint gamelocalEndPoint;
 
-    public static int GamePort = 11002;             // Port is increased, client will know to connect to this.
-    // Thread signal.
-    public static ManualResetEvent allDoneGame = new ManualResetEvent(false);
-    public static ManualResetEvent GameMessageRound = new ManualResetEvent(false);
+    // Create a TCP/IP socket.
+    public static Socket gamelistener;
 
-
-    public static Queue<String> playersInGame;
 
     public GameAsynchronousSocketListener()
     {
 
     }
-    /*
-    public static void StartGameStatusCheck()
+
+    public static void SendPositionUpdates()
     {
-
-        while (true)
+        // This loop will constantly send out position updates to all connected clients.
+        while(true)
         {
-            int playersInGameCount = playersInGame.Count;
-
-            Console.WriteLine("Current # of players in Game: [" + playersInGameCount + "] Welcome! ");
-
-            while (playersInGameCount > 0)
+            // This will not run until the game has started.
+            if(GameStart)
             {
-                String p = playersInGame.Peek();
-                Console.WriteLine("Player with endpoint IP: " + p);
 
-                playersInGameCount--;
-                playersInGame.Enqueue(p);
-                playersInGame.Dequeue();
+                ArrayList iterable = playersInGame;     // Make a new temporary arraylist.
+
+                for (int i = 0; i < iterable.Count; i++)
+                {
+                    Player p = (Player)iterable[i];     // Store player in temporary variable.
+                    Socket s = p.getSock();             // Gets the socket of the player. THIS MAY NOT WORK AND WE MAY GO BACK TO THE DRAWING BOARD.
+                    // REPLACE W/ POSITION DATA
+                    Console.WriteLine("Sending this player the position update: " + s.RemoteEndPoint);
+                    SendGame(s, "position data put here");
+                }
+
             }
-
-
-            // Wait for next player to enter..
-            GameMessageRound.WaitOne(5000);
         }
-
     }
 
-     */
 
     // This allows players to enter the Game, storing their information into an available data structure of players that the game instances can run on.
     public static void StartGameListening()
     {
         // This is dangerous; make sure to run the Game listener before the status checks.
-        playersInGame = new Queue<String>();
+        playersInGame = new ArrayList();
 
         Console.WriteLine("Game is now running.");
 
@@ -123,9 +139,9 @@ public class GameAsynchronousSocketListener
         // Establish the local endpoint for the socket.
         // The DNS name of the computer
         // running the listener is "host.contoso.com".
-        IPHostEntry ipHostInfo = Dns.Resolve(Dns.GetHostName());
-        IPAddress ipAddress = ipHostInfo.AddressList[0];
-        IPEndPoint localEndPoint = new IPEndPoint(ipAddress, GamePort);
+        gameipHostInfo = Dns.Resolve(Dns.GetHostName());
+        gameipAddress = gameipHostInfo.AddressList[0];
+        gamelocalEndPoint = new IPEndPoint(gameipAddress, GamePort);
 
         // Create a TCP/IP socket.
         Socket listener = new Socket(AddressFamily.InterNetwork,
@@ -134,7 +150,7 @@ public class GameAsynchronousSocketListener
         // Bind the socket to the local endpoint and listen for incoming connections.
         try
         {
-            listener.Bind(localEndPoint);
+            listener.Bind(gamelocalEndPoint);
             listener.Listen(100);
 
             // Handle Game entrances here.
@@ -214,16 +230,30 @@ public class GameAsynchronousSocketListener
                 // CASE 1: If player gave a "joinGame" request, the game server will enqueue the player.
                 if (content.Contains("joinGame"))
                 {
-                    playersInGame.Enqueue(handler.LocalEndPoint.ToString());        // Player is now added to GameServer and is active!
-                    Console.WriteLine("Player added to Game");
+                    Player newPlayer = new Player();
+                    newPlayer.setPlayerPosition(0.0f, 0.0f);
+                    newPlayer.IPEndPoint = handler.LocalEndPoint.ToString();
+                    newPlayer.sock = handler;
+                    newPlayer.playerID = playersInGame.Count; // PID will be set by the number of players.
+
+                    playersInGame.Insert(newPlayer.playerID, newPlayer);     // Player is now added to GameServer and is active!
+                    Console.WriteLine("Player has been added to Game! Player ID[" + newPlayer.playerID + "with IP Endpoint {" + newPlayer.IPEndPoint );
+
                 }
-                // CASE 2: If player gave a "position" update, the game server, game server will update all coordinates/situations.
+                // CASE 2: If player gave a "position" update, the game server, game server will update the coordinates/situations.
                 if(content.Contains("position"))
                 {
+                    // GET THE PLAYER ID
+
                     // Code to add here to extract the string
                     // position[450,230]
                     // we also need playerID
-                    // apply position updates to the game server.
+                    // apply position updates to this particular player on the server.
+                    float posXUpdate = 0.0f;
+                    float posYUpdate = 0.0f;
+
+                    Player e = (Player)playersInGame[0];                // replace the index 
+                    e.setPlayerPosition(posXUpdate, posYUpdate);        // set the updates
                     Console.WriteLine("Server applied this position update to this player: " + content);
                 }
 
@@ -231,7 +261,10 @@ public class GameAsynchronousSocketListener
                 // Encode the game data and send it as a very long string to client.
                 // Example: 
 
-                SendGame(handler, content);
+                SendGame(handler, "[ack] Recieved this: " + content);
+
+                // Start the game if it hasn't started already to allow for message updates to begin.
+                GameStart = true;
             }
             else
             {
