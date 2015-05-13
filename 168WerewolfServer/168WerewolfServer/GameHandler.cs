@@ -386,7 +386,7 @@ public class GameAsynchronousSocketListener
                     for (int i = 0; i < playersInGame.Count; i++)
                     {
                          Player k = (Player)playersInGame[i];
-                         updateS += playersInGame.Count + "*" + k.playerID + "|" + k.positionX + "|" + k.positionY + "|"; // slight edit to ensure playerInGameCount is always viewable
+                         updateS += "*" + k.playerID + "|" + k.positionX + "|" + k.positionY + "|"; // slight edit to ensure playerInGameCount is always viewable
                     }
 
                     SendGame(handler, "[update]" + updateS);

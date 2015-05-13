@@ -185,14 +185,14 @@ public class GameNetworking : MonoBehaviour {
 				String [] split = responseGame.Split('*'); 
 				// Split[0] = [player|pos1|pos2|EOF
 				// * denotes each player.
-				int newSize = int.Parse(split[0]);			// Check if we need to force refresh.
-				if(newSize > loginSize)
+				//int newSize = int.Parse(split[0]);			// Check if we need to force refresh.
+				//if(newSize > loginSize)
 				{
-					SpawnNew(1);
-					loginSize = newSize;
+					//SpawnNew(1);
+					//loginSize = newSize;
 				}
 
-				for (int p = 1; p < split.Length; p++)
+				for (int p = 0; p < split.Length; p++)
 				{
 					// Split the string by the | delimiter to get player ID, X, and Y.
 					String [] split2 = split[p].Split('|');

@@ -2,11 +2,11 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Login\GameNetworking.cs">
     <Files>
-      <File FileName="Assets\Scripts\Login\GameNetworking.cs" Line="198" Column="45" />
-      <File FileName="Assets\Scripts\Login\LobbyNetworking.cs" Line="73" Column="24" />
-      <File FileName="Assets\Scripts\Login\Networking.cs" Line="19" Column="2" />
-      <File FileName="Assets\Scripts\Login\LoginForm.cs" Line="31" Column="3" />
-      <File FileName="Assets\Scripts\Login\ResponseHandler.cs" Line="23" Column="42" />
+      <File FileName="Assets\Scripts\Login\GameNetworking.cs" Line="178" Column="21" />
+      <File FileName="Assets\Scripts\Login\LobbyNetworking.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Login\Networking.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Login\LoginForm.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Login\ResponseHandler.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
