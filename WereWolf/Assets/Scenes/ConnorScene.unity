@@ -3011,7 +3011,7 @@ GameObject:
   - 4: {fileID: 1080923785}
   - 114: {fileID: 1080923784}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: StateManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
