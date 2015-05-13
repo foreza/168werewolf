@@ -180,17 +180,21 @@ using System.Collections.Generic;
                 {
                     playersInLobby.Enqueue(handler.LocalEndPoint.ToString());
                     Console.WriteLine("Player added to lobby");
+                    SendLobby(handler, "welcomeToLobby");
                 }
                 // CASE 2: If player gave a "joinGame" request, the server will attempt to place player in active game session
-                if (content.Contains("joinGame"))
+                else if (content.Contains("joinGame"))
                 {
                     Console.WriteLine("Player: " + handler.LocalEndPoint.ToString() + " is now joining game instance...");
+                    SendLobby(handler, "startGame");
                 }
 
                 // Add the player into the data structure.
 
-                
+                else
+                { 
                 SendLobby(handler, content);
+                }
             }
             else
             {

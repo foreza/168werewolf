@@ -38,6 +38,8 @@ public class PlayerController : MonoBehaviour {
     public AudioClip deathNoise;
     private AudioSource deathNoiseSource;
 
+	public GameObject sceneHandler;
+
     Animator anim;
 
     void Awake() {
@@ -60,6 +62,8 @@ public class PlayerController : MonoBehaviour {
 		thisBody = this.GetComponent<Rigidbody2D> ();
 
         anim = GetComponent<Animator>();
+
+		sceneHandler = GameObject.Find ("SceneHandler");
 	
 	}
 	
@@ -72,6 +76,10 @@ public class PlayerController : MonoBehaviour {
             getControlMovement();	// function that reads basic control movement.	
             getSkill();				// function that reads basic skill usage.
         }
+
+		// Temp Placeholder
+		string position = transform.position.x + " ," + transform.position.y;
+		sceneHandler.SendMessage("PassPosition", position);
 
 	}
 	

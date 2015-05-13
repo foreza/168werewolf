@@ -32,17 +32,20 @@ public class GameAsynchronousSocketListener
 {
 
     public static int GamePort = 11002;             // Port is increased, client will know to connect to this.
+    public static int GamePort2 = 11003;     
     // Thread signal.
     public static ManualResetEvent allDoneGame = new ManualResetEvent(false);
     public static ManualResetEvent GameMessageRound = new ManualResetEvent(false);
 
-    public static bool GameStart = false;
+    public static bool GameStart;
+
+    private static String response = String.Empty;
 
 
     // A sample Player class that is created.
     public class Player
     {
-        public String IPEndPoint;
+        public EndPoint IPEndPoint;
         public Socket sock;
         public float positionX;
         public float positionY;
@@ -56,7 +59,7 @@ public class GameAsynchronousSocketListener
             return sock;
         }
 
-        public String getIP()
+        public EndPoint getIP()
         {
             return IPEndPoint;
         }
@@ -90,6 +93,14 @@ public class GameAsynchronousSocketListener
     public static IPHostEntry gameipHostInfo;
     public static IPAddress gameipAddress;
     public static IPEndPoint gamelocalEndPoint;
+    public static IPEndPoint gamelocalEndPointPos;
+
+    private static ManualResetEvent gameconnectDone =
+    new ManualResetEvent(false);
+    private static ManualResetEvent gamesendDone =
+        new ManualResetEvent(false);
+    private static ManualResetEvent gamereceiveDone =
+        new ManualResetEvent(false);
 
     // Create a TCP/IP socket.
     public static Socket gamelistener;
@@ -103,11 +114,20 @@ public class GameAsynchronousSocketListener
     public static void SendPositionUpdates()
     {
         // This loop will constantly send out position updates to all connected clients.
+        /*
         while(true)
         {
+
+            // Console.WriteLine("HIHI" + GameStart);
             // This will not run until the game has started.
-            if(GameStart)
+            if(playersInGame != null && playersInGame.Count != 0)
             {
+                Console.WriteLine("Begin position updates!");
+
+                String updateString = "testStringUpdate";
+                // Convert the string data to byte data using ASCII encoding.
+                byte[] byteData = Encoding.ASCII.GetBytes(updateString);
+
 
                 ArrayList iterable = playersInGame;     // Make a new temporary arraylist.
 
@@ -116,13 +136,105 @@ public class GameAsynchronousSocketListener
                     Player p = (Player)iterable[i];     // Store player in temporary variable.
                     Socket s = p.getSock();             // Gets the socket of the player. THIS MAY NOT WORK AND WE MAY GO BACK TO THE DRAWING BOARD.
                     // REPLACE W/ POSITION DATA
-                    Console.WriteLine("Sending this player the position update: " + s.RemoteEndPoint);
-                    SendGame(s, "position data put here");
+                    //Console.WriteLine("Sending this player the position update: " + s.RemoteEndPoint);
+                    //SendGame(s, "position data put here");
+                    //Console.WriteLine("Updating this player: " + p.getPID() + " ");
+                    GameStateObject state = new GameStateObject();
+
+                    s.BeginConnect(p.IPEndPoint, new AsyncCallback(GameConnectCallback), s);
+                    gameconnectDone.WaitOne();
+                    Console.WriteLine("Connected. Sending data to player: " + p.getPID());
+                    SendGame(s, updateString + "<EOF>");
+                    gamesendDone.WaitOne(1000);
+                    gameReceive(s);
+                    gamereceiveDone.WaitOne(1000);
+                   // s.BeginSendTo(byteData, 0, byteData.Length, 0, p.IPEndPoint, new AsyncCallback(SendGameCallback), state);
+
+
                 }
 
             }
         }
+         * */
     }
+
+    private static void GameConnectCallback(IAsyncResult ar)
+    {
+        try
+        {
+            // Retrieve the socket from the state object.
+            Socket client = (Socket)ar.AsyncState;
+
+            // Complete the connection.
+            client.EndConnect(ar);
+
+            Console.WriteLine("Socket connected to {0}" + client.RemoteEndPoint.ToString());
+
+            // Signal that the connection has been made.
+            gameconnectDone.Set();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.ToString());
+        }
+    }
+
+    private static void gameReceive(Socket client)
+    {
+        try
+        {
+            // Create the state object.
+            StateObject state = new StateObject();
+            state.workSocket = client;
+
+            // Begin receiving the data from the remote device.
+            client.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
+                                new AsyncCallback(gameReceiveCallback), state);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.ToString());
+        }
+    }
+
+    private static void gameReceiveCallback(IAsyncResult ar)
+    {
+        try
+        {
+            // Retrieve the state object and the client socket 
+            // from the asynchronous state object.
+            StateObject state = (StateObject)ar.AsyncState;
+            Socket client = state.workSocket;
+
+            // Read data from the remote device.
+            int bytesRead = client.EndReceive(ar);
+
+            if (bytesRead > 0)
+            {
+                // There might be more data, so store the data received so far.
+                state.sb.Append(Encoding.Unicode.GetString(state.buffer, 0, bytesRead));
+
+                // Get the rest of the data.
+                client.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
+                                    new AsyncCallback(gameReceiveCallback), state);
+            }
+            else
+            {
+                // All the data has arrived; put it in response.
+                if (state.sb.Length > 1)
+                {
+                    response = state.sb.ToString();
+                }
+                // Signal that all bytes have been received.
+                gamereceiveDone.Set();
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e.ToString());
+        }
+    }
+
 
 
     // This allows players to enter the Game, storing their information into an available data structure of players that the game instances can run on.
@@ -142,6 +254,7 @@ public class GameAsynchronousSocketListener
         gameipHostInfo = Dns.Resolve(Dns.GetHostName());
         gameipAddress = gameipHostInfo.AddressList[0];
         gamelocalEndPoint = new IPEndPoint(gameipAddress, GamePort);
+        gamelocalEndPointPos = new IPEndPoint(gameipAddress, GamePort2);
 
         // Create a TCP/IP socket.
         Socket listener = new Socket(AddressFamily.InterNetwork,
@@ -192,6 +305,9 @@ public class GameAsynchronousSocketListener
 
         Console.WriteLine("Obtaining Game Data from" + handler.LocalEndPoint);
 
+
+
+
         // Create the state object.
         GameStateObject state = new GameStateObject();
         state.workSocket = handler;
@@ -230,14 +346,18 @@ public class GameAsynchronousSocketListener
                 // CASE 1: If player gave a "joinGame" request, the game server will enqueue the player.
                 if (content.Contains("joinGame"))
                 {
-                    Player newPlayer = new Player();
-                    newPlayer.setPlayerPosition(0.0f, 0.0f);
-                    newPlayer.IPEndPoint = handler.LocalEndPoint.ToString();
-                    newPlayer.sock = handler;
-                    newPlayer.playerID = playersInGame.Count; // PID will be set by the number of players.
 
+                    Player newPlayer = new Player();
+                    Socket newSock = new Socket(AddressFamily.InterNetwork,
+                                           SocketType.Stream, ProtocolType.Tcp);
+
+                    newPlayer.setPlayerPosition(0.0f, 0.0f);
+                    newPlayer.IPEndPoint = handler.RemoteEndPoint;
+                    newPlayer.sock = newSock;
+                    newPlayer.playerID = playersInGame.Count; // PID will be set by the number of players.
                     playersInGame.Insert(newPlayer.playerID, newPlayer);     // Player is now added to GameServer and is active!
                     Console.WriteLine("Player has been added to Game! Player ID[" + newPlayer.playerID + "with IP Endpoint {" + newPlayer.IPEndPoint );
+
 
                 }
                 // CASE 2: If player gave a "position" update, the game server, game server will update the coordinates/situations.
@@ -262,9 +382,6 @@ public class GameAsynchronousSocketListener
                 // Example: 
 
                 SendGame(handler, "[ack] Recieved this: " + content);
-
-                // Start the game if it hasn't started already to allow for message updates to begin.
-                GameStart = true;
             }
             else
             {

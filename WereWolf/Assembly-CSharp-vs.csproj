@@ -66,6 +66,7 @@
      <Compile Include="Assets\Scripts\Game\WereWolfSpawner.cs" />
      <Compile Include="Assets\Scripts\Game\WerewolfAI.cs" />
      <Compile Include="Assets\Scripts\Login\ClientConnection.cs" />
+     <Compile Include="Assets\Scripts\Login\GameNetworking.cs" />
      <Compile Include="Assets\Scripts\Login\LobbyNetworking.cs" />
      <Compile Include="Assets\Scripts\Login\LoginForm.cs" />
      <Compile Include="Assets\Scripts\Login\Networking.cs" />

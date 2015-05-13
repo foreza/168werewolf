@@ -48,6 +48,8 @@ public class LobbyNetworking : MonoBehaviour {
 	{
 		print ("Recieved message; starting game");
 		StartLobby ("joinGame");
+		this.SendMessage ("BeginGame"); 	// calls the GameNetworking class to kick in and begin.
+		// bogus input
 	}
 		
 		// ManualResetEvent instances signal completion.

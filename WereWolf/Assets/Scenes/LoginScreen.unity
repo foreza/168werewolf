@@ -624,6 +624,7 @@ GameObject:
   - 114: {fileID: 815526830}
   - 114: {fileID: 815526824}
   - 114: {fileID: 815526831}
+  - 114: {fileID: 815526832}
   m_Layer: 0
   m_Name: SceneHandler
   m_TagString: Untagged
@@ -730,6 +731,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f2ab1db6e3ba5eb4a9ff7c0738741278, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &815526832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 815526823}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63bb18288cb4ad545a3cb157108d5b90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &981045588
