@@ -85,7 +85,10 @@ public class LobbyNetworking : MonoBehaviour {
 				
 				// Write the response to the console.
 			print ("Response received : {0}" + responseLobby + test);
-				test++;
+			test++;
+
+				Application.LoadLevel("Title");
+			print ("Loading Title screen");
 				// Release the socket.
 				client.Shutdown(SocketShutdown.Both);
 				client.Close();

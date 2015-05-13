@@ -2,8 +2,8 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Login\Networking.cs">
     <Files>
-      <File FileName="Assets\Scripts\Login\Networking.cs" Line="18" Column="48" />
-      <File FileName="Assets\Scripts\Login\LobbyNetworking.cs" Line="52" Column="32" />
+      <File FileName="Assets\Scripts\Login\Networking.cs" Line="118" Column="32" />
+      <File FileName="Assets\Scripts\Login\LobbyNetworking.cs" Line="161" Column="3" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

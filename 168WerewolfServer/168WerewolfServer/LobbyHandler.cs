@@ -48,7 +48,7 @@ using System.Collections.Generic;
     public static void StartLobbyStatusCheck()
     {
 
-        while (true)
+        while (true && playersInLobby != null)
         {
             int playersInLobbyCount = playersInLobby.Count;
 
