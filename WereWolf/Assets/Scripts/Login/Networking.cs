@@ -101,8 +101,13 @@ public class Networking : MonoBehaviour {
 				print ("Response received : {0}" + response + test);
 				test++;
 				// Release the socket.
-				client.Shutdown(SocketShutdown.Both);
-				client.Close();
+                try {
+                    client.Shutdown(SocketShutdown.Both);
+                    client.Close();
+                }
+                catch (Exception e){
+                    print("SOCKET ALREADY CLOSED");
+                }
 
 				// Handle the instance.
 
