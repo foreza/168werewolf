@@ -94,6 +94,7 @@
     <Compile Include="GameServer.cs" />
     <Compile Include="LobbyHandler.cs" />
     <Compile Include="LoginHandler.cs" />
+    <Compile Include="Scorekeeper.cs" />
     <Compile Include="SocketHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
