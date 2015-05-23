@@ -88,7 +88,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="dbAccess.cs" />
     <Compile Include="GameHandler.cs" />
     <Compile Include="GameServer.cs" />

@@ -13,6 +13,7 @@ namespace Assets.Scripts {
 		public float yCoord;
 
         public bool isWerewolf;
+        public int score;
     }
 
     //Allows us to build up an update to send to the server so that
@@ -21,8 +22,8 @@ namespace Assets.Scripts {
         PlayerUpdate pu = new PlayerUpdate();
 
         //Constructor requires ID of player who will send the update
-        public UpdateBuilder(int initID) {
-            pu.ID = initID;
+        public UpdateBuilder(int playerID) {
+            pu.ID = playerID;
         }
         
         public void setxCoord(float newXCoord) {
@@ -34,6 +35,10 @@ namespace Assets.Scripts {
 
         public void setWerewolfState(bool iswolf) {
             pu.isWerewolf = iswolf;
+        }
+
+        public void setScore(int newScore) {
+            pu.score = newScore;
         }
 
 
