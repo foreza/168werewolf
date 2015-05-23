@@ -127,6 +127,19 @@ public class dbAccess {
         reader = dbcmd.ExecuteReader();
         ArrayList readArray = new ArrayList();
         while (reader.Read()) {
+            string temp = reader.ToString();
+            readArray.Add(temp); // Fill array with all matches
+        }
+        return readArray; // return matches
+    }
+
+    public ArrayList SingleSelect(string tableName, string itemToSelect) { // Selects a single Item
+        string query = "SELECT " + itemToSelect + " FROM " + tableName;
+        dbcmd = dbcon.CreateCommand();
+        dbcmd.CommandText = query;
+        reader = dbcmd.ExecuteReader();
+        ArrayList readArray = new ArrayList();
+        while (reader.Read()) {
             string temp = reader.GetString(0);
             readArray.Add(temp); // Fill array with all matches
         }

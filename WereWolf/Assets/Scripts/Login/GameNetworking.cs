@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System;
 using System.Net;
@@ -12,6 +13,7 @@ public class GameNetworking : MonoBehaviour {
 	// The port number for the remote lobby server.
 	public const int portGame = 11002;
 	public GameObject myself;
+    public string username;
 	public bool noSpawn = true;
 	public int loginSize;
 
@@ -24,7 +26,7 @@ public class GameNetworking : MonoBehaviour {
 	
 	void Update ()
 	{
-
+        username = GameObject.Find("Username").GetComponent<InputField>().text;
 		if (Input.GetMouseButtonDown (0)) { 
 		}
 	}
@@ -103,14 +105,14 @@ public class GameNetworking : MonoBehaviour {
 
 	public void PassPosition(String s)
 	{
-		StartGame ("position" + "|" + myPlayerID + "|" + s + "|");
+		StartGame ("position" + "|" + myPlayerID + "|" + s + "|"+username+"|0|"); //the zero is a test score
 	}
 
 	public GameObject toSpawn;
 
 	public void SpawnNew(int n)
 	{
-		print ("Recieved param: " + n);
+		print ("Received param: " + n);
 
 		for (int i = 0; i < n; i++)
 		{
@@ -143,10 +145,10 @@ public class GameNetworking : MonoBehaviour {
 			client.BeginConnect( remoteEP, new AsyncCallback(ConnectCallbackGame), client);
 			connectDoneGame.WaitOne();
 			
-			print ("Connected to game. Sending and recieving data.");
+			print ("Connected to game. Sending and receiving data.");
 			
 			// Send test data to the remote device.
-			// Server will recieve "joinGame or joinGame" and will accept the request.
+			// Server will receive "joinGame or joinGame" and will accept the request.
 			SendGame(client,s + "<EOF>");
 			sendDoneGame.WaitOne();
 			
@@ -172,11 +174,11 @@ public class GameNetworking : MonoBehaviour {
 			}
 			else if (responseGame.Contains("update"))
 			{
-				// Recieve and parse the data and apply it to the game world as necessary
+				// Receive and parse the data and apply it to the game world as necessary
 				if(noSpawn)
 				{
-				noSpawn = false;
-				int trimm = loginSize - 1;
+				    noSpawn = false;
+				    int trimm = loginSize - 1;
 					SpawnNew(trimm);
 				}
 
