@@ -11,62 +11,25 @@ public class GameNetworking : MonoBehaviour {
 	
 	// The port number for the remote lobby server.
 	public const int portGame = 11002;
-	public GameObject myself;
 	public bool noSpawn = true;
-	public int loginSize;
 
-	public  ArrayList playersTracking; // fill with PlayerObjects and iterate.
+	public int loginSize;
+	public String myPlayerID;					// Need to know my PID here.
+
+	// The response from the remote device.
+	public String responseGame = String.Empty;
+	
 	void Start () {
 	
-		myself = GameObject.Find ("SceneHandler");
-		playersTracking = new ArrayList();
 	}
 	
 	void Update ()
 	{
 
-		if (Input.GetMouseButtonDown (0)) { 
-		}
-	}
-
-	public class PlayerObj
-	{
-		public String playerID;
-		public GameObject g;
-
-		public PlayerObj()
-		{
-			// Empty constructor.
-			playerID = "new";
-		}
-		public PlayerObj(String id, GameObject game)
-		{
-			playerID = id;
-			g = game;
-		}
-
-		public void updatePosition(float x, float y)
-		{
-			g.transform.position = new Vector3 (x, y);
-			print ("Moving other player (not me): " + g.transform.position);
-		}
-
-		public String getID()
-		{
-			return playerID;
-		}
-
-		public GameObject getObj()
-		{
-			return g;
-		}
-		// Shouldn't need to get the position, we're just settting.
-
 	}
 
 
-	
-	
+
 	// State object for receiving data from remote device.
 	public class StateObject {
 		// Client socket.
@@ -90,63 +53,52 @@ public class GameNetworking : MonoBehaviour {
 	public static ManualResetEvent receiveDoneSpawn = 
 		new ManualResetEvent(false);
 
-	// The response from the remote device.
-	public String responseGame = String.Empty;
 
-	public  String myPlayerID;
-
+	public void SetMyPID(string i)
+	{
+		myPlayerID = i;
+	}
 
 	public void BeginGame()
 	{
-		StartGame ("joinGame");
+		// Start the game. Send "join game" to tell the server to initialize initial contact
+		SendServerMessage ("joinGame");
 	}
 
 	public void PassPosition(String s)
 	{
-		StartGame ("position" + "|" + myPlayerID + "|" + s + "|");
+		// Called by the main game loop to pass positions.
+		SendServerMessage ("position" + "|" + myPlayerID + "|" + s + "|");
+
+		// TODO: Incorporate player facing direction and various other things LATER
 	}
 
-	public GameObject toSpawn;
-
-	public void SpawnNew(int n)
+	// Method call by game engine to change the state of the game.
+	public void PassStateChange(String s)
 	{
-		print ("Recieved param: " + n);
-
-		for (int i = 0; i < n; i++)
-		{
-
-			GameObject go = new GameObject();
-			go = (GameObject)Instantiate(Resources.Load("OtherPlayer")); ;
-			PlayerObj p = new PlayerObj("new", go);
-			playersTracking.Add(p); // Add several Player objects to aid in expansion!
-		}
-
+		// Called by the main game loop to pass positions.
+		SendServerMessage ("stateUpdate" + "|" + myPlayerID + "|" + s + "|");
+		
+		// TODO: Work on this.
 	}
 	
-	public void StartGame(String s) {
+
+	public void SendServerMessage(String s) {
 		// Connect to a remote device.
 		try {
-			// Establish the remote endpoint for the socket.
-			// The name of the 
-			// remote device is "host.contoso.com".
-			print ("Beginning connection to game.");
 			
 			IPHostEntry ipHostInfo = Dns.GetHostEntry(Networking.IPaddress);
 			IPAddress ipAddress = ipHostInfo.AddressList[0];
 			IPEndPoint remoteEP = new IPEndPoint(ipAddress, portGame);
 			
 			// Create a TCP/IP socket.
-			Socket client = new Socket(AddressFamily.InterNetwork,
-			                           SocketType.Stream, ProtocolType.Tcp);
+			Socket client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 			
 			// Connect to the remote endpoint.
 			client.BeginConnect( remoteEP, new AsyncCallback(ConnectCallbackGame), client);
 			connectDoneGame.WaitOne();
-			
-			print ("Connected to game. Sending and recieving data.");
-			
-			// Send test data to the remote device.
-			// Server will recieve "joinGame or joinGame" and will accept the request.
+
+			// Server will recieve an appropriate message and respond accordingly.
 			SendGame(client,s + "<EOF>");
 			sendDoneGame.WaitOne();
 			
@@ -157,57 +109,9 @@ public class GameNetworking : MonoBehaviour {
 			// Write the response to the console.
 			print ("Response received : {0}" + responseGame);
 
-			if(responseGame.Contains("welcome"))
-			{
-				// Assigned played ID here
-				String [] splitResp = responseGame.Split('|');
-
-				myPlayerID = splitResp[0].Substring(9);
-				loginSize = int.Parse (splitResp[1]);
-				print ("I was assigned this player ID: " + myPlayerID + " , currently this many players: " + loginSize);
-
-				receiveDoneSpawn.WaitOne(1000);
-
-				
-			}
-			else if (responseGame.Contains("update"))
-			{
-				// Recieve and parse the data and apply it to the game world as necessary
-				if(noSpawn)
-				{
-				noSpawn = false;
-				int trimm = loginSize - 1;
-					SpawnNew(trimm);
-				}
-
-				print ("I'm processing this: " + responseGame);
-				responseGame = responseGame.Substring(9);
-				String [] split = responseGame.Split('*'); 
-				// Split[0] = [player|pos1|pos2|EOF
-				// * denotes each player.
-				//int newSize = int.Parse(split[0]);			// Check if we need to force refresh.
-				//if(newSize > loginSize)
-				{
-					//SpawnNew(1);
-					//loginSize = newSize;
-				}
-
-				for (int p = 0; p < split.Length; p++)
-				{
-					// Split the string by the | delimiter to get player ID, X, and Y.
-					String [] split2 = split[p].Split('|');
-					int givenID = int.Parse(split2[0]);
-					String givenX = split2[1];
-					String givenY = split2[2];
-					// If it isn't my player ID, I need to either add the player to the game world, or update their position.
-					//if (givenID != myPlayerID) // 
-					{
-						// Search into player tracking to see if they exist.
-						((PlayerObj)playersTracking[givenID]).updatePosition(float.Parse(split2[1]),float.Parse(split2[2]));
-						}
-				}
-			}
-
+			// Pass the message to the server messagehandler.
+			this.gameObject.SendMessage("HandleServerMessage", responseGame);
+	
 
 			// Release the socket.
 			client.Shutdown(SocketShutdown.Both);
@@ -309,3 +213,36 @@ public class GameNetworking : MonoBehaviour {
 	
 
 }
+
+
+
+
+
+/*
+ * 
+ * 
+ * 
+ * Thinking of new way to recieve messages and spawn.
+ * 
+ * First step is INITIALIZATION - when the client first connects.
+ * The information player gets from the server is:
+ *  - a player ID
+ * 	- total number of players already connected
+ *  -- TODO --
+ * ~ POSITION OF ALL PLAYERS/WOLVES (not really needed, gets fixed in update loop ~ // may come in handy next time though
+ * Location of all buildings/and their statuses
+ *  
+ * Next step is UPDATE PER LOOP - the information that is passed every game loop (werewolf transformation can be handled here too..)
+ * 
+ * 
+ * 
+ * Another step is event Trigger - the info that is passed when something interesting happens (werewolf changes, game over, lighttower activated etc)
+ * 
+ * 
+ * Crucial step is handle DC - game should run smoothly / have no dependency (assume player dead if they d/c, or something)
+ * 
+ * Final step is end game - should handle game end.
+ * 
+ * More things to consider - multiple game servers, etc.
+ * 
+ */
