@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 using System;
 using System.Net;
@@ -11,6 +12,8 @@ public class GameNetworking : MonoBehaviour {
 	
 	// The port number for the remote lobby server.
 	public const int portGame = 11002;
+	public GameObject myself;
+    public string username;
 	public bool noSpawn = true;
 
 	public int loginSize;
@@ -25,6 +28,8 @@ public class GameNetworking : MonoBehaviour {
 	
 	void Update ()
 	{
+
+        username = GameObject.Find("Username").GetComponent<InputField>().text;
 
 	}
 
@@ -68,18 +73,20 @@ public class GameNetworking : MonoBehaviour {
 	public void PassPosition(String s)
 	{
 		// Called by the main game loop to pass positions.
-		SendServerMessage ("position" + "|" + myPlayerID + "|" + s + "|");
-
+		SendServerMessage ("position" + "|" + myPlayerID + "|" + s + "|"+username+"|0|"); //the zero is a test score
 		// TODO: Incorporate player facing direction and various other things LATER
+
 	}
+	
 
 	// Method call by game engine to change the state of the game.
 	public void PassStateChange(String s)
 	{
 		// Called by the main game loop to pass positions.
 		SendServerMessage ("stateUpdate" + "|" + myPlayerID + "|" + s + "|");
-		
-		// TODO: Work on this.
+
+
+
 	}
 	
 
@@ -112,7 +119,6 @@ public class GameNetworking : MonoBehaviour {
 			// Pass the message to the server messagehandler.
 			this.gameObject.SendMessage("HandleServerMessage", responseGame);
 	
-
 			// Release the socket.
 			client.Shutdown(SocketShutdown.Both);
 			client.Close();

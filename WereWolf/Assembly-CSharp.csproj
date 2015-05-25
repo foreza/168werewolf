@@ -54,6 +54,7 @@
      <Compile Include="Assets\Scripts\Game\FogOfWar.cs" />
      <Compile Include="Assets\Scripts\Game\GameEndHandler.cs" />
      <Compile Include="Assets\Scripts\Game\HavenWin.cs" />
+     <Compile Include="Assets\Scripts\Game\HumanController.cs" />
      <Compile Include="Assets\Scripts\Game\Interactable.cs" />
      <Compile Include="Assets\Scripts\Game\Objectives.cs" />
      <Compile Include="Assets\Scripts\Game\PlayerController.cs" />
@@ -67,6 +68,7 @@
      <Compile Include="Assets\Scripts\Game\TrapTrigger.cs" />
      <Compile Include="Assets\Scripts\Game\WereWolfSpawner.cs" />
      <Compile Include="Assets\Scripts\Game\WerewolfAI.cs" />
+     <Compile Include="Assets\Scripts\Game\WerewolfController.cs" />
      <Compile Include="Assets\Scripts\Login\GameNetworking.cs" />
      <Compile Include="Assets\Scripts\Login\LobbyNetworking.cs" />
      <Compile Include="Assets\Scripts\Login\LoginForm.cs" />
