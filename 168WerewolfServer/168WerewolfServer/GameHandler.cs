@@ -29,7 +29,7 @@ class GameHandler
         public class GameAsynchronousSocketListener {
 
             public string RoomName = "default";                // Empty name 
-            public  int GamePort = 11002;             // Port is increased, client will know to connect to this.
+            public  int GamePort = 0;             // Port is increased, client will know to connect to this.
             // Thread signal.
             public  ManualResetEvent allDoneGame = new ManualResetEvent(false);
             public  ManualResetEvent GameMessageRound = new ManualResetEvent(false);
@@ -62,6 +62,10 @@ class GameHandler
                 // different ports for different rooms!
 
                 // n indicates the name of the room.
+
+                RoomName = n;
+                GamePort = i;
+                Console.WriteLine("Constructed a new server with name: " + n +  " and port: " + i);
 
             }
 
@@ -208,6 +212,7 @@ class GameHandler
                         allDoneGame.Reset();
 
                         // Start an asynchronous socket to listen for connections.
+                        Console.WriteLine("[" + RoomName + "] log mesage: ");
                         Console.WriteLine("Waiting for Game Data");
                         listener.BeginAccept(new AsyncCallback(AcceptGameCallback), listener);
                         // Wait until a connection is made before continuing.
@@ -236,6 +241,7 @@ class GameHandler
                 Socket listener = (Socket)ar.AsyncState;
                 Socket handler = listener.EndAccept(ar);
 
+                Console.WriteLine("[" + RoomName + "] log mesage: ");
                 Console.WriteLine("Obtaining Game Data from" + handler.LocalEndPoint);
 
 
@@ -281,14 +287,20 @@ class GameHandler
                             Player newPlayer = new Player();
                             Socket newSock = new Socket(AddressFamily.InterNetwork,
                                                    SocketType.Stream, ProtocolType.Tcp);
-
+                            newSock = handler;          // set the new socket = to the handler.
+                            // Set player info here.
                             newPlayer.setPlayerPosition(0.0f, 0.0f);
                             newPlayer.IPEndPoint = handler.RemoteEndPoint;
                             newPlayer.sock = newSock;
                             newPlayer.playerID = playersInGame.Count; // PID will be set by the number of players.
+                            
+                            
+                            // Add the player to the game.
                             playersInGame.Insert(newPlayer.playerID, newPlayer);     // Player is now added to GameServer and is active!
+                            Console.WriteLine("[" + RoomName + "] log mesage: ");
                             Console.WriteLine("Player has been added to Game! Player ID[" + newPlayer.playerID + "with IP Endpoint {" + newPlayer.IPEndPoint);
 
+                            // Send the player a confirmation, along with their ID, total # of players.
                             SendGame(handler, "[welcome]" + newPlayer.playerID + "|" + playersInGame.Count);            // Send the player the ID that they will use to keep track of things.
 
                         }
@@ -297,8 +309,6 @@ class GameHandler
                             // GET THE PLAYER ID from the packet
 
                             String[] splitted = content.Split('|');
-
-
 
                             int index = int.Parse(splitted[1]);
                             // Code to add here to extract the string
@@ -313,6 +323,7 @@ class GameHandler
                             Player e = (Player)playersInGame[index];                // replace the index 
                             e.setPlayerPosition(posXUpdate, posYUpdate);        // set the updates
                             sk.SetScore(username, scoreUpdate); //Sets the score
+                            Console.WriteLine("[" + RoomName + "] log mesage: ");
                             Console.WriteLine("Server applied this position update to player: " + index + "content: " + content);
 
 
@@ -330,6 +341,40 @@ class GameHandler
                             SendGame(handler, "[update]" + updateS);
                         }
 
+                         // CASE 3: If player gave a "status" update, the game server, game server will update ALL situations.
+                        // example: player triggers a tower.
+                        else if (content.Contains("statusUpdate"))
+                        {
+
+                            // NOT YET FINISHED 
+                            // GET THE PLAYER ID from the packet
+
+                            String[] splitted = content.Split('|');
+
+                            int index = int.Parse(splitted[1]);
+                            // Code to add here to extract the string
+                            // position[450,230]
+                            // we also need playerID
+                            // apply position updates to this particular player on the server.
+                    
+
+
+                            // Encode the game data and send it as a very long string to client.
+                            // Example: 
+
+                            // Fomat: playerID{playerPosX|playerPosY}playerID{playerPosX|playerPosY}
+                            String updateS = "";
+
+                            for (int i = 0; i < playersInGame.Count; i++)
+                            {
+                                Player k = (Player)playersInGame[i];
+                                updateS += "*" + k.playerID + "|" + k.positionX + "|" + k.positionY + "|"; // slight edit to ensure playerInGameCount is always viewable
+                                SendGame(k.getSock(), "[update]" + updateS);
+
+                            }
+
+                        }
+
 
 
 
@@ -343,7 +388,7 @@ class GameHandler
                 }
             }
 
-            private  void SendGame(Socket handler, String data) {
+            private void SendGame(Socket handler, String data) {
                 // Convert the string data to byte data using ASCII encoding.
                 byte[] byteData = Encoding.ASCII.GetBytes(data);
 
@@ -359,6 +404,7 @@ class GameHandler
 
                     // Complete sending the data to the remote device.
                     int bytesSent = handler.EndSend(ar);
+                    Console.WriteLine("[" + RoomName + "] log mesage: ");
                     Console.WriteLine("Sent {0} bytes to this client: " + handler.LocalEndPoint, bytesSent);
 
                     handler.Shutdown(SocketShutdown.Both);

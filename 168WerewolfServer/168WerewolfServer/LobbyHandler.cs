@@ -16,16 +16,12 @@ using _168WerewolfServer;
 
     }
 
-
-
-
-
-
-
     public class LobbyAsynchronousSocketListener
 {
 
     public static int lobbyPort = 11001;             // Port is increased by 1, client will know to connect to this.
+    public static int gamePorts = 11002;            // GamePorts start from 11002.
+
     public static Queue<GameThread> RunningGameInstances;       // Store running game instances here once you make them.
     // Thread signal.
     public static ManualResetEvent allDoneLobby = new ManualResetEvent(false);
@@ -50,28 +46,34 @@ using _168WerewolfServer;
 
     public LobbyAsynchronousSocketListener()
     {
-        RunningGameInstances = new Queue<GameThread>();
+  
     }
 
 
     // Call this function to begin another thread.
-    public void StartNewGameThread(string name, int instance)
+    public static void StartNewGameThread(string name, int instance)
     {
-
-        Thread NewGameThread;                                                                   // define a new thread object.
-        GameAsynchronousSocketListener g = new GameAsynchronousSocketListener(name, instance);                // Create a new socket listener for a game server
-        NewGameThread = new Thread(g.StartGameListening);                                       // instantiate it.
-        NewGameThread.Start();                                                                  // Start the instance.
 
         // Create a GameThread object
         GameThread gt = new GameThread();
         gt.name = name;
-        gt.portNumber = 19999;   // change
+        gt.portNumber = GetInstancePortNumber(instance);   // change
+        GameAsynchronousSocketListener g = new GameAsynchronousSocketListener(name, gt.portNumber);                // Create a new socket listener for a game server
+        Thread NewGameThread = new Thread(g.StartGameListening);                                        // define instantiate it.
         gt.t = NewGameThread;
+        NewGameThread.Start();                                                                          // Start the instance.
 
         // Enqueue the instance.
         RunningGameInstances.Enqueue(gt);
         Console.WriteLine("Added a new game thread with name: " + gt.name + "and listening to port: " + gt.portNumber);
+
+    }
+
+    // This function returns a port number based off of the initial port number.
+    // We may do something with the param we pass in.
+    public static int GetInstancePortNumber(int i)
+    {
+        return (gamePorts + RunningGameInstances.Count);
 
     }
 
@@ -127,10 +129,18 @@ using _168WerewolfServer;
     // This allows players to enter the lobby, storing their information into an available data structure of players that the game instances can run on.
     public static void StartLobbyListening()
     {
-        // This is dangerous; make sure to run the lobby listener before the status checks.
         playersInLobby = new Queue<PlayerLobbyObj>();
+        RunningGameInstances = new Queue<GameThread>();
 
         Console.WriteLine("Lobby is now running.");
+
+        Console.WriteLine("Testing game server functionality...");
+
+        StartNewGameThread("Game1", 1);
+        StartNewGameThread("Game2", 1);
+        StartNewGameThread("Game3", 1);
+        StartNewGameThread("Game4", 1);
+
 
         // Data buffer for incoming data.
         byte[] bytes = new Byte[1024];
@@ -259,6 +269,7 @@ using _168WerewolfServer;
                         // Make a new game port as well
                         // Set the player obj port to that number
                         // Run game instance, and player can then connnect to it.
+                        
 
                     }
 

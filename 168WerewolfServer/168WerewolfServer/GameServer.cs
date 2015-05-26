@@ -53,6 +53,8 @@ public class GameServer
         LobbyThread.Start();
         LobbyCheckThread.Start();
 
+        Console.WriteLine("Wating for player connections. Game servers will initialize upon login!");
+
         /* Do not have main loop start a game server! */
         //Console.WriteLine("Initializing a temporary Game Server!");
         //GameThread.Start();
