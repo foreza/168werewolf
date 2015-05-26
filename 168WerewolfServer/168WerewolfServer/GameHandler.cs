@@ -28,76 +28,45 @@ class GameHandler
     namespace _168WerewolfServer {
         public class GameAsynchronousSocketListener {
 
-            public static int GamePort = 11002;             // Port is increased, client will know to connect to this.
-            public static int GamePort2 = 11003;
+            public string RoomName = "default";                // Empty name 
+            public  int GamePort = 11002;             // Port is increased, client will know to connect to this.
             // Thread signal.
-            public static ManualResetEvent allDoneGame = new ManualResetEvent(false);
-            public static ManualResetEvent GameMessageRound = new ManualResetEvent(false);
+            public  ManualResetEvent allDoneGame = new ManualResetEvent(false);
+            public  ManualResetEvent GameMessageRound = new ManualResetEvent(false);
 
-            public static bool GameStart;
+            public  bool GameStart;
 
-            private static String response = String.Empty;
-
-
-            // A sample Player class that is created.
-            public class Player {
-                public EndPoint IPEndPoint;
-                public Socket sock;
-                public float positionX;
-                public float positionY;
-                public int playerID;
-
-                public Player() { }
-
-                public Socket getSock() {
-                    return sock;
-                }
-
-                public EndPoint getIP() {
-                    return IPEndPoint;
-                }
-
-                public float getX() {
-                    return positionX;
-                }
-
-                public float getY() {
-                    return positionY;
-                }
-
-                public int getPID() {
-                    return playerID;
-                }
-
-                public void setPlayerPosition(float x, float y) {
-                    positionX = x;
-                    positionY = y;
-                }
+            private  String response = String.Empty;
+            public  ArrayList playersInGame;
 
 
-            }
+            public  IPHostEntry gameipHostInfo;
+            public  IPAddress gameipAddress;
+            public  IPEndPoint gamelocalEndPoint;
+            public  IPEndPoint gamelocalEndPointPos;
 
-
-            public static ArrayList playersInGame;
-
-
-            public static IPHostEntry gameipHostInfo;
-            public static IPAddress gameipAddress;
-            public static IPEndPoint gamelocalEndPoint;
-            public static IPEndPoint gamelocalEndPointPos;
-
-            private static ManualResetEvent gameconnectDone =
+            private  ManualResetEvent gameconnectDone =
             new ManualResetEvent(false);
-            private static ManualResetEvent gamesendDone =
+            private  ManualResetEvent gamesendDone =
                 new ManualResetEvent(false);
-            private static ManualResetEvent gamereceiveDone =
+            private  ManualResetEvent gamereceiveDone =
                 new ManualResetEvent(false);
 
             public GameAsynchronousSocketListener() {
 
             }
 
-            public static void SendPositionUpdates() {
+            public GameAsynchronousSocketListener(String n, int i)
+            {
+                // i indicates an offset for the port number that i need to connect to
+                // different ports for different rooms!
+
+                // n indicates the name of the room.
+
+            }
+
+            // Deprecated as of Milestone 3.
+            public  void SendPositionUpdates() {
                 // This loop will constantly send out position updates to all connected clients.
                 /*
                 while(true)
@@ -143,7 +112,7 @@ class GameHandler
                  * */
             }
 
-            private static void GameConnectCallback(IAsyncResult ar) {
+            private  void GameConnectCallback(IAsyncResult ar) {
                 try {
                     // Retrieve the socket from the state object.
                     Socket client = (Socket)ar.AsyncState;
@@ -161,7 +130,7 @@ class GameHandler
                 }
             }
 
-            private static void gameReceive(Socket client) {
+            private  void gameReceive(Socket client) {
                 try {
                     // Create the state object.
                     StateObject state = new StateObject();
@@ -176,7 +145,7 @@ class GameHandler
                 }
             }
 
-            private static void gameReceiveCallback(IAsyncResult ar) {
+            private  void gameReceiveCallback(IAsyncResult ar) {
                 try {
                     // Retrieve the state object and the client socket 
                     // from the asynchronous state object.
@@ -209,22 +178,20 @@ class GameHandler
             }
 
             // This allows players to enter the Game, storing their information into an available data structure of players that the game instances can run on.
-            public static void StartGameListening() {
+            public  void StartGameListening() {
                 // This is dangerous; make sure to run the Game listener before the status checks.
                 playersInGame = new ArrayList();
 
-                Console.WriteLine("Game is now running.");
+                Console.WriteLine("Game room: [" + RoomName + "] is now running.");
 
                 // Data buffer for incoming data.
                 byte[] bytes = new Byte[1024];
 
                 // Establish the local endpoint for the socket.
-                // The DNS name of the computer
-                // running the listener is "host.contoso.com".
+
                 gameipHostInfo = Dns.Resolve(Dns.GetHostName());
                 gameipAddress = gameipHostInfo.AddressList[0];
                 gamelocalEndPoint = new IPEndPoint(gameipAddress, GamePort);
-                gamelocalEndPointPos = new IPEndPoint(gameipAddress, GamePort2);
 
                 // Create a TCP/IP socket.
                 Socket listener = new Socket(AddressFamily.InterNetwork,
@@ -261,7 +228,7 @@ class GameHandler
 
             }
 
-            public static void AcceptGameCallback(IAsyncResult ar) {
+            public  void AcceptGameCallback(IAsyncResult ar) {
                 // Signal the main thread to continue.
                 allDoneGame.Set();
 
@@ -281,7 +248,7 @@ class GameHandler
                     new AsyncCallback(ReadGameCallback), state);
             }
 
-            public static void ReadGameCallback(IAsyncResult ar) {
+            public  void ReadGameCallback(IAsyncResult ar) {
                 String content = String.Empty;
 
                 Scorekeeper sk = new Scorekeeper("SCOREBOARD");
@@ -376,7 +343,7 @@ class GameHandler
                 }
             }
 
-            private static void SendGame(Socket handler, String data) {
+            private  void SendGame(Socket handler, String data) {
                 // Convert the string data to byte data using ASCII encoding.
                 byte[] byteData = Encoding.ASCII.GetBytes(data);
 
@@ -385,7 +352,7 @@ class GameHandler
                     new AsyncCallback(SendGameCallback), handler);
             }
 
-            private static void SendGameCallback(IAsyncResult ar) {
+            private  void SendGameCallback(IAsyncResult ar) {
                 try {
                     // Retrieve the socket from the state object.
                     Socket handler = (Socket)ar.AsyncState;

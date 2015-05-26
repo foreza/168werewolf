@@ -4,8 +4,10 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System.Collections;
 using System.Collections.Generic;
 
+using _168WerewolfServer;
 
 
 // 128.195.21.135
@@ -14,36 +16,65 @@ using System.Collections.Generic;
 
     }
 
-    // State object for reading client data asynchronously
-/*
-    public class StateObject
-    {
-        // Client  socket.
-        public Socket workSocket = null;
-        // Size of receive buffer.
-        public const int BufferSize = 1024;
-        // Receive buffer.
-        public byte[] buffer = new byte[BufferSize];
-        // Received data string.
-        public StringBuilder sb = new StringBuilder();
-    }
- * */
+
+
+
+
+
+
     public class LobbyAsynchronousSocketListener
 {
 
     public static int lobbyPort = 11001;             // Port is increased by 1, client will know to connect to this.
+    public static Queue<GameThread> RunningGameInstances;       // Store running game instances here once you make them.
     // Thread signal.
     public static ManualResetEvent allDoneLobby = new ManualResetEvent(false);
 
     public static ManualResetEvent lobbyMessageRound = new ManualResetEvent(false);
 
 
-    public static Queue<String> playersInLobby;
+    public struct PlayerLobbyObj
+    {
+        public String theEndPoint;
+        public int gamePortNumber;
+    }
+
+    public struct GameThread
+    {
+        public Thread t;            // The thread object
+        public String name;         // Name of Game room
+        public int portNumber;      // assigned port iD
+    }
+
+    public static Queue<PlayerLobbyObj> playersInLobby;
 
     public LobbyAsynchronousSocketListener()
     {
-       
+        RunningGameInstances = new Queue<GameThread>();
     }
+
+
+    // Call this function to begin another thread.
+    public void StartNewGameThread(string name, int instance)
+    {
+
+        Thread NewGameThread;                                                                   // define a new thread object.
+        GameAsynchronousSocketListener g = new GameAsynchronousSocketListener(name, instance);                // Create a new socket listener for a game server
+        NewGameThread = new Thread(g.StartGameListening);                                       // instantiate it.
+        NewGameThread.Start();                                                                  // Start the instance.
+
+        // Create a GameThread object
+        GameThread gt = new GameThread();
+        gt.name = name;
+        gt.portNumber = 19999;   // change
+        gt.t = NewGameThread;
+
+        // Enqueue the instance.
+        RunningGameInstances.Enqueue(gt);
+        Console.WriteLine("Added a new game thread with name: " + gt.name + "and listening to port: " + gt.portNumber);
+
+    }
+
 
     public static void StartLobbyStatusCheck()
     {
@@ -56,11 +87,12 @@ using System.Collections.Generic;
 
             while (playersInLobbyCount > 0)
             {
-                String p = playersInLobby.Peek();
+                String p = playersInLobby.Peek().theEndPoint;
                 Console.WriteLine("Player with endpoint IP: " + p);
 
                 playersInLobbyCount--;
-                playersInLobby.Enqueue(p);
+
+                playersInLobby.Enqueue(playersInLobby.Peek());
                 playersInLobby.Dequeue();
             }
 
@@ -70,13 +102,33 @@ using System.Collections.Generic;
         }
 
     }
+
+      public static bool CheckGameExists(string n)
+    {
+        // A quick method that checks through the entire queue of current game threads.
+ 
+        int size = RunningGameInstances.Count;
+        for (int i = 0; i < size; ++i)
+        {
+            // Compare names.
+            if (n.Equals(RunningGameInstances.Peek().name))
+            {
+                // If any of them are true
+                return true;
+            }
+            RunningGameInstances.Enqueue(RunningGameInstances.Peek());
+            RunningGameInstances.Dequeue();
+        }
+          // Game does not exist! Signal to main caller to make a new one.
+            return false;
+    }
         
 
     // This allows players to enter the lobby, storing their information into an available data structure of players that the game instances can run on.
     public static void StartLobbyListening()
     {
         // This is dangerous; make sure to run the lobby listener before the status checks.
-        playersInLobby = new Queue<String>();
+        playersInLobby = new Queue<PlayerLobbyObj>();
 
         Console.WriteLine("Lobby is now running.");
 
@@ -178,8 +230,39 @@ using System.Collections.Generic;
                 // CASE 1: If player gave a "joinLobby" request, the server will enqueue the player.
                 if(content.Contains("joinLobby"))
                 {
-                    playersInLobby.Enqueue(handler.LocalEndPoint.ToString());
-                    Console.WriteLine("Player added to lobby");
+                    // CHANGE THIS SO WE ENQUEUE PLAYERS.
+                    // a struct.
+
+                    // We will recieve the name of the game that they want to join.
+
+                    // TODO: Parse it, and check the name.
+
+                    PlayerLobbyObj temp = new PlayerLobbyObj();
+                    temp.theEndPoint = handler.LocalEndPoint.ToString();
+
+                    playersInLobby.Enqueue(temp);
+
+                    // TODO: Do we need to start a new game instance?
+                    // Start the game instance server once the player logs in - once they hit play, they will be live.
+                    // Basically, first person to login creates server
+
+                    // Check if we need to
+                    if (CheckGameExists("temp"))
+                    {
+                        // Set the player object's port to that number
+                        // Player will then connect
+                    }
+
+                    else
+                    {
+                        // Create a new game instance with that number
+                        // Make a new game port as well
+                        // Set the player obj port to that number
+                        // Run game instance, and player can then connnect to it.
+
+                    }
+
+                    Console.WriteLine("Player added to lobby.");
                     SendLobby(handler, "welcomeToLobby");
                 }
                 // CASE 2: If player gave a "joinGame" request, the server will attempt to place player in active game session
