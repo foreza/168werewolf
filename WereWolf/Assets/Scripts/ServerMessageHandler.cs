@@ -65,6 +65,7 @@ public class ServerMessageHandler : MonoBehaviour {
 
 		else if (s.Contains("scoreUpdate"))
 		{
+            print(s);
 			this.gameObject.SendMessage("UpdateScoreBoard", s);
 		}
 		// This method is invoked at the end of the game. 
