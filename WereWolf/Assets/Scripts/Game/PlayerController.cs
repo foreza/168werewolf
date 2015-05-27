@@ -148,11 +148,19 @@ public class PlayerController : MonoBehaviour {
 		if (Input.GetKeyDown("tab"))
 		{
 			// interact with building.
-		
+			this.SendMessage("ShowScoreBoard");
 				print ("Bringing up scoreboard");
 			
 		}
 
+		if (Input.GetKeyUp("tab"))
+		{
+			// interact with building.
+			this.SendMessage("HideScoreBoard");
+			print ("Hiding scoreboard");
+			
+		}
+		
 	}
 
     public void triggerDeath()
