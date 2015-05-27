@@ -25,12 +25,17 @@ public class Scoreboard: MonoBehaviour {
 
 	// Will be called by client sending score update, then server responding with all scores (same as position)
 	// called by ServerMessageHandler
-	void UpdateScoreBoard(string s) {
-
-		// Handle and parse the updates and put it in the score board.
-		// *username|score
+	public void UpdateScoreBoard(string s) {
 
 		print ("Scoreboard update requested!");
+
+		
+
+		
+		// Handle and parse the updates and put it in the score board.
+		// *username|score
+		playerData.text = "";
+		scoreData.text = "";
 		usernames = "";
 		scores = "";
 			
@@ -39,8 +44,8 @@ public class Scoreboard: MonoBehaviour {
 													// start from index 1 because index 0 is part of initial msg
 		for (int i = 1; i < split.Length; ++i) {
 			string [] split2 = split[i].Split('|');	// split again to obtain score and user
-			usernames += split[0] + "\n";			// concatenate and line break
-			scores += split[1] + "\n";				// oh baby
+			usernames += split2[0] + "\n";			// concatenate and line break
+			scores += split2[1] + "\n";				// oh baby
 		}
 		playerData.text += usernames;
 		scoreData.text += scores;
@@ -49,13 +54,13 @@ public class Scoreboard: MonoBehaviour {
 
 	void ShowScoreBoard ()
 	{
-		//scoreBoard.SetActive (true);
+		scoreBoard.SetActive (true);
 		// scoreData.text += "TESTINGGG \n";
 	}
 
 	void HideScoreBoard ()
 	{
-		//scoreBoard.SetActive (false);
+		scoreBoard.SetActive (false);
 
 	}
 }

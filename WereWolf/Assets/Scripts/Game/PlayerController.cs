@@ -43,10 +43,16 @@ public class PlayerController : MonoBehaviour {
 		string position = "" + transform.position.x + "|" + transform.position.y + "";
 		sceneHandler.SendMessage("PassPosition", position);
 
-        string scoreUpdate = ((int)Math.Floor(Time.time - startTime)).ToString(); //currently keeps track of how many seconds the player is in game
-        sceneHandler.SendMessage("PassScore", scoreUpdate);
+       
 	}
 
+	public void RequestScoreToServer()
+	{
+	
+		string scoreUpdate = ((int)Math.Floor(Time.time - startTime)).ToString(); //currently keeps track of how many seconds the player is in game
+		sceneHandler.SendMessage("PassScore", scoreUpdate);
+	}
+	
 	// Use this for initialization
 	protected virtual void Start () 
     {
@@ -63,11 +69,17 @@ public class PlayerController : MonoBehaviour {
 		sceneHandler = GameObject.Find ("SceneHandler");
 	
 		PositionUpdateRepeat ();
+		ScoreUpdateRepeat ();
 	}
 
 	void PositionUpdateRepeat() {
 		InvokeRepeating("RequestUpdateToServer", 1, 0.5F);
 	}
+
+	void ScoreUpdateRepeat() {
+		InvokeRepeating("RequestScoreToServer", 5, 2.0F);
+	}
+
 	
 	// Update is called once per frame
 	protected virtual void Update () 

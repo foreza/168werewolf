@@ -3,6 +3,8 @@ using System.Collections;
 
 public class ServerMessageHandler : MonoBehaviour {
 
+	GameObject player;
+
 	// Use this for initialization
 	void Start () {
 	
@@ -39,28 +41,34 @@ public class ServerMessageHandler : MonoBehaviour {
 			// The players will be moved to the appropriate places once an update is recieved.
 			// Spawn 1 less to keep track of the player
 			this.SendMessage("SpawnInitialPlayers", loginSize-1);
+			player = GameObject.Find("BBPlayer");			// save the reference
 			
 			
 		}
 		
-		
+		else if (s.Contains("update"))
+		{
+			print("Position + score update: " + s);
+
+			string [] split = s.Split('~');
+
+			this.gameObject.SendMessage("UpdateTracking", split[0]);
+			player.SendMessage("UpdateScoreBoard", split[1]);
+		}
 		
 		// Update = general updates message
 		// Each general update message contains the following:
 		// - Location of every player, along with their PID
 		// - Total # of players 
-
-		else if (s.Contains("[scoreUpdate]"))
+		/*
+		else if (s.Contains("score"))
 		{
 			print("Score update: " + s);
 			this.gameObject.SendMessage("UpdateScoreBoard", s);
 		}
-		
+		*/
 		// If there is a change in the # of players, invoke the network spawner to be able to handle it.
-		else if (s.Contains("update"))
-		{
-			this.gameObject.SendMessage("UpdateTracking", s);
-		}
+
 		
 		// This method should be invoked every time an objective is reached.
 		else if (s.Contains("stateUpdate"))

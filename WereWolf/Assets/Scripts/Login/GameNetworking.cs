@@ -99,7 +99,7 @@ public class GameNetworking : MonoBehaviour {
     public void PassScore(String scoreUpdate)
     {
 		print ("Passing this score: " + scoreUpdate);
-		SendServerMessage("scoreUpdate"+"|"+username+"|"+scoreUpdate+"|");
+		SendServerMessage("score"+"|"+username+"|"+scoreUpdate+"|");
     }
 
 
@@ -138,8 +138,7 @@ public class GameNetworking : MonoBehaviour {
 			// Receive the responseGame from the remote device.
 			ReceiveGame(client);
 			receiveDoneGame.WaitOne();
-			
-			// Write the response to the console.
+
 			print ("Response received:" + responseGame);
 
 			// Pass the message to the server messagehandler.

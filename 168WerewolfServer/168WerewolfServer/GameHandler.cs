@@ -333,21 +333,7 @@ class GameHandler
                                 updateS += "*" + k.playerID + "|" + k.positionX + "|" + k.positionY + "|"; // slight edit to ensure playerInGameCount is always viewable
                             }
 
-                            SendGame(handler, "[update]" + updateS);
-                            Console.WriteLine("Sent this string: " + updateS);
-                        }
 
-      
-
-                        //CASE 4: If player gave a "score" update, the Scoreboard gets updated.
-                        else if (content.Contains("scoreUpdate"))
-                        {
-                            String[] splitted = content.Split('|');
-
-                            string username = splitted[1].ToString();
-                            int scoreUpdate = int.Parse(splitted[2]);
-
-                            sk.SetScore(username, scoreUpdate); //Sets the score
 
                             //Compile scores into single string
                             string scoreboard = "";
@@ -357,9 +343,32 @@ class GameHandler
                                 scoreboard += "*" + ((ArrayList)allScores[i])[0] + "|" + ((ArrayList)allScores[i])[1]; // "*username|score"
                             }
 
+
+
+
+
+
+
+                            SendGame(handler, "[update]" + updateS + '~' + scoreboard);
+                            Console.WriteLine("Sent this string: " + updateS);
+                        }
+
+      
+
+                        //CASE 4: If player gave a "score" update, the Scoreboard gets updated.
+                        else if (content.Contains("score"))
+                        {
+                            String[] splitted = content.Split('|');
+
+                            string username = splitted[1].ToString();
+                            int scoreUpdate = int.Parse(splitted[2]);
+
+                            sk.SetScore(username, scoreUpdate); //Sets the score
+
+                
                             //Send out score to players
-                            SendGame(handler, "[scoreUpdate]" + scoreboard);
-                            Console.WriteLine("sent this: " + scoreboard);
+                            SendGame(handler, "score set");
+                
 
                         }
                         //CASE 5: If player gave a "goodbye" update, the player gets removed from the scoreboard and the array of players
