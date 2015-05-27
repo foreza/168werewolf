@@ -337,13 +337,44 @@ class GameHandler
                             Console.WriteLine("Sent this string: " + updateS);
                         }
 
-                         // CASE 3: If player gave a "status" update, the game server, game server will update ALL situations.
+      
+                        //CASE 4: If player gave a "score" update, the Scoreboard gets updated.
+                        else if (content.Contains("scoreUpdate"))
+                        {
+                            String[] splitted = content.Split('|');
+
+                            string username = splitted[1].ToString();
+                            int scoreUpdate = int.Parse(splitted[2]);
+
+                            sk.SetScore(username, scoreUpdate); //Sets the score
+
+                            //Compile scores into single string
+                            string scoreboard = "";
+                            ArrayList allScores = sk.GetAllScores();
+                            Console.WriteLine("Building score string....");
+                            for (int i = 0; i < allScores.Count; i++ ) // Iterates through all users in database
+                            {
+                                Console.WriteLine("teststxdisdjfhaklsjdfhasid");
+                                scoreboard += "*" + ((ArrayList)allScores[i])[0] + "|" + ((ArrayList)allScores[i])[1]; // "*username|score"
+                            }
+
+                            string toSend = "[scoreUpdate]" + scoreboard;
+
+                            Console.WriteLine("Handling score update..." + toSend);
+                            SendGame(handler, toSend);
+
+
+                            //Send out score to players
+                 
+                        }
+
+
+
+                                           // CASE 3: If player gave a "status" update, the game server, game server will update ALL situations.
                         // example: player triggers a tower.
                         else if (content.Contains("statusUpdate"))
                         {
 
-                            // NOT YET FINISHED 
-                            // GET THE PLAYER ID from the packet
 
                             String[] splitted = content.Split('|');
 
@@ -352,7 +383,7 @@ class GameHandler
                             // position[450,230]
                             // we also need playerID
                             // apply position updates to this particular player on the server.
-                    
+
 
 
                             // Encode the game data and send it as a very long string to client.
@@ -370,33 +401,6 @@ class GameHandler
                             }
 
                         }
-                        //CASE 4: If player gave a "score" update, the Scoreboard gets updated.
-                        else if (content.Contains("scoreUpdate"))
-                        {
-                            String[] splitted = content.Split('|');
-
-                            string username = splitted[1].ToString();
-                            int scoreUpdate = int.Parse(splitted[2]);
-
-                            sk.SetScore(username, scoreUpdate); //Sets the score
-
-                            //Compile scores into single string
-                            string scoreboard = "";
-                            ArrayList allScores = sk.GetAllScores();
-                            for (int i = 0; i < allScores.Count; i++ ) // Iterates through all users in database
-                            {
-                                scoreboard += "*" + ((ArrayList)allScores[i])[0] + "|" + ((ArrayList)allScores[i])[1]; // "*username|score"
-                            }
-
-                            //Send out score to players
-                            for (int i = 0; i < playersInGame.Count; i++)
-                            {
-                                Player k = (Player)playersInGame[i];
-                                SendGame(k.getSock(), "[scoreUpdate]"+scoreboard);
-                            }
-                        }
-
-
 
                     }
                     else {

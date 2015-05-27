@@ -37,8 +37,7 @@ public class PlayerController : MonoBehaviour {
     }
 
 
-
-
+	
 	public void RequestUpdateToServer()
 	{
 		string position = "" + transform.position.x + "|" + transform.position.y + "";

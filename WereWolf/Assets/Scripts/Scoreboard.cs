@@ -30,6 +30,7 @@ public class Scoreboard: MonoBehaviour {
 		// Handle and parse the updates and put it in the score board.
 		// *username|score
 
+		print ("Scoreboard update requested!");
 		usernames = "";
 		scores = "";
 			
@@ -41,20 +42,20 @@ public class Scoreboard: MonoBehaviour {
 			usernames += split[0] + "\n";			// concatenate and line break
 			scores += split[1] + "\n";				// oh baby
 		}
-
-
+		playerData.text += usernames;
+		scoreData.text += scores;
 
 	}
 
 	void ShowScoreBoard ()
 	{
-		scoreBoard.SetActive (true);
+		//scoreBoard.SetActive (true);
 		// scoreData.text += "TESTINGGG \n";
 	}
 
 	void HideScoreBoard ()
 	{
-		scoreBoard.SetActive (false);
+		//scoreBoard.SetActive (false);
 
 	}
 }

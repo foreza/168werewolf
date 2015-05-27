@@ -49,6 +49,12 @@ public class ServerMessageHandler : MonoBehaviour {
 		// Each general update message contains the following:
 		// - Location of every player, along with their PID
 		// - Total # of players 
+
+		else if (s.Contains("scoreUpdate"))
+		{
+			print("Score update: " + s);
+			this.gameObject.SendMessage("UpdateScoreBoard", s);
+		}
 		
 		// If there is a change in the # of players, invoke the network spawner to be able to handle it.
 		else if (s.Contains("update"))
@@ -63,11 +69,7 @@ public class ServerMessageHandler : MonoBehaviour {
 			
 		}
 
-		else if (s.Contains("scoreUpdate"))
-		{
-            print("Score update: " + s);
-			this.gameObject.SendMessage("UpdateScoreBoard", s);
-		}
+	
 		// This method is invoked at the end of the game. 
 		// Response game should contain some useful information.
 		else if (s.Contains("endGame"))
