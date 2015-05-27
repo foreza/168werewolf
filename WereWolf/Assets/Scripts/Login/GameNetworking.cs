@@ -71,7 +71,7 @@ public class GameNetworking : MonoBehaviour {
 	{
 		// Start the game. Send "join game" to tell the server to initialize initial contact
 		SendServerMessage ("joinGame");
-		print ("Send server message. Joining game!");
+		print ("Joining game!");
 	}
 
 	public void PassPosition(String s)
@@ -106,7 +106,6 @@ public class GameNetworking : MonoBehaviour {
 			IPHostEntry ipHostInfo = Dns.GetHostEntry(Networking.IPaddress);
 			IPAddress ipAddress = ipHostInfo.AddressList[0];
 			IPEndPoint remoteEP = new IPEndPoint(ipAddress, portGame);
-			responseGame = String.Empty;		// Start with an empty string.
 			
 			// Create a TCP/IP socket.
 			Socket client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -115,10 +114,11 @@ public class GameNetworking : MonoBehaviour {
 			client.BeginConnect( remoteEP, new AsyncCallback(ConnectCallbackGame), client);
 			connectDoneGame.WaitOne();
 
+			print ("Prepare to send..");
 			// Server will recieve an appropriate message and respond accordingly.
-			print ("About to send: " + s);
 			SendGame(client,s + "<EOF>");
 			sendDoneGame.WaitOne();
+			print ("Prepare to recieve..");
 
 			// Receive the responseGame from the remote device.
 			ReceiveGame(client);
@@ -211,7 +211,8 @@ public class GameNetworking : MonoBehaviour {
 		byte[] byteData = Encoding.ASCII.GetBytes(data);
 		
 		// Begin sending the data to the remote device.
-		client.BeginSend(byteData, 0, byteData.Length, 0, new AsyncCallback(SendCallbackGame), client);
+		client.BeginSend(byteData, 0, byteData.Length, 0,
+		                 new AsyncCallback(SendCallbackGame), client);
 	}
 	
 	public  void SendCallbackGame(IAsyncResult ar) {

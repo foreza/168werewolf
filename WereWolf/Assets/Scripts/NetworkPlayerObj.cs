@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class NetworkPlayerObj {
+public class NetworkPlayerObj : MonoBehaviour {
 	
 		public string playerID;
 		public GameObject g;
-		public Transform t;
+
 		// To add in
 		public int facingDirection;			// facing direction: 0 -> right, 1 -> left
 		public bool isHuman;					// Is this player a human or werewolf
@@ -15,22 +15,22 @@ public class NetworkPlayerObj {
 			// Empty constructor.
 			playerID = "new";
 		}
-	public NetworkPlayerObj(string id)
+	public NetworkPlayerObj(string id, GameObject game)
 		{
+			g = new GameObject();
 			playerID = id;
-
-			
+			g = game;
 		}
 		
 	public void ping()
 	{
-		//print ("You have pinged this player: " + playerID);
+		print ("You have pinged this player: " + playerID);
 	}
 
 		public void updatePosition(float x, float y)
 		{
 			g.transform.position = new Vector3 (x, y);
-			//print ("Moving other player (not me): " + g.transform.position);
+			print ("Moving other player (not me): " + g.transform.position);
 		}
 		
 		public string getID()
@@ -42,14 +42,12 @@ public class NetworkPlayerObj {
 		{
 			return g;
 		}
-
-
 		// Shouldn't need to get the position, we're just settting.
 		
 		public void BecomeWereWolf()
 		{
 			// Load werewolf sprite here
-			//print (this.gameObject.name + " has become a werewolf!");
+			print (this.gameObject.name + " has become a werewolf!");
 			isHuman = false;
 		}
 
