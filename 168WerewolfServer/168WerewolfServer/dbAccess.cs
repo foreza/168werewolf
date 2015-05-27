@@ -61,6 +61,7 @@ public class dbAccess {
     //Puts all data into 2D arraylist
     public ArrayList ReadFullTable(string TableName) {
         string query = "SELECT * FROM " + TableName;
+        dbcmd = dbcon.CreateCommand();
         dbcmd.CommandText = query;
         reader = dbcmd.ExecuteReader();
         ArrayList readArray = new ArrayList();
