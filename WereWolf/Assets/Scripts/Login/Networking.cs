@@ -16,6 +16,7 @@ public class Networking : MonoBehaviour {
     public static string IPaddress;
     public static string username;
     public static string password;
+	public static string roomName;
 
 	// A test integer so we can track the message numbers.
 	public static int test = 0;
@@ -34,6 +35,7 @@ public class Networking : MonoBehaviour {
         username = loginPackage[0];
         password = loginPackage[1];
         IPaddress = loginPackage[2];        
+		roomName = loginPackage [3];
 
         StartClient();
 
@@ -90,7 +92,7 @@ public class Networking : MonoBehaviour {
 				print ("Connected. Sending data.");
 
 				// Send test data to the remote device.
-				Send(client,username+":"+password+":<EOF>");
+				Send(client,username+":"+password+":"+roomName+":<EOF>");
 				sendDone.WaitOne(1000);
 				
 				// Receive the response from the remote device.
@@ -98,9 +100,10 @@ public class Networking : MonoBehaviour {
 				receiveDone.WaitOne(1000);
 				
 				// Write the response to the console.
-				print ("Response received : {0}" + response + test);
-				test++;
+				print ("Response received : {0}" + response);
 				// Release the socket.
+
+	
                 try {
                     client.Shutdown(SocketShutdown.Both);
                     client.Close();
@@ -116,7 +119,7 @@ public class Networking : MonoBehaviour {
 				print ("Allow user to login! Waiting 2 seconds...");
 				// Log player into the lobby
 				loginDone.WaitOne(2000);
-				g.SendMessage("ConnectToLobby");
+				g.SendMessage("ConnectToLobby" , roomName);
 			}
 
 			else

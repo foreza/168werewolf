@@ -130,13 +130,14 @@ public class AsynchronousSocketListener
                 Console.WriteLine("Processing this login request:" + content);
 
 
-                //Assuming request is formatted "username:password:<EOF>"
+                //Assuming request is formatted "username:password:roomName<EOF>"
                 string[] loginInfo = content.Split(':');
                 LoginHandler lh = new LoginHandler();
                 string loginStatus = lh.AccessDB(loginInfo);
-                Send(handler, loginStatus);
+                // Append the status along with the login info.
+                Send(handler, loginStatus+loginInfo[2]);
                 if (loginStatus == "success") {
-
+                    // It is valid. Allow the room creation above by appending string...
                 }
 
             }

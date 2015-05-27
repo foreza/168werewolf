@@ -11,7 +11,8 @@ using System.Text;
 public class GameNetworking : MonoBehaviour {
 	
 	// The port number for the remote lobby server.
-	public const int portGame = 11002;
+	public int portGame = 11002;			// this should change upon login.
+	public string roomName = "";
 	public GameObject myself;
     public string username;
 	public bool noSpawn = true;
@@ -35,8 +36,13 @@ public class GameNetworking : MonoBehaviour {
 
 	}
 
+	public void setGamePort(string [] s)
+	{
+		portGame = int.Parse(s[2]);
+		roomName = s[1];
+		print ("RoomName: " + roomName + "Port set to: " + portGame);
 
-
+	}
 	// State object for receiving data from remote device.
 	public class StateObject {
 		// Client socket.

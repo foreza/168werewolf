@@ -211,11 +211,13 @@ class GameHandler
                         // Set the event to nonsignaled state.
                         allDoneGame.Reset();
 
+                        Console.WriteLine("Game room: [" + RoomName + "] is active. :)");
+
                         // Start an asynchronous socket to listen for connections.
                         //Console.WriteLine("[" + RoomName + "] Waiting for Game Data");
                         listener.BeginAccept(new AsyncCallback(AcceptGameCallback), listener);
                         // Wait until a connection is made before continuing.
-                        allDoneGame.WaitOne();
+                        allDoneGame.WaitOne(1000);
 
                         // Allow Gamemessages to be sent out to update the Game list of "available" players.
 

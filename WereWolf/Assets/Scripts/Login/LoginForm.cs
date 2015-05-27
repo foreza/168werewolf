@@ -18,9 +18,16 @@ public class LoginForm : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 	
-		loginPackage = new string[3];
+		loginPackage = new string[4];
 		handler = GameObject.Find ("SceneHandler");
 
+	}
+	public void getRoomName()
+	{
+		InputField s = GameObject.Find ("RoomName").GetComponent<InputField> ();
+		print ("Room: You typed in: " + s.text);
+		loginPackage [3] = s.text;
+		
 	}
 
 	public void getUserName()
@@ -62,7 +69,7 @@ public class LoginForm : MonoBehaviour {
 	public void submitForm()
 	{
 		// Access the reference to the handler and calls the function
-		print ("Submitting to server: " + loginPackage [0] + " " + loginPackage [1] + " to IP: " + loginPackage[2]);
+		print ("Submitting to server: " + loginPackage [0] + " " + loginPackage [1] + " to IP: " + loginPackage[2] + " with room join req: " + loginPackage[3]);
         handler.SendMessage("BeginLogin", loginPackage);
 		//print ("Submitted");
 

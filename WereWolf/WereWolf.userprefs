@@ -1,13 +1,15 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Game\PlayerController.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Login\LobbyNetworking.cs">
     <Files>
-      <File FileName="Assets\Scripts\ServerMessageHandler.cs" Line="28" Column="38" />
-      <File FileName="Assets\Scripts\Login\GameNetworking.cs" Line="80" Column="2" />
-      <File FileName="Assets\Scripts\NetworkPlayerObj.cs" Line="8" Column="2" />
-      <File FileName="Assets\Scripts\NetworkGameManager.cs" Line="11" Column="2" />
-      <File FileName="Assets\Scripts\Game\PlayerController.cs" Line="35" Column="34" />
-      <File FileName="Assets\Scripts\Login\LobbyNetworking.cs" Line="220" Column="1" />
+      <File FileName="Assets\Scripts\ServerMessageHandler.cs" Line="31" Column="48" />
+      <File FileName="Assets\Scripts\Login\GameNetworking.cs" Line="43" Column="64" />
+      <File FileName="Assets\Scripts\NetworkGameManager.cs" Line="82" Column="76" />
+      <File FileName="Assets\Scripts\Login\LobbyNetworking.cs" Line="95" Column="32" />
+      <File FileName="Assets\Scripts\StartScreen\ButtonHandler.cs" Line="62" Column="1" />
+      <File FileName="Assets\Scripts\Game\PlayerController.cs" Line="173" Column="2" />
+      <File FileName="Assets\Scripts\Login\LoginForm.cs" Line="76" Column="3" />
+      <File FileName="Assets\Scripts\Login\Networking.cs" Line="122" Column="48" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

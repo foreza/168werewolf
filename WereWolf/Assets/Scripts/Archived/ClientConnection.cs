@@ -13,6 +13,7 @@ public class ClientConnection : MonoBehaviour {
 		private const int port = 80;						// The port number for the remote device.
 		// private static bool connectToServer = false;	
 		public static string address = "169.234.59.242";
+		public static string roomRequest = "";
         private Socket client;
 		
 	// ManualResetEvent instances signal completion.
@@ -35,6 +36,7 @@ public class ClientConnection : MonoBehaviour {
 			// Connect to a remote device.
 			try {
                 address = LoginPackage[2];
+			roomRequest = LoginPackage[3];	// the room requested.
 				// Establish the remote endpoint for the socket.
 				// The name of the 
 				// remote device is "host.contoso.com".
@@ -66,11 +68,9 @@ public class ClientConnection : MonoBehaviour {
 
 				
 				// Send test data to the remote device.
-                Send(client, "<login>:" + LoginPackage[0] + ":" + LoginPackage[1] + ":<EOF>");
-			//Send(client,"Player [" + userDisplayName + "] says: This is a test! Hello, server.:<EOF>");
+			print ("Sending login package!" + LoginPackage[3]);
+                Send(client, "<login>:" + LoginPackage[0] + ":" + LoginPackage[1] + ":" + LoginPackage[3] + ":<EOF>");
 
-			// YOU NEED TO END IT WITH <EOF> OMG.
-			//Send(client,"This is a test<EOF>");
 				sendDone.WaitOne(5000);
 				
 				// Receive the response from the remote device.
@@ -79,8 +79,8 @@ public class ClientConnection : MonoBehaviour {
 				
 				// Write the response to the console.
 				print("Response received : {0}" + response.ToString());
-                // Handle the response
-                responseHandler.SendMessage("HandleResponse", response);
+                // Handle the response, appended room Request.
+				responseHandler.SendMessage("HandleResponse", response);
 
 				
 			} catch (Exception e) {

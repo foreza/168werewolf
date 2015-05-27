@@ -32,6 +32,7 @@ using _168WerewolfServer;
     public struct PlayerLobbyObj
     {
         public String theEndPoint;
+        public String reqRoomName;
         public int gamePortNumber;
     }
 
@@ -51,7 +52,7 @@ using _168WerewolfServer;
 
 
     // Call this function to begin another thread.
-    public static void StartNewGameThread(string name, int instance)
+    public static int StartNewGameThread(string name, int instance)
     {
 
         // Create a GameThread object
@@ -66,7 +67,7 @@ using _168WerewolfServer;
         // Enqueue the instance.
         RunningGameInstances.Enqueue(gt);
         Console.WriteLine("Added a new game thread with name: " + gt.name + "and listening to port: " + gt.portNumber);
-
+        return gt.portNumber;
     }
 
     // This function returns a port number based off of the initial port number.
@@ -105,7 +106,7 @@ using _168WerewolfServer;
 
     }
 
-      public static bool CheckGameExists(string n)
+      public static int CheckGameExists(string n)
     {
         // A quick method that checks through the entire queue of current game threads.
  
@@ -116,13 +117,13 @@ using _168WerewolfServer;
             if (n.Equals(RunningGameInstances.Peek().name))
             {
                 // If any of them are true
-                return true;
+                return RunningGameInstances.Peek().portNumber;
             }
             RunningGameInstances.Enqueue(RunningGameInstances.Peek());
             RunningGameInstances.Dequeue();
         }
           // Game does not exist! Signal to main caller to make a new one.
-            return false;
+            return -1;
     }
         
 
@@ -137,9 +138,6 @@ using _168WerewolfServer;
         Console.WriteLine("Testing game server functionality...");
 
         StartNewGameThread("Game1", 1);
-       // StartNewGameThread("Game2", 1);
-        //StartNewGameThread("Game3", 1);
-        //StartNewGameThread("Game4", 1);
 
 
         // Data buffer for incoming data.
@@ -241,7 +239,11 @@ using _168WerewolfServer;
                 if(content.Contains("joinLobby"))
                 {
                     // CHANGE THIS SO WE ENQUEUE PLAYERS.
-                    // a struct.
+                    // structure: joinLobby~roomName
+
+                    string [] rna = content.Split('~');
+                    Console.WriteLine("Player requested this room: " + rna[1]);
+
 
                     // We will recieve the name of the game that they want to join.
 
@@ -249,18 +251,20 @@ using _168WerewolfServer;
 
                     PlayerLobbyObj temp = new PlayerLobbyObj();
                     temp.theEndPoint = handler.LocalEndPoint.ToString();
-
-                    playersInLobby.Enqueue(temp);
+                    temp.reqRoomName = rna[1];
+       
 
                     // TODO: Do we need to start a new game instance?
                     // Start the game instance server once the player logs in - once they hit play, they will be live.
                     // Basically, first person to login creates server
 
                     // Check if we need to
-                    if (CheckGameExists("temp"))
+                    if (CheckGameExists(temp.reqRoomName) != -1)
                     {
                         // Set the player object's port to that number
-                        // Player will then connect
+                        // Player will then connect to the existing port.
+                        temp.gamePortNumber = CheckGameExists(temp.reqRoomName);
+                        Console.WriteLine("Room exists already with port listening on: " + temp.gamePortNumber);
                     }
 
                     else
@@ -269,12 +273,18 @@ using _168WerewolfServer;
                         // Make a new game port as well
                         // Set the player obj port to that number
                         // Run game instance, and player can then connnect to it.
+                        Console.WriteLine("Room DOESN'T exist already.");
+                        temp.gamePortNumber = StartNewGameThread(temp.reqRoomName,1);
+
                         
 
                     }
 
+                    playersInLobby.Enqueue(temp);
+
+
                     Console.WriteLine("Player added to lobby.");
-                    SendLobby(handler, "welcomeToLobby");
+                    SendLobby(handler, "welcomeToLobby~"+temp.reqRoomName+"~"+temp.gamePortNumber+"~<EOF>");
                 }
                 // CASE 2: If player gave a "joinGame" request, the server will attempt to place player in active game session
                 else if (content.Contains("joinGame"))

@@ -42,9 +42,10 @@ public class LobbyNetworking : MonoBehaviour {
 	}
 	
 
-	public void ConnectToLobby()
+	public void ConnectToLobby(string r)
 	{
-		StartLobby ("joinLobby");
+		// Send the lobby my room name, and allow lobby to either hand me the port number (new) or give me an existing port #.
+		StartLobby ("joinLobby~" + r + "~");
 	}
 
 	public void StartTheGame()
@@ -100,12 +101,13 @@ public class LobbyNetworking : MonoBehaviour {
 				// Write the response to the console.
 			print ("Response received : {0}" + responseLobby);
 
-			if(s == "joinLobby")
+			if(s.Contains("joinLobby"))
 			{
 				Application.LoadLevel("Title");
 				print ("Loading Title screen");
 				// Get the ref to the buttonHandler here.
-
+				string [] split = responseLobby.Split('~');
+				h.SendMessage("setGamePort", split);
 
 			}
 			 if (s == "joinGame")

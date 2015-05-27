@@ -6,7 +6,7 @@ using System.Text;
 public class ResponseHandler : MonoBehaviour {
 
     void HandleResponse(string data) {
-        print("Handling Response...");
+        print("Handling Response... : " + data);
         string[] input = data.Split(':');
         if (input[0] == "<login>") {
             GameObject SceneHandler = GameObject.Find("SceneHandler");
