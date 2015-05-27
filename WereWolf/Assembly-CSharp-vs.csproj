@@ -79,6 +79,7 @@
      <Compile Include="Assets\Scripts\NetworkSpawner.cs" />
      <Compile Include="Assets\Scripts\PlayerManager.cs" />
      <Compile Include="Assets\Scripts\PlayerSendState.cs" />
+     <Compile Include="Assets\Scripts\Scoreboard.cs" />
      <Compile Include="Assets\Scripts\ServerMessageHandler.cs" />
      <Compile Include="Assets\Scripts\StartScreen\ButtonHandler.cs" />
      <Compile Include="Assets\Scripts\StateManager.cs" />
@@ -88,13 +89,13 @@
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
  <Reference Include="Mono.Data.SqliteClient">
- <HintPath>C:/Users/evangels/Desktop/168werewolf/WereWolf/Assets/Plugins/Mono.Data.SqliteClient.dll</HintPath>
+ <HintPath>C:/Users/jchiu5.UCI-ICS/Desktop/168werewolf/WereWolf/Assets/Plugins/Mono.Data.SqliteClient.dll</HintPath>
  </Reference>
  <Reference Include="Newtonsoft.Json">
- <HintPath>C:/Users/evangels/Desktop/168werewolf/WereWolf/Assets/Plugins/Newtonsoft.Json.dll</HintPath>
+ <HintPath>C:/Users/jchiu5.UCI-ICS/Desktop/168werewolf/WereWolf/Assets/Plugins/Newtonsoft.Json.dll</HintPath>
  </Reference>
  <Reference Include="System.Data">
- <HintPath>C:/Users/evangels/Desktop/168werewolf/WereWolf/Assets/Plugins/System.Data.dll</HintPath>
+ <HintPath>C:/Users/jchiu5.UCI-ICS/Desktop/168werewolf/WereWolf/Assets/Plugins/System.Data.dll</HintPath>
  </Reference>
  <Reference Include="UnityEditor.iOS.Extensions.Xcode">
  <HintPath>C:/Program Files/Unity/Editor/Data/PlaybackEngines/iossupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>

@@ -62,6 +62,11 @@ public class ServerMessageHandler : MonoBehaviour {
 			this.gameObject.SendMessage("UpdateStateTracking", s);
 			
 		}
+
+		else if (s.Contains("scoreUpdate"))
+		{
+			this.gameObject.SendMessage("UpdateScoreBoard", s);
+		}
 		// This method is invoked at the end of the game. 
 		// Response game should contain some useful information.
 		else if (s.Contains("endGame"))

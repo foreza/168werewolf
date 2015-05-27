@@ -4,7 +4,7 @@ using System;
 
 public class PlayerController : MonoBehaviour {
 
-    public bool sendDebugMessages = false;
+    public bool sendDebugMessages = true;
     public int playerID;
     public bool isClientControlled = false;
 
@@ -140,9 +140,17 @@ public class PlayerController : MonoBehaviour {
 		if (Input.GetKeyDown("space"))
 		{
 			// interact with building.
-            if (sendDebugMessages)
+            
                 print ("Interacting with item.");
 
+		}
+
+		if (Input.GetKeyDown("tab"))
+		{
+			// interact with building.
+		
+				print ("Bringing up scoreboard");
+			
 		}
 
 	}
