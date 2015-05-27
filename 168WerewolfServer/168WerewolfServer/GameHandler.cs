@@ -395,8 +395,17 @@ class GameHandler
                                 SendGame(k.getSock(), "[scoreUpdate]"+scoreboard);
                             }
                         }
+                        //CASE 5: If player gave a "goodbye" update, the player gets removed from the scoreboard and the array of players
+                        else if (content.Contains("goodbye"))
+                        {
+                            String[] splitted = content.Split('|');
 
+                            int playerIndex = int.Parse(splitted[1]);
+                            string username = splitted[2];
 
+                            sk.RemovePlayer(username);
+
+                        }
 
                     }
                     else {
