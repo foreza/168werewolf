@@ -49,7 +49,7 @@ public class LobbyNetworking : MonoBehaviour {
 
 	public void StartTheGame()
 	{
-		print ("Recieved message; starting game");
+		print ("Recieved message; changing display screen.");
 		StartLobby ("joinGame");
 		//this.SendMessage ("BeginGame"); 	// calls the GameNetworking class to kick in and begin.
 		// bogus input
