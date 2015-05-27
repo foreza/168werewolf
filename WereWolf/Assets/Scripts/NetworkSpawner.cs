@@ -27,13 +27,20 @@ public class NetworkSpawner : MonoBehaviour {
 		for (int i = 0; i < n; i++)
 		{
 			// Create a new network player obj
-			NetworkPlayerObj p = new NetworkPlayerObj(i.ToString(), (GameObject)Instantiate(Resources.Load("OtherPlayer")));
+			//NetworkPlayerObj player = new NetworkPlayerObj();
+			//player.g = new GameObject();
+
+			// player.g = Instantiate ((GameObject)Resources.Load ("OtherPlayer"));
+			// Initialize and invoke the spawn on it.
+			//player.playerID = i.ToString();
 			// Add several Player objects to aid in expansion!
-			this.gameObject.SendMessage("AddPlayerToTrack", p);
+			//this.gameObject.SendMessage("AddPlayerToTrack", player);
+
+			print ("Spawned a player object.");
 		}
 		
 	}
-
+	// TODO: FIX THIS
 	// Spawns a single player (to keep focus)
 	public void SpawnAddPlayer()
 	{
@@ -44,7 +51,7 @@ public class NetworkSpawner : MonoBehaviour {
 		// Instantiate it.
 		go = (GameObject)Instantiate(Resources.Load("OtherPlayer"));
 		// Make a new player object, and give it the reference to the game object.
-		NetworkPlayerObj p = new NetworkPlayerObj("new", go);
+		NetworkPlayerObj p = new NetworkPlayerObj("100");
 		// Add this person to the list of players tracking.
 		this.gameObject.SendMessage("AddPlayerToTrack", p);
 

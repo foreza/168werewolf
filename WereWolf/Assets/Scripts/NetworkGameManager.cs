@@ -72,7 +72,7 @@ public class NetworkGameManager : MonoBehaviour {
 			print ("Applying player position with this ID: " + givenID + "New loc: " + split2[1] + ", " + split2[2]);
 				// Search into player tracking to see if they exist, and update the position.
 			((NetworkPlayerObj)playersTracking[givenID]).ping();
-			// ((NetworkPlayerObj)playersTracking[givenID]).updatePosition(float.Parse(split2[1]),float.Parse(split2[2]));
+			 //((NetworkPlayerObj)playersTracking[givenID]).updatePosition(float.Parse(split2[1]),float.Parse(split2[2]));
 		}
 	}
 
