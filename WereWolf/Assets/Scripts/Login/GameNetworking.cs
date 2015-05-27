@@ -243,7 +243,14 @@ public class GameNetworking : MonoBehaviour {
 			print(e.ToString());
 		}
 	}
-	
+
+
+    void OnApplicationQuit()
+    {
+        print("Quitting application...");
+        SendServerMessage("goodbye|" + myPlayerID + "|" + username + "|");
+    }
+
 
 }
 

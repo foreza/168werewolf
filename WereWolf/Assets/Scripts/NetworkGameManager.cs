@@ -1,18 +1,19 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class NetworkGameManager : MonoBehaviour {
 
 	// This class manages the game state of the game from the networked side (aka state, player locations)
 
-	public ArrayList playersTracking; 	// fill with PlayerObjects and iterate.
+    public List<NetworkPlayerObj> playersTracking = new List<NetworkPlayerObj>(); 	// fill with PlayerObjects and iterate.
 	public int trackSize;				// keeps track of the # of players that i'm tracking right now.
 		
 	
 	// Use this for initialization
 	void Start () {
 		// Initialize the arraylist.
-		playersTracking = new ArrayList();
+		//playersTracking = new ArrayList();
 		trackSize = 0;
 
 		
@@ -107,5 +108,11 @@ public class NetworkGameManager : MonoBehaviour {
 
 		
 	}
+
+    public void DisconnectPlayer(int playerID)
+    {
+        print("Player "+playerID+" disconnected");
+        playersTracking[playerID].Deactivate();
+    }
 	
 }

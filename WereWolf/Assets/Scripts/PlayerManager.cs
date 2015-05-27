@@ -1,9 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
-public class PlayerManager : MonoBehaviour {
+public class PlayerManager: MonoBehaviour {
 
     public int myID;
+
+    
+
 
     public GameObject humanPrefab;
 
@@ -43,5 +47,8 @@ public class PlayerManager : MonoBehaviour {
         {
             newPlayerController.isClientControlled = true;
         }
+        
     }
+
+
 }

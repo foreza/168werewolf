@@ -77,13 +77,18 @@ public class ServerMessageHandler : MonoBehaviour {
 			
 		}
 
-	
-		// This method is invoked at the end of the game. 
-		// Response game should contain some useful information.
-		else if (s.Contains("endGame"))
-		{
-			this.gameObject.SendMessage("EndGame", s);
-		}
+        else if (s.Contains("disconnection"))
+        {
+            this.gameObject.SendMessage("removeDisconnectedPlayer", s);
+        }
+
+
+        // This method is invoked at the end of the game. 
+        // Response game should contain some useful information.
+        else if (s.Contains("endGame"))
+        {
+            this.gameObject.SendMessage("EndGame", s);
+        }
 
 		
 	}

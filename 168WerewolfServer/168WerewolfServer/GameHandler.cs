@@ -381,6 +381,7 @@ class GameHandler
 
                             sk.RemovePlayer(username);
 
+                            SendGame(handler, "[disconnection]|"+playerIndex);
                         }
 
 
