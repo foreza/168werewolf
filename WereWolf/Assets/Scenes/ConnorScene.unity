@@ -1682,10 +1682,6 @@ Prefab:
       propertyPath: m_Name
       value: BBPlayer 1
       objectReference: {fileID: 0}
-    - target: {fileID: 2054076, guid: 9bf804d4b38f34ae59bd6d6176216b04, type: 2}
-      propertyPath: m_CullingMask.m_Bits
-      value: 4294965503
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9bf804d4b38f34ae59bd6d6176216b04, type: 2}
   m_IsPrefabParent: 0

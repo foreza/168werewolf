@@ -90,11 +90,12 @@ public class WerewolfAI : MonoBehaviour {
 
     void OnTriggerEnter2D(Collider2D other)
     {
+        Debug.Log(other);
         if (other.tag == Tags.HUMAN)
         {
             if (sendDebugMessages) Debug.Log(this.name + " has eaten " + other.name);
 
-            other.GetComponent<PlayerController>().triggerDeath();
+            other.GetComponent<HumanController>().triggerDeath();
         }
     }
 }

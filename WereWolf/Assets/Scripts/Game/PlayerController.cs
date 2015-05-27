@@ -163,17 +163,6 @@ public class PlayerController : MonoBehaviour {
 		
 	}
 
-    public void triggerDeath()
-    {
-        if (sendDebugMessages) Debug.Log(this.name + " the " + this.tag + " has been slain.");
-        //anim.SetTrigger("isDead");
-        currSprite.sprite = deadSprite;
-        isDead = true;
-        deathNoiseSource.PlayOneShot(deathNoise, 1);
-
-        Invoke("transitionSceneToGameOver", 3);
-    }
-
     void transitionSceneToGameOver()
     {
         Application.LoadLevel(Scenes.GAMEOVER); 

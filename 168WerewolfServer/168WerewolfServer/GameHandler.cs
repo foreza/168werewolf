@@ -379,6 +379,21 @@ class GameHandler
                             int scoreUpdate = int.Parse(splitted[2]);
 
                             sk.SetScore(username, scoreUpdate); //Sets the score
+
+                            //Compile scores into single string
+                            string scoreboard = "";
+                            ArrayList allScores = sk.GetAllScores();
+                            for (int i = 0; i < allScores.Count; i++ ) // Iterates through all users in database
+                            {
+                                scoreboard += "*" + ((ArrayList)allScores[i])[0] + "|" + ((ArrayList)allScores[i])[1]; // "*username|score"
+                            }
+
+                            //Send out score to players
+                            for (int i = 0; i < playersInGame.Count; i++)
+                            {
+                                Player k = (Player)playersInGame[i];
+                                SendGame(k.getSock(), "[scoreUpdate]"+scoreboard);
+                            }
                         }
 
 

@@ -82,6 +82,7 @@ GameObject:
   - 61: {fileID: 6167340}
   - 82: {fileID: 8202324}
   - 95: {fileID: 9519172}
+  - 114: {fileID: 11499908}
   m_Layer: 0
   m_Name: OtherPlayer
   m_TagString: Human
@@ -453,19 +454,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   sendDebugMessages: 1
   playerID: 0
-  isClientControlled: 0
+  isClientControlled: 1
   speed: .0500000007
-  dashOnCD: 1
-  dashing: 0
-  dashCoolDown: 7
-  dashDuration: 2
-  trackDashCD: 0
-  endDashTime: 0
-  timeBetweenActivation: 0
-  _doubleTapTimeD1: 0
-  _doubleTapTimeD2: 0
-  _doubleTapTimeD3: 0
-  _doubleTapTimeD4: 0
   currSprite: {fileID: 0}
   fowardSprite: {fileID: 21300000, guid: fb02b5572d94a1845a953d66d4fb685a, type: 3}
   downSprite: {fileID: 21300000, guid: 9d998ddae24dd174e94ae95d3d757acf, type: 3}
@@ -497,6 +487,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4b519c08e76a49ed8b7b9fc59bf854c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &11499908
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 181186}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16afa5caf2e89ac41b56a5557b8c3985, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sendDebugMessages: 0
+  playerID: 0
+  isClientControlled: 0
+  speed: 0
+  currSprite: {fileID: 0}
+  fowardSprite: {fileID: 0}
+  downSprite: {fileID: 0}
+  leftSprite: {fileID: 0}
+  rightSprite: {fileID: 0}
+  deadSprite: {fileID: 0}
+  isDead: 0
+  deathNoise: {fileID: 0}
+  sceneHandler: {fileID: 0}
+  minimapIcon: {fileID: 0}
 --- !u!124 &12474938
 Behaviour:
   m_ObjectHideFlags: 1

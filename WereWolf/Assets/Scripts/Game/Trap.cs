@@ -77,7 +77,7 @@ public class Trap : MonoBehaviour {
             if (sendDebugMessages) Debug.Log(human.name + " has been slain!");
 
             //Get the human's player controller, and use it to trigger their death.
-            human.GetComponent<PlayerController>().triggerDeath();
+            human.GetComponent<HumanController>().triggerDeath();
 
         }
 

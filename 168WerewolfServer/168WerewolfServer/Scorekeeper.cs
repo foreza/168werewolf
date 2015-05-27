@@ -67,6 +67,12 @@ namespace _168WerewolfServer {
             }
         }
 
+        //Returns a 2D arraylist of database
+        public ArrayList GetAllScores()
+        {
+            return db.ReadFullTable(tableName);
+        }
+
 
     }
 }

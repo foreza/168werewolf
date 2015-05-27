@@ -43,7 +43,6 @@ GameObject:
   - 4: {fileID: 480244}
   - 212: {fileID: 21209420}
   - 61: {fileID: 6102826}
-  - 50: {fileID: 5097780}
   - 114: {fileID: 11420332}
   m_Layer: 0
   m_Name: BushBottom
@@ -83,28 +82,13 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 105106}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -8.4979887, y: -67.7088776, z: 0}
+  m_LocalPosition: {x: -1.60000002, y: -103.599998, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 436986}
   - {fileID: 480244}
   m_Father: {fileID: 0}
   m_RootOrder: 0
---- !u!50 &5097780
-Rigidbody2D:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 187888}
-  m_Mass: 100
-  m_LinearDrag: 0
-  m_AngularDrag: .0500000007
-  m_GravityScale: 0
-  m_FixedAngle: 0
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
 --- !u!61 &6102826
 BoxCollider2D:
   m_ObjectHideFlags: 1
@@ -115,9 +99,9 @@ BoxCollider2D:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
-  m_Offset: {x: -.0904443264, y: .433160782}
+  m_Offset: {x: -.0904443264, y: .288078308}
   serializedVersion: 2
-  m_Size: {x: 4.83680201, y: 2.29482269}
+  m_Size: {x: 4.83680201, y: 2.00466633}
 --- !u!61 &6118098
 BoxCollider2D:
   m_ObjectHideFlags: 1
@@ -128,9 +112,9 @@ BoxCollider2D:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_UsedByEffector: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: .0580291748}
   serializedVersion: 2
-  m_Size: {x: 5, y: 2.5}
+  m_Size: {x: 5, y: 2.38392854}
 --- !u!114 &11420332
 MonoBehaviour:
   m_ObjectHideFlags: 1
