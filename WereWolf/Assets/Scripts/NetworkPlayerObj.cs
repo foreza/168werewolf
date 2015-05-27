@@ -55,6 +55,11 @@ public class NetworkPlayerObj {
 			isHuman = false;
 		}
 
+        public void Deactivate()
+        {
+            g.SetActive(false);
+        }
+        
 		// Use this for initialization
 		void Start () {
 	
