@@ -23,13 +23,15 @@ public class GameNetworking : MonoBehaviour {
 	public String responseGame = String.Empty;
 	
 	void Start () {
+
+		//username = GameObject.Find("Username").GetComponent<InputField>().text;
+		myself = GameObject.Find ("SceneHandler");
 	
 	}
 	
 	void Update ()
 	{
 
-        username = GameObject.Find("Username").GetComponent<InputField>().text;
 
 	}
 
@@ -40,7 +42,7 @@ public class GameNetworking : MonoBehaviour {
 		// Client socket.
 		public Socket workSocket = null;
 		// Size of receive buffer.
-		public const int BufferSize = 256;
+		public const int BufferSize = 1024;
 		// Receive buffer.
 		public byte[] buffer = new byte[BufferSize];
 		// Received data string.
@@ -61,6 +63,7 @@ public class GameNetworking : MonoBehaviour {
 
 	public void SetMyPID(string i)
 	{
+		print ("Setting my Player ID");
 		myPlayerID = i;
 	}
 
@@ -68,11 +71,17 @@ public class GameNetworking : MonoBehaviour {
 	{
 		// Start the game. Send "join game" to tell the server to initialize initial contact
 		SendServerMessage ("joinGame");
+		print ("Joining game!");
 	}
 
 	public void PassPosition(String s)
 	{
 		// Called by the main game loop to pass positions.
+	
+		// Old deprecated move method for milestone 3
+		//SendServerMessage ("position" + "|" + s + "|"+username+"|0|"); //the zero is a test score
+
+
 		SendServerMessage ("position" + "|" + myPlayerID + "|" + s + "|"+username+"|0|"); //the zero is a test score
 		// TODO: Incorporate player facing direction and various other things LATER
 
@@ -105,10 +114,12 @@ public class GameNetworking : MonoBehaviour {
 			client.BeginConnect( remoteEP, new AsyncCallback(ConnectCallbackGame), client);
 			connectDoneGame.WaitOne();
 
+			print ("Prepare to send..");
 			// Server will recieve an appropriate message and respond accordingly.
 			SendGame(client,s + "<EOF>");
 			sendDoneGame.WaitOne();
-			
+			print ("Prepare to recieve..");
+
 			// Receive the responseGame from the remote device.
 			ReceiveGame(client);
 			receiveDoneGame.WaitOne();
@@ -150,7 +161,9 @@ public class GameNetworking : MonoBehaviour {
 			// Create the state object.
 			StateObject state = new StateObject();
 			state.workSocket = client;
-			
+
+
+
 			// Begin receiving the data from the remote device.
 			client.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0,
 			                    new AsyncCallback(ReceiveCallbackGame), state);
@@ -165,7 +178,8 @@ public class GameNetworking : MonoBehaviour {
 			// from the asynchronous state object.
 			StateObject state = (StateObject) ar.AsyncState;
 			Socket client = state.workSocket;
-			
+
+			print ("Waiting for message!");
 			// Read data from the remote device.
 			int bytesRead = client.EndReceive(ar);
 			

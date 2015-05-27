@@ -32,6 +32,7 @@ public class NetworkGameManager : MonoBehaviour {
 	public void AddPlayerToTrack(NetworkPlayerObj p)
 	{
 		// Adds a new player to the tracking list.
+		print ("Player: " + p.getID() + " is now being tracked.");
 		playersTracking.Add (p);
 		// trackSize++;			// don't increment track size yet.
 	}
@@ -43,9 +44,12 @@ public class NetworkGameManager : MonoBehaviour {
 		//Recieves the string and updates player positions as appropriate here:
 		// Recieve and parse the data and apply it to the game world as necessary
 
-		print ("GameManager processing this tracking update: " + s);
 		s = s.Substring(9);
 		string [] split = s.Split('*'); 
+
+		//print ("GameManager processing this tracking update: " + s);
+		print ("number of players active: " + split.Length);
+
 		// Split[0] = [player|pos1|pos2|EOF
 		// * denotes each player.		print ("Recieved Game End message; terminating game instance");
 		// Split.length gives you the total amount of players.
@@ -53,6 +57,7 @@ public class NetworkGameManager : MonoBehaviour {
 		// Check the current size with the new size.
 		if (trackSize < split.Length) {
 			// Spawn a new player, and increment trackSize
+			print ("New player has arrived; spawning additional player");
 			this.gameObject.SendMessage("SpawnAddPlayer");		// send message and add a player
 			++trackSize;										// increase track size
 
@@ -64,12 +69,10 @@ public class NetworkGameManager : MonoBehaviour {
 			// Split the string by the | delimiter to get player ID, X, and Y.
 			string [] split2 = split[p].Split('|');
 			int givenID = int.Parse(split2[0]);
-			// If it isn't my player ID, I need to either add the player to the game world, or update their position.
-			//if (givenID != myPlayerID) // 
-			{
+			print ("Applying player position with this ID: " + givenID + "New loc: " + split2[1] + ", " + split2[2]);
 				// Search into player tracking to see if they exist, and update the position.
-				((NetworkPlayerObj)playersTracking[givenID]).updatePosition(float.Parse(split2[1]),float.Parse(split2[2]));
-			}
+			((NetworkPlayerObj)playersTracking[givenID]).ping();
+			// ((NetworkPlayerObj)playersTracking[givenID]).updatePosition(float.Parse(split2[1]),float.Parse(split2[2]));
 		}
 	}
 

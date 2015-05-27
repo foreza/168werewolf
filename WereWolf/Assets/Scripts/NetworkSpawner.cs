@@ -26,13 +26,8 @@ public class NetworkSpawner : MonoBehaviour {
 		
 		for (int i = 0; i < n; i++)
 		{
-			// Declare a new gameobject.
-			GameObject go = new GameObject();
-			go = (GameObject)Instantiate(Resources.Load("OtherPlayer"));
-
-
 			// Create a new network player obj
-			NetworkPlayerObj p = new NetworkPlayerObj("new", go);
+			NetworkPlayerObj p = new NetworkPlayerObj(i.ToString(), (GameObject)Instantiate(Resources.Load("OtherPlayer")));
 			// Add several Player objects to aid in expansion!
 			this.gameObject.SendMessage("AddPlayerToTrack", p);
 		}

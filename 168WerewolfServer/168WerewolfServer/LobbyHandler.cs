@@ -20,7 +20,7 @@ using _168WerewolfServer;
 {
 
     public static int lobbyPort = 11001;             // Port is increased by 1, client will know to connect to this.
-    public static int gamePorts = 11002;            // GamePorts start from 11002.
+    public static int gamePorts = 11002;            // GamePorts start from 11002, and go up by one for each different game that has been started.
 
     public static Queue<GameThread> RunningGameInstances;       // Store running game instances here once you make them.
     // Thread signal.
@@ -137,9 +137,9 @@ using _168WerewolfServer;
         Console.WriteLine("Testing game server functionality...");
 
         StartNewGameThread("Game1", 1);
-        StartNewGameThread("Game2", 1);
-        StartNewGameThread("Game3", 1);
-        StartNewGameThread("Game4", 1);
+       // StartNewGameThread("Game2", 1);
+        //StartNewGameThread("Game3", 1);
+        //StartNewGameThread("Game4", 1);
 
 
         // Data buffer for incoming data.

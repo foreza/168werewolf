@@ -17,14 +17,20 @@ public class NetworkPlayerObj : MonoBehaviour {
 		}
 	public NetworkPlayerObj(string id, GameObject game)
 		{
+			g = new GameObject();
 			playerID = id;
 			g = game;
 		}
 		
+	public void ping()
+	{
+		print ("You have pinged this player: " + playerID);
+	}
+
 		public void updatePosition(float x, float y)
 		{
 			g.transform.position = new Vector3 (x, y);
-			// print ("Moving other player (not me): " + g.transform.position);
+			print ("Moving other player (not me): " + g.transform.position);
 		}
 		
 		public string getID()

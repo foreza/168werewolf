@@ -32,6 +32,14 @@ public class PlayerController : MonoBehaviour {
     }
 
 
+
+
+	public void RequestUpdateToServer()
+	{
+		string position = "" + transform.position.x + "|" + transform.position.y + "";
+		sceneHandler.SendMessage("PassPosition", position);
+	}
+
 	// Use this for initialization
 	protected virtual void Start () 
     {
@@ -47,6 +55,11 @@ public class PlayerController : MonoBehaviour {
 
 		sceneHandler = GameObject.Find ("SceneHandler");
 	
+		PositionUpdateRepeat ();
+	}
+
+	void PositionUpdateRepeat() {
+		InvokeRepeating("RequestUpdateToServer", 1, 0.5F);
 	}
 	
 	// Update is called once per frame
@@ -66,11 +79,12 @@ public class PlayerController : MonoBehaviour {
 		// Fomat: playerID{playerPosX|playerPosY}playerID{playerPosX|playerPosY}
 
 		 
-		string position = "" + transform.position.x + "|" + transform.position.y + "";
-		//sceneHandler.SendMessage("PassPosition", position);
+
 
 	}
-	
+
+
+
 
 	protected virtual void getControlMovement()
 	{
@@ -90,18 +104,21 @@ public class PlayerController : MonoBehaviour {
             {
                 currSprite.sprite = leftSprite;
                 this.transform.position -= new Vector3(speed, 0.0f, 0.0f);
+
             }
 
             if (Input.GetKey("up"))
             {
                 currSprite.sprite = fowardSprite;
                 this.transform.position += new Vector3(0.0f, speed, 0.0f);
+
             }
             else if (Input.GetKey("down"))
             {
                 currSprite.sprite = downSprite;
                 this.transform.position -= new Vector3(0.0f, speed, 0.0f);
             }
+
 
 		// Admin controller, allows for system-wide modifications.
 

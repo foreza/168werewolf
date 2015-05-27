@@ -35,6 +35,7 @@ public class GameServer
 
     public static int Main(String[] args) 
     {
+        
         // Initialize the threads with their proper methods.
         LoginThread = new Thread(AsynchronousSocketListener.StartListening);
         LobbyThread = new Thread(LobbyAsynchronousSocketListener.StartLobbyListening);
@@ -52,6 +53,7 @@ public class GameServer
         Console.WriteLine("Lobby Server Active!");
         LobbyThread.Start();
         LobbyCheckThread.Start();
+       
 
         Console.WriteLine("Wating for player connections. Game servers will initialize upon login!");
 

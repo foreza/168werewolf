@@ -212,8 +212,7 @@ class GameHandler
                         allDoneGame.Reset();
 
                         // Start an asynchronous socket to listen for connections.
-                        Console.WriteLine("[" + RoomName + "] log mesage: ");
-                        Console.WriteLine("Waiting for Game Data");
+                        //Console.WriteLine("[" + RoomName + "] Waiting for Game Data");
                         listener.BeginAccept(new AsyncCallback(AcceptGameCallback), listener);
                         // Wait until a connection is made before continuing.
                         allDoneGame.WaitOne();
@@ -241,9 +240,7 @@ class GameHandler
                 Socket listener = (Socket)ar.AsyncState;
                 Socket handler = listener.EndAccept(ar);
 
-                Console.WriteLine("[" + RoomName + "] log mesage: ");
-                Console.WriteLine("Obtaining Game Data from" + handler.LocalEndPoint);
-
+                // Console.WriteLine("[" + RoomName + "] Obtaining Game Data from" + handler.LocalEndPoint );
 
 
 
@@ -278,8 +275,7 @@ class GameHandler
                     if (content.IndexOf("<EOF>") > -1) {
                         // All the data has been read from the 
                         // client. Display it on the console.
-                        Console.WriteLine("Read {0} bytes from socket. \n Data : {1}",
-                            content.Length, content);
+                        // Console.WriteLine("Read {0} bytes from socket. \n Data : {1}", content.Length, content);
 
                         // CASE 1: If player gave a "joinGame" request, the game server will enqueue the player.
                         if (content.Contains("joinGame")) {
@@ -297,8 +293,7 @@ class GameHandler
                             
                             // Add the player to the game.
                             playersInGame.Insert(newPlayer.playerID, newPlayer);     // Player is now added to GameServer and is active!
-                            Console.WriteLine("[" + RoomName + "] log mesage: ");
-                            Console.WriteLine("Player has been added to Game! Player ID[" + newPlayer.playerID + "with IP Endpoint {" + newPlayer.IPEndPoint);
+                            Console.WriteLine("[" + RoomName + "] Player has been added to this game! Player ID [" + newPlayer.playerID + "] with IP Endpoint {" + newPlayer.IPEndPoint);
 
                             // Send the player a confirmation, along with their ID, total # of players.
                             SendGame(handler, "[welcome]" + newPlayer.playerID + "|" + playersInGame.Count);            // Send the player the ID that they will use to keep track of things.
@@ -323,8 +318,7 @@ class GameHandler
                             Player e = (Player)playersInGame[index];                // replace the index 
                             e.setPlayerPosition(posXUpdate, posYUpdate);        // set the updates
                             sk.SetScore(username, scoreUpdate); //Sets the score
-                            Console.WriteLine("[" + RoomName + "] log mesage: ");
-                            Console.WriteLine("Server applied this position update to player: " + index + "content: " + content);
+                            Console.WriteLine("[" + RoomName + "] Applied position update to player: " + index + " { " + content + " }" );
 
 
                             // Encode the game data and send it as a very long string to client.
@@ -339,6 +333,7 @@ class GameHandler
                             }
 
                             SendGame(handler, "[update]" + updateS);
+                            Console.WriteLine("Sent this string: " + updateS);
                         }
 
                          // CASE 3: If player gave a "status" update, the game server, game server will update ALL situations.
@@ -404,8 +399,7 @@ class GameHandler
 
                     // Complete sending the data to the remote device.
                     int bytesSent = handler.EndSend(ar);
-                    Console.WriteLine("[" + RoomName + "] log mesage: ");
-                    Console.WriteLine("Sent {0} bytes to this client: " + handler.LocalEndPoint, bytesSent);
+                    // Console.WriteLine("[" + RoomName + "] Sent {0} bytes to this client: " + handler.LocalEndPoint, bytesSent);
 
                     handler.Shutdown(SocketShutdown.Both);
                     handler.Close();
