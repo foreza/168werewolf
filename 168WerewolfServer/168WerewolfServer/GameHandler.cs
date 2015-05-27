@@ -338,6 +338,7 @@ class GameHandler
                         }
 
       
+
                         //CASE 4: If player gave a "score" update, the Scoreboard gets updated.
                         else if (content.Contains("scoreUpdate"))
                         {
@@ -351,56 +352,28 @@ class GameHandler
                             //Compile scores into single string
                             string scoreboard = "";
                             ArrayList allScores = sk.GetAllScores();
-                            Console.WriteLine("Building score string....");
-                            for (int i = 0; i < allScores.Count; i++ ) // Iterates through all users in database
+                            for (int i = 0; i < allScores.Count; i++) // Iterates through all users in database
                             {
-                                Console.WriteLine("teststxdisdjfhaklsjdfhasid");
                                 scoreboard += "*" + ((ArrayList)allScores[i])[0] + "|" + ((ArrayList)allScores[i])[1]; // "*username|score"
                             }
 
-                            string toSend = "[scoreUpdate]" + scoreboard;
-
-                            Console.WriteLine("Handling score update..." + toSend);
-                            SendGame(handler, toSend);
-
-
                             //Send out score to players
-                 
+                            SendGame(handler, "[scoreUpdate]" + scoreboard);
+                            Console.WriteLine("sent this: " + scoreboard);
+
                         }
-
-
-
-                                           // CASE 3: If player gave a "status" update, the game server, game server will update ALL situations.
-                        // example: player triggers a tower.
-                        else if (content.Contains("statusUpdate"))
+                        //CASE 5: If player gave a "goodbye" update, the player gets removed from the scoreboard and the array of players
+                        else if (content.Contains("goodbye"))
                         {
-
-
                             String[] splitted = content.Split('|');
 
-                            int index = int.Parse(splitted[1]);
-                            // Code to add here to extract the string
-                            // position[450,230]
-                            // we also need playerID
-                            // apply position updates to this particular player on the server.
+                            int playerIndex = int.Parse(splitted[1]);
+                            string username = splitted[2];
 
-
-
-                            // Encode the game data and send it as a very long string to client.
-                            // Example: 
-
-                            // Fomat: playerID{playerPosX|playerPosY}playerID{playerPosX|playerPosY}
-                            String updateS = "";
-
-                            for (int i = 0; i < playersInGame.Count; i++)
-                            {
-                                Player k = (Player)playersInGame[i];
-                                updateS += "*" + k.playerID + "|" + k.positionX + "|" + k.positionY + "|"; // slight edit to ensure playerInGameCount is always viewable
-                                SendGame(k.getSock(), "[update]" + updateS);
-
-                            }
+                            sk.RemovePlayer(username);
 
                         }
+
 
                     }
                     else {

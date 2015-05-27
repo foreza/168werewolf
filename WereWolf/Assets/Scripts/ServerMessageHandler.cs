@@ -20,7 +20,7 @@ public class ServerMessageHandler : MonoBehaviour {
 		// Recieve from the server the following information:
 		// - Current # of players active
 		// - My Player ID
-		print ("Handling server message...: " + s);
+		print ("Handling server message: " + s);
 
 		if(s.Contains("welcome"))
 		{
@@ -50,7 +50,7 @@ public class ServerMessageHandler : MonoBehaviour {
 		// - Location of every player, along with their PID
 		// - Total # of players 
 
-		else if (s.Contains("scoreUpdate"))
+		else if (s.Contains("[scoreUpdate]"))
 		{
 			print("Score update: " + s);
 			this.gameObject.SendMessage("UpdateScoreBoard", s);

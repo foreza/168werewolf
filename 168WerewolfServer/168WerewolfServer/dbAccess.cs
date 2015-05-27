@@ -72,6 +72,7 @@ public class dbAccess {
             {
                 lineArray.Add(reader.GetValue(i));
             }
+            readArray.Add(lineArray);
         }
         return readArray;
     }

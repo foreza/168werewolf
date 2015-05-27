@@ -11,7 +11,7 @@ using System.Text;
 public class GameNetworking : MonoBehaviour {
 	
 	// The port number for the remote lobby server.
-	public int portGame = 11002;			// this should change upon login.
+	public int portGame = 0;			// this should change upon login.
 	public string roomName = "";
 	public GameObject myself;
     public string username;
@@ -121,7 +121,7 @@ public class GameNetworking : MonoBehaviour {
 			IPHostEntry ipHostInfo = Dns.GetHostEntry(Networking.IPaddress);
 			IPAddress ipAddress = ipHostInfo.AddressList[0];
 			IPEndPoint remoteEP = new IPEndPoint(ipAddress, portGame);
-			responseGame = String.Empty;		// Start with an empty string.
+			// responseGame = String.Empty;		// Start with an empty string.
 			
 			// Create a TCP/IP socket.
 			Socket client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -140,7 +140,7 @@ public class GameNetworking : MonoBehaviour {
 			receiveDoneGame.WaitOne();
 			
 			// Write the response to the console.
-			print ("Response received : {0}" + responseGame);
+			print ("Response received:" + responseGame);
 
 			// Pass the message to the server messagehandler.
 			this.gameObject.SendMessage("HandleServerMessage", responseGame);
