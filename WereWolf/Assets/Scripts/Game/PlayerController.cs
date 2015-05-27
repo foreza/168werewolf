@@ -1,5 +1,6 @@
 ﻿	using UnityEngine;
 using System.Collections;
+using System;
 
 public class PlayerController : MonoBehaviour {
 
@@ -8,6 +9,8 @@ public class PlayerController : MonoBehaviour {
     public bool isClientControlled = false;
 
     public float speed;			// Set speed here.
+
+    public float startTime;
 
 	protected Rigidbody2D thisBody;
 
@@ -29,6 +32,8 @@ public class PlayerController : MonoBehaviour {
 
     void Awake() {
         deathNoiseSource = GetComponent<AudioSource>();
+
+        startTime = Time.time;
     }
 
 
@@ -38,6 +43,9 @@ public class PlayerController : MonoBehaviour {
 	{
 		string position = "" + transform.position.x + "|" + transform.position.y + "";
 		sceneHandler.SendMessage("PassPosition", position);
+
+        string scoreUpdate = ((int)Math.Floor(Time.time - startTime)).ToString(); //currently keeps track of how many seconds the player is in game
+        sceneHandler.SendMessage("PassScore", scoreUpdate);
 	}
 
 	// Use this for initialization

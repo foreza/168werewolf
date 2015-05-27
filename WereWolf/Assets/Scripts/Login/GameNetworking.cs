@@ -25,14 +25,17 @@ public class GameNetworking : MonoBehaviour {
 	
 	void Start () {
 
-		//username = GameObject.Find("Username").GetComponent<InputField>().text;
+		//
 		myself = GameObject.Find ("SceneHandler");
 	
 	}
 	
 	void Update ()
 	{
-
+        if (Application.loadedLevel == 0)
+        {
+            username = GameObject.Find("Username").GetComponent<InputField>().text;
+        }
 
 	}
 
@@ -88,11 +91,16 @@ public class GameNetworking : MonoBehaviour {
 		//SendServerMessage ("position" + "|" + s + "|"+username+"|0|"); //the zero is a test score
 
 
-		SendServerMessage ("position" + "|" + myPlayerID + "|" + s + "|"+username+"|0|"); //the zero is a test score
+		SendServerMessage ("position" + "|" + myPlayerID + "|" + s + "|");
 		// TODO: Incorporate player facing direction and various other things LATER
 
 	}
-	
+
+    public void PassScore(String scoreUpdate)
+    {
+        SendServerMessage("scoreUpdate"+"|"+username+"|"+scoreUpdate+"|");
+    }
+
 
 	// Method call by game engine to change the state of the game.
 	public void PassStateChange(String s)

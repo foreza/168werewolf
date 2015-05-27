@@ -314,12 +314,11 @@ class GameHandler
                             // apply position updates to this particular player on the server.
                             float posXUpdate = float.Parse(splitted[2]);
                             float posYUpdate = float.Parse(splitted[3]);
-                            string username = splitted[4].ToString();
-                            int scoreUpdate = int.Parse(splitted[5]);
+
 
                             Player e = (Player)playersInGame[index];                // replace the index 
                             e.setPlayerPosition(posXUpdate, posYUpdate);        // set the updates
-                            sk.SetScore(username, scoreUpdate); //Sets the score
+                            
                             Console.WriteLine("[" + RoomName + "] Applied position update to player: " + index + " { " + content + " }" );
 
 
@@ -371,8 +370,16 @@ class GameHandler
                             }
 
                         }
+                        //CASE 4: If player gave a "score" update, the Scoreboard gets updated.
+                        else if (content.Contains("scoreUpdate"))
+                        {
+                            String[] splitted = content.Split('|');
 
+                            string username = splitted[1].ToString();
+                            int scoreUpdate = int.Parse(splitted[2]);
 
+                            sk.SetScore(username, scoreUpdate); //Sets the score
+                        }
 
 
 
