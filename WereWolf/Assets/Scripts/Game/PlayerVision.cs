@@ -25,14 +25,16 @@ public class PlayerVision : MonoBehaviour {
 	{
 		if (sendDebugMessages)
             print ("Illuminating: [" + other.gameObject.name + "]");
-		revealObject (other.gameObject);
+		if(other.GetComponent<FogOfWar>())
+            revealObject (other.gameObject);
 	}
 
 	void OnTriggerExit2D(Collider2D other)
 	{
 		if (sendDebugMessages)
             print ("Hiding: [" + other.gameObject.name + "]");
-		hideObject (other.gameObject);
+        if (other.GetComponent<FogOfWar>())
+		    hideObject (other.gameObject);
 
 	}
 

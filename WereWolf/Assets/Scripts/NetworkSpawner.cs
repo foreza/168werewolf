@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class NetworkSpawner : MonoBehaviour {
 
 	// This class has methods that is invoked by GameNetworking
-	
+	//List<NetworkPlayerObj> playerList = new List<NetworkPlayerObj>();
 
 	// Use this for initialization
 	void Start () {
@@ -27,14 +28,15 @@ public class NetworkSpawner : MonoBehaviour {
 		for (int i = 0; i < n; i++)
 		{
 			// Create a new network player obj
-			//NetworkPlayerObj player = new NetworkPlayerObj();
-			//player.g = new GameObject();
+			NetworkPlayerObj player = new NetworkPlayerObj();
+			player.g = new GameObject();
 
-			// player.g = Instantiate ((GameObject)Resources.Load ("OtherPlayer"));
-			// Initialize and invoke the spawn on it.
-			//player.playerID = i.ToString();
-			// Add several Player objects to aid in expansion!
-			//this.gameObject.SendMessage("AddPlayerToTrack", player);
+			player.g = Instantiate ((GameObject)Resources.Load ("OtherPlayer"));
+			//Initialize and invoke the spawn on it.
+			player.playerID = i.ToString();
+			//Add several Player objects to aid in expansion!
+			this.gameObject.SendMessage("AddPlayerToTrack", player);
+            //playerList.Add(player);
 
 			print ("Spawned a player object.");
 		}

@@ -44,7 +44,7 @@ GameObject:
   - 4: {fileID: 447844}
   - 212: {fileID: 21299412}
   - 114: {fileID: 11470980}
-  - 95: {fileID: 9544412}
+  - 95: {fileID: 9573308}
   m_Layer: 0
   m_Name: Basic Trap
   m_TagString: Untagged
@@ -71,7 +71,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 163028}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -14.2068901, y: -8.76815033, z: 0}
+  m_LocalPosition: {x: 4.24894762, y: -2.12447357, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 408886}
@@ -116,7 +116,7 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Size: {x: 2.66000009, y: 1.5}
---- !u!95 &9544412
+--- !u!95 &9573308
 Animator:
   serializedVersion: 3
   m_ObjectHideFlags: 1
@@ -125,7 +125,7 @@ Animator:
   m_GameObject: {fileID: 163028}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: e209450698de204468cc06eff9b30af1, type: 2}
+  m_Controller: {fileID: 9100000, guid: ce54a4aa5ed793745b79847c979789fc, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -157,10 +157,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c68900126503b943b4a9612939699d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sendDebugMessages: 1
+  sendDebugMessages: 0
   triggerZone: {fileID: 114130}
   areaOfEffectZone: {fileID: 122328}
-  timeToActivate: 1
+  timeToActivate: 5
   triggerSFX: {fileID: 0}
   activeSFX: {fileID: 0}
   canReactivate: 0
