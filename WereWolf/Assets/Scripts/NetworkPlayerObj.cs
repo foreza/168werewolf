@@ -25,12 +25,14 @@ public class NetworkPlayerObj {
 	public void ping()
 	{
 		//print ("You have pinged this player: " + playerID);
+		g.transform.position += new Vector3 (1.0f, 0.0f);
 	}
 
 		public void updatePosition(float x, float y)
 		{
+
 			g.transform.position = new Vector3 (x, y);
-			//print ("Moving other player (not me): " + g.transform.position);
+			// print ("Moving other player (not me): " + g.transform.position);
 		}
 		
 		public string getID()

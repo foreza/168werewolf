@@ -31,8 +31,12 @@ public class ServerMessageHandler : MonoBehaviour {
 
 			// Assigned played ID here
 			this.gameObject.SendMessage("SetMyPID", splitResp[0].Substring(9));
+			this.gameObject.SendMessage("SetMySpawnerPID", splitResp[0].Substring(9));
+
 			// get the login size,
 			int loginSize = int.Parse (splitResp[1]);
+
+ 
 			
 			print ("I was assigned this player ID: " + splitResp[0].Substring(9) + " , currently this many players: " + loginSize);
 			this.gameObject.SendMessage("SetTrack", loginSize);

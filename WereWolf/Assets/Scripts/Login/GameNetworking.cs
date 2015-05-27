@@ -18,7 +18,7 @@ public class GameNetworking : MonoBehaviour {
 	public bool noSpawn = true;
 
 	public int loginSize;
-	public String myPlayerID;					// Need to know my PID here.
+	public static String myPlayerID;					// Need to know my PID here.
 
 	// The response from the remote device.
 	public String responseGame = String.Empty;
@@ -37,6 +37,11 @@ public class GameNetworking : MonoBehaviour {
             username = GameObject.Find("Username").GetComponent<InputField>().text;
         }
 
+	}
+
+	public string GetMyID()
+	{
+		return myPlayerID;
 	}
 
 	public void setGamePort(string [] s)
