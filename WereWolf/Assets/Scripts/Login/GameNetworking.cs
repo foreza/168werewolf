@@ -98,7 +98,8 @@ public class GameNetworking : MonoBehaviour {
 
     public void PassScore(String scoreUpdate)
     {
-        SendServerMessage("scoreUpdate"+"|"+username+"|"+scoreUpdate+"|");
+		print ("Passing this score: " + scoreUpdate);
+		SendServerMessage("scoreUpdate"+"|"+username+"|"+scoreUpdate+"|");
     }
 
 

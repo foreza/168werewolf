@@ -1,9 +1,9 @@
-﻿
+﻿/*
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Newtonsoft.Json;
+// using Newtonsoft.Json;
 
 namespace Assets.Scripts {
     struct PlayerUpdate {
@@ -44,10 +44,11 @@ namespace Assets.Scripts {
 
 
         public string BuildUpdate() {
-            string update = JsonConvert.SerializeObject(pu);
+            // string update = JsonConvert.SerializeObject(pu);
 
-            return update;
+           // return update;
         }
     }
 }
 
+*/
