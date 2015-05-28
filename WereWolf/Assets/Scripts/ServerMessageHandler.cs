@@ -83,7 +83,6 @@ public class ServerMessageHandler : MonoBehaviour {
 
         else if (s.Contains("disconnection"))
         {
-            this.gameObject.SendMessage("removeDisconnectedPlayer", s);
         }
 
 

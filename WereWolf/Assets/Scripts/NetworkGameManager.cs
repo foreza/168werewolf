@@ -127,10 +127,5 @@ public class NetworkGameManager : MonoBehaviour {
 		
 	}
 
-    public void DisconnectPlayer(int playerID)
-    {
-        print("Player "+playerID+" disconnected");
-        playersTracking[playerID].Deactivate();
-    }
 	
 }

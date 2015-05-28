@@ -54,11 +54,6 @@ public class NetworkPlayerObj {
 			//print (this.gameObject.name + " has become a werewolf!");
 			isHuman = false;
 		}
-
-        public void Deactivate()
-        {
-            g.SetActive(false);
-        }
         
 		// Use this for initialization
 		void Start () {

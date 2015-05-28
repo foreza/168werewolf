@@ -381,6 +381,9 @@ class GameHandler
 
                             sk.RemovePlayer(username);
 
+                            Player e = (Player)playersInGame[playerIndex]; //Get disconnecting player 
+                            e.setPlayerPosition(-100000, -100000);        // put player waaaay off of the board
+
                             SendGame(handler, "[disconnection]|"+playerIndex);
                         }
 
