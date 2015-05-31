@@ -3,30 +3,20 @@ using System.Collections;
 
 public class ServerMessageHandler : MonoBehaviour {
 
-	GameObject player;
+	GameObject player;				// Do not initialize until game starts!
 
-	// Use this for initialization
 	void Start () {
 	
 	}
 	
-	// Update is called once per frame
 	void Update () {
 	
 	}
 
-
-	public void HandleServerMessage(string s)
+	public void DoWelcome(string s)
 	{
-		// Welcome = player first message.
-		// Recieve from the server the following information:
-		// - Current # of players active
-		// - My Player ID
-		print ("Handling server message: " + s);
-
-		if(s.Contains("welcome"))
-		{
-			print ("Recieved a welcome message. (HandleServerMessage)");
+			// Helpful debug statement.
+			print ("Recieved welcome message.");
 			string [] splitResp = s.Split('|');
 
 			// Assigned played ID here
@@ -46,8 +36,22 @@ public class ServerMessageHandler : MonoBehaviour {
 			// Spawn 1 less to keep track of the player
 			this.SendMessage("SpawnInitialPlayers", loginSize-1);
 			player = GameObject.Find("BBPlayer");			// save the reference
-			
-			
+
+	}
+
+	public void HandleServerMessage(string s)
+	{
+		// Welcome = player first message.
+		// Recieve from the server the following information:
+		// - Current # of players active
+		// - My Player ID
+
+		print ("ServerMessageHandler: handling this server message: " + s);
+
+		if(s.Contains("welcome"))
+		{
+			// Let DoWelcome function handle.
+			DoWelcome(s);
 		}
 		
 		else if (s.Contains("update"))
@@ -59,20 +63,7 @@ public class ServerMessageHandler : MonoBehaviour {
 			this.gameObject.SendMessage("UpdateTracking", split[0]);
 			player.SendMessage("UpdateScoreBoard", split[1]);
 		}
-		
-		// Update = general updates message
-		// Each general update message contains the following:
-		// - Location of every player, along with their PID
-		// - Total # of players 
-		/*
-		else if (s.Contains("score"))
-		{
-			print("Score update: " + s);
-			this.gameObject.SendMessage("UpdateScoreBoard", s);
-		}
-		*/
-		// If there is a change in the # of players, invoke the network spawner to be able to handle it.
-
+	
 		
 		// This method should be invoked every time an objective is reached.
 		else if (s.Contains("stateUpdate"))
