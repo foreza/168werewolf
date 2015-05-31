@@ -17,6 +17,7 @@ public class GameNetworking : MonoBehaviour {
     public string username;
 	public bool noSpawn = true;
 
+	public bool gameInstanceBegin;
 	public int loginSize;
 	public static String myPlayerID;					// Need to know my PID here.
 
@@ -24,8 +25,7 @@ public class GameNetworking : MonoBehaviour {
 	public String responseGame = String.Empty;
 	
 	void Start () {
-
-		//
+		gameInstanceBegin = false;
 		myself = GameObject.Find ("SceneHandler");
 	
 	}
@@ -81,46 +81,56 @@ public class GameNetworking : MonoBehaviour {
 		myPlayerID = i;
 	}
 
+	// Is called by LobbyNetworking to begin the game.
 	public void BeginGame()
 	{
-		// Start the game. Send "join game" to tell the server to initialize initial contact
-		SendServerMessage ("joinGame");
-		print ("Send server message. Joining game!");
+		if(!gameInstanceBegin)
+		{
+			//Send "join game" to tell the server to initialize initial contact
+			SendServerMessage ("joinGame");
+
+			// Set gameInstanceBegin to true; message should only be sent once.
+			gameInstanceBegin = true;
+		}
+
+		else
+		{
+			print("Game instance already active; cannot begin game again!");
+		}
 	}
 
+	// Method called to pass current player position to the server.
 	public void PassPosition(String s)
 	{
 		// Called by the main game loop to pass positions.
-	
-		// Old deprecated move method for milestone 3
-		//SendServerMessage ("position" + "|" + s + "|"+username+"|0|"); //the zero is a test score
-
-
 		SendServerMessage ("position" + "|" + myPlayerID + "|" + s + "|");
+
 		// TODO: Incorporate player facing direction and various other things LATER
 
 	}
 
+
+	// Method called to pass current player score to the server.
     public void PassScore(String scoreUpdate)
     {
-		print ("Passing this score: " + scoreUpdate);
+    	// Called by the main game loop to pass positions.
 		SendServerMessage("score"+"|"+username+"|"+scoreUpdate+"|");
+
+		// TODO: Do more fun things with the score.
+
     }
 
 
-	// Method call by game engine to change the state of the game.
+    // TODO: Implement this metho.d
 	public void PassStateChange(String s)
 	{
 		// Called by the main game loop to pass positions.
-		SendServerMessage ("stateUpdate" + "|" + myPlayerID + "|" + s + "|");
-
-
+		//SendServerMessage ("stateUpdate" + "|" + myPlayerID + "|" + s + "|");
 
 	}
 	
-
+	// Main form of connection with remote server.
 	public void SendServerMessage(String s) {
-		// Connect to a remote device.
 		try {
 			
 			IPHostEntry ipHostInfo = Dns.GetHostEntry(Networking.IPaddress);

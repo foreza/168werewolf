@@ -9,23 +9,31 @@ using System.Text;
 
 public class LobbyNetworking : MonoBehaviour {
 
-	// The port number for the remote lobby server.
-	private const int portLobby = 11001;
+	private const int portLobby = 11001;			// The port number for the remote lobby server.
+	public static GameObject buttonHandler;			// Button handler scripts/methods reference.
+	public static GameObject h;						// Reference to this game object, without using this.<name>
 
-	public static GameObject buttonHandler;
-	// A test integer so we can track the message numbers.
-	public static int test = 0;
-
-	public static GameObject h;
-
+	// ManualResetEvent instances signal completion.
+	private static ManualResetEvent connectDoneLobby = new ManualResetEvent(false);
+	private static ManualResetEvent sendDoneLobby = new ManualResetEvent(false);
+	private static ManualResetEvent receiveDoneLobby = new ManualResetEvent(false);
+		
+	// The response from the remote device.
+	private static String responseLobby = String.Empty;
 
 
 	void Start () {
+		// Find scenehandler, and bind it to h.
 		h = GameObject.Find("SceneHandler");
+
+		// Find the buttonHandler, bind it to the buttonHandler.
+		buttonHandler = GameObject.Find ("ButtonHandler");
+
 	}
 
 	void Update ()
 	{
+
 	}
 
 
@@ -33,93 +41,111 @@ public class LobbyNetworking : MonoBehaviour {
 	public class StateObject {
 		// Client socket.
 		public Socket workSocket = null;
+
 		// Size of receive buffer.
 		public const int BufferSize = 256;
+
 		// Receive buffer.
 		public byte[] buffer = new byte[BufferSize];
+
 		// Received data string.
 		public StringBuilder sb = new StringBuilder();
 	}
 	
 
+	// Method that is called by the Networking class, with a given room name.
 	public void ConnectToLobby(string r)
 	{
-		// Send the lobby my room name, and allow lobby to either hand me the port number (new) or give me an existing port #.
-		StartLobby ("joinLobby~" + r + "~");
+
+		// Recieve the game room name, and append additional characters for ease of handling.
+		MessageLobby ("joinLobby~" + r + "~");
+
 	}
 
+	// Called by ButtonHandler to begin the game on start keypress.
 	public void StartTheGame()
 	{
 		print ("Recieved message; changing display screen.");
-		StartLobby ("joinGame");
-		//this.SendMessage ("BeginGame"); 	// calls the GameNetworking class to kick in and begin.
-		// bogus input
+		MessageLobby ("joinGame");
 	}
-		
-		// ManualResetEvent instances signal completion.
-		private static ManualResetEvent connectDoneLobby = 
-			new ManualResetEvent(false);
-	private static ManualResetEvent sendDoneLobby = 
-			new ManualResetEvent(false);
-	private static ManualResetEvent receiveDoneLobby = 
-			new ManualResetEvent(false);
-		
-		// The response from the remote device.
-	private static String responseLobby = String.Empty;
-		
-		public static void StartLobby(String s) {
-			// Connect to a remote device.
-			try {
-				// Establish the remote endpoint for the socket.
-				// The name of the 
-				// remote device is "host.contoso.com".
-				print ("Beginning connection to lobby.");
 
-			IPHostEntry ipHostInfo = Dns.GetHostEntry(Networking.IPaddress);
-			IPAddress ipAddress = ipHostInfo.AddressList[0];
-			IPEndPoint remoteEP = new IPEndPoint(ipAddress, portLobby);
-				
-				// Create a TCP/IP socket.
-				Socket client = new Socket(AddressFamily.InterNetwork,
-				                           SocketType.Stream, ProtocolType.Tcp);
-				
-				// Connect to the remote endpoint.
-			client.BeginConnect( remoteEP, new AsyncCallback(ConnectCallbackLobby), client);
-			connectDoneLobby.WaitOne(1000);
-				
-				print ("Connected to lobby. Sending data.");
-
-				// Send test data to the remote device.
-			// Server will recieve "joinLobby or joinGame" and will accept the request.
-			SendLobby(client,s + "<EOF>");
-			sendDoneLobby.WaitOne(1000);
-				
-			// Receive the responseLobby from the remote device.
-			ReceiveLobby(client);
-			receiveDoneLobby.WaitOne(1000);
-				
-				// Write the response to the console.
-			print ("Response received : {0}" + responseLobby);
-
-			if(s.Contains("joinLobby"))
+	// Handles the messages received from the remote server.
+	public static void LobbyMessageHandler(string s)
+	{
+		if(s.Contains("joinLobby"))
 			{
+				// Load the Title screen.
 				Application.LoadLevel("Title");
+
+				// Helpful debug statement.
 				print ("Loading Title screen");
-				// Get the ref to the buttonHandler here.
+
+				// Split up and handle the response string.
 				string [] split = responseLobby.Split('~');
+
+				// Tells the local game client (GameNetworking.cs) to set the assigned port.
 				h.SendMessage("setGamePort", split);
 
 			}
 			 if (s == "joinGame")
 			{
-				print("Confirmed, beginning game instance");
-				buttonHandler = GameObject.Find ("ButtonHandler");
+				// Helpful debug statement.
+				print("Lobby Message Handler recieved joinGame request.");
+
+				// Tell the buttonHandler to load the game scene.
 				buttonHandler.SendMessage("confirmBeginGame");
+
+				// Tells the local game client to begin connection to assigned game server.
 				h.SendMessage("BeginGame");
 			}
-				// Release the socket.
-				client.Shutdown(SocketShutdown.Both);
-				client.Close();
+
+	}
+		
+
+	// Connect and communicate with the remote server.
+	public static void MessageLobby(String s) {
+		try {
+			// Print debug statement.
+			print ("Sending message to lobby server.");
+
+			// Socketing essentials.
+			IPHostEntry ipHostInfo = Dns.GetHostEntry(Networking.IPaddress);	// Get address of client host from DNS
+			IPAddress ipAddress = ipHostInfo.AddressList[0];					// Declare type ipAddress.
+			IPEndPoint remoteEP = new IPEndPoint(ipAddress, portLobby);			// Create a remote endpoint.
+				
+			// Create a TCP/IP socket with given information.
+			Socket client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+				
+			// Connect to the remote endpoint.
+			client.BeginConnect( remoteEP, new AsyncCallback(ConnectCallbackLobby), client);
+
+			// Wait for a response. Note: 3000ms waittimeout specified here!
+			connectDoneLobby.WaitOne(3000);
+				
+			// Print debug statement.
+			print ("Sending data to lobby: " + s);
+
+			// Server will recieve "joinLobby or joinGame" and will process the request.
+			SendLobby(client,s + "<EOF>");
+
+			// Wait for a response. Note: 3000ms waittimeout specified here!
+			sendDoneLobby.WaitOne(3000);
+				
+			// Receive the responseLobby from the remote device.
+			ReceiveLobby(client);
+
+			// Wait for a response. Note: 3000ms waittimeout specified here!
+			receiveDoneLobby.WaitOne(1000);
+				
+			// Print/Debug the response to the console.
+			print ("Response received : {0}" + responseLobby);
+
+			// Pass response to be handled.
+			LobbyMessageHandler(responseLobby);
+			
+			// Release and close the socket.
+			client.Shutdown(SocketShutdown.Both);
+			client.Close();
 				
 			} catch (Exception e) {
 				print(e.ToString());
