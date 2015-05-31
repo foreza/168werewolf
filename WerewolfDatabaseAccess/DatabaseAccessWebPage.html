@@ -32,7 +32,27 @@
             </tr>
         </table>
     </p>
-    <script src="DatabaseAccess.js"></script>
+    <p>
+        Debug messages:</p>
+    <p id ="debug"></p>
+
+    <script src="sql.js"></script>
+    <script>
+        var sql = window.SQL;
+
+        document.getElementById("debug").innerHTML = "Couldn't open database";
+        var db = new SQL.Database("testdb.db");
+        
+        document.getElementById("debug").innerHTML = "Couldn't insert score";
+        db.run("INSERT INTO testscores VALUES ('user3',30);");
+
+        document.getElementById("debug").innerHTML = "Ran command just fine";
+
+        var usernames = "test";
+        var scores = "test";
+        document.getElementById("usernames").innerHTML = usernames;
+        document.getElementById("scores").innerHTML = scores;
+    </script>
 
 </body>
 </html>
