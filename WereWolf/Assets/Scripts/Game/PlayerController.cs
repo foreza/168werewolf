@@ -43,10 +43,10 @@ public class PlayerController : MonoBehaviour {
 	public void RequestUpdateToServer()
 	{
 		string position = "" + transform.position.x + "|" + transform.position.y + "";
-		//sceneHandler.SendMessage("PassPosition", position);
+		sceneHandler.SendMessage("PassPosition", position);
 
         string scoreUpdate = ((int)Math.Floor(Time.time - startTime)).ToString(); //currently keeps track of how many seconds the player is in game
-        //sceneHandler.SendMessage("PassScore", scoreUpdate);
+        sceneHandler.SendMessage("PassScore", scoreUpdate);
 
 	}
 

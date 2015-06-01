@@ -65,7 +65,6 @@ public class GameNetworking : MonoBehaviour {
 		public StringBuilder sb = new StringBuilder();
 	}
 	
-
 	// ManualResetEvent instances signal completion.
 	public static ManualResetEvent connectDoneGame = 
 		new ManualResetEvent(false);
@@ -145,17 +144,17 @@ public class GameNetworking : MonoBehaviour {
 			
 			// Connect to the remote endpoint.
 			client.BeginConnect( remoteEP, new AsyncCallback(ConnectCallbackGame), client);
-			connectDoneGame.WaitOne();
+			connectDoneGame.WaitOne(100);
 
 			// Server will recieve an appropriate message and respond accordingly.
 			print (msgCount + " - About to send: " + s + "<EOF>");
 
 			SendGame(client,s + "<EOF>");
-			sendDoneGame.WaitOne();
+			sendDoneGame.WaitOne(100);
 
 			// Receive the responseGame from the remote device.
 			ReceiveGame(client);
-			receiveDoneGame.WaitOne();
+			receiveDoneGame.WaitOne(100);
 
 			print (msgCount + " - Response received:" + responseGame);
 
