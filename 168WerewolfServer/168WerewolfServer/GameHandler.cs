@@ -217,7 +217,7 @@ class GameHandler
                         //Console.WriteLine("[" + RoomName + "] Waiting for Game Data");
                         listener.BeginAccept(new AsyncCallback(AcceptGameCallback), listener);
                         // Wait until a connection is made before continuing.
-                        allDoneGame.WaitOne();
+                        allDoneGame.WaitOne(100);
 
                         // Allow Gamemessages to be sent out to update the Game list of "available" players.
 
