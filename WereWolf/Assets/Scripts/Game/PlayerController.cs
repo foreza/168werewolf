@@ -39,8 +39,7 @@ public class PlayerController : MonoBehaviour {
     }
 
 
-
-
+	
 	public void RequestUpdateToServer()
 	{
 		string position = "" + transform.position.x + "|" + transform.position.y + "";
@@ -48,8 +47,16 @@ public class PlayerController : MonoBehaviour {
 
         string scoreUpdate = ((int)Math.Floor(Time.time - startTime)).ToString(); //currently keeps track of how many seconds the player is in game
         //sceneHandler.SendMessage("PassScore", scoreUpdate);
+
 	}
 
+	public void RequestScoreToServer()
+	{
+	
+		string scoreUpdate = ((int)Math.Floor(Time.time - startTime)).ToString(); //currently keeps track of how many seconds the player is in game
+		sceneHandler.SendMessage("PassScore", scoreUpdate);
+	}
+	
 	// Use this for initialization
 	protected virtual void Start () 
     {
@@ -66,11 +73,17 @@ public class PlayerController : MonoBehaviour {
 		sceneHandler = GameObject.Find ("SceneHandler");
 	
 		PositionUpdateRepeat ();
+		ScoreUpdateRepeat ();
 	}
 
 	void PositionUpdateRepeat() {
-		InvokeRepeating("RequestUpdateToServer", 1, 0.5F);
+		InvokeRepeating("RequestUpdateToServer", 0.2f, 0.05F);
 	}
+
+	void ScoreUpdateRepeat() {
+		InvokeRepeating("RequestScoreToServer", 1, 2.0F);
+	}
+
 	
 	// Update is called once per frame
 	protected virtual void Update () 
@@ -155,12 +168,18 @@ public class PlayerController : MonoBehaviour {
 		if (Input.GetKeyDown("tab"))
 		{
 			// interact with building.
-		
+			this.SendMessage("ShowScoreBoard");
 				print ("Bringing up scoreboard");
 		}
 
-
-
+		if (Input.GetKeyUp("tab"))
+		{
+			// interact with building.
+			this.SendMessage("HideScoreBoard");
+			print ("Hiding scoreboard");
+			
+		}
+		
 	}
 
     void transitionSceneToGameOver()

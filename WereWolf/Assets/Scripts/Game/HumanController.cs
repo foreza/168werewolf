@@ -164,7 +164,7 @@ public class HumanController : PlayerController {
 
     public void triggerDeath()
     {
-        if (sendDebugMessages) Debug.Log(this.name + " the " + this.tag + " has been slain.");
+        //if (sendDebugMessages) Debug.Log(this.name + " the " + this.tag + " has been slain.");
         //anim.SetTrigger("isDead");
         currSprite.sprite = deadSprite;
         isDead = true;

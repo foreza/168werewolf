@@ -124,7 +124,7 @@ class GameHandler
                     // Complete the connection.
                     client.EndConnect(ar);
 
-                    Console.WriteLine("Socket connected to {0}" + client.RemoteEndPoint.ToString());
+                    //Console.WriteLine("Socket connected to {0}" + client.RemoteEndPoint.ToString());
 
                     // Signal that the connection has been made.
                     gameconnectDone.Set();
@@ -211,13 +211,13 @@ class GameHandler
                         // Set the event to nonsignaled state.
                         allDoneGame.Reset();
 
-                        Console.WriteLine("Game room: [" + RoomName + "] is active. :)");
+                        //Console.WriteLine("Game room: [" + RoomName + "] is active. :)");
 
                         // Start an asynchronous socket to listen for connections.
                         //Console.WriteLine("[" + RoomName + "] Waiting for Game Data");
                         listener.BeginAccept(new AsyncCallback(AcceptGameCallback), listener);
                         // Wait until a connection is made before continuing.
-                        allDoneGame.WaitOne(1000);
+                        allDoneGame.WaitOne();
 
                         // Allow Gamemessages to be sent out to update the Game list of "available" players.
 
@@ -279,8 +279,62 @@ class GameHandler
                         // client. Display it on the console.
                         // Console.WriteLine("Read {0} bytes from socket. \n Data : {1}", content.Length, content);
 
+                        // CASE 2: If player gave a "position" update, the game server, game server will update ALL coordinates/situations.
+                         if (content.Contains("position")) {
+                            // GET THE PLAYER ID from the packet
+
+                            String[] splitted = content.Split('|');
+
+                            int index = int.Parse(splitted[1]);
+                            // Code to add here to extract the string
+                            // position[450,230]
+                            // we also need playerID
+                            // apply position updates to this particular player on the server.
+                            float posXUpdate = float.Parse(splitted[2]);
+                            float posYUpdate = float.Parse(splitted[3]);
+
+
+                            Player e = (Player)playersInGame[index];                // replace the index 
+                            e.setPlayerPosition(posXUpdate, posYUpdate);        // set the updates
+                            
+                            // Console.WriteLine("[" + RoomName + "] Applied position update to player: " + index + " { " + content + " }" );
+
+
+                            // Encode the game data and send it as a very long string to client.
+                            // Example: 
+
+                            // Fomat: playerID{playerPosX|playerPosY}playerID{playerPosX|playerPosY}
+                            String updateS = "";
+
+                            for (int i = 0; i < playersInGame.Count; i++) {
+                                Player k = (Player)playersInGame[i];
+                                updateS += "*" + k.playerID + "|" + k.positionX + "|" + k.positionY + "|"; // slight edit to ensure playerInGameCount is always viewable
+                            }
+
+
+
+                            //Compile scores into single string
+                            string scoreboard = "";
+                            ArrayList allScores = sk.GetAllScores();
+                            for (int i = 0; i < allScores.Count; i++) // Iterates through all users in database
+                            {
+                                scoreboard += "*" + ((ArrayList)allScores[i])[0] + "|" + ((ArrayList)allScores[i])[1]; // "*username|score"
+                            }
+
+
+
+
+
+
+
+                            SendGame(handler, "[update]" + updateS + '~' + scoreboard);
+                            // Console.WriteLine("Sent this string: " + updateS);
+                        }
+
+
+
                         // CASE 1: If player gave a "joinGame" request, the game server will enqueue the player.
-                        if (content.Contains("joinGame")) {
+                        else if (content.Contains("joinGame")) {
 
                             Player newPlayer = new Player();
                             Socket newSock = new Socket(AddressFamily.InterNetwork,
@@ -301,77 +355,11 @@ class GameHandler
                             SendGame(handler, "[welcome]" + newPlayer.playerID + "|" + playersInGame.Count);            // Send the player the ID that they will use to keep track of things.
 
                         }
-                        // CASE 2: If player gave a "position" update, the game server, game server will update ALL coordinates/situations.
-                        else if (content.Contains("position")) {
-                            // GET THE PLAYER ID from the packet
-
-                            String[] splitted = content.Split('|');
-
-                            int index = int.Parse(splitted[1]);
-                            // Code to add here to extract the string
-                            // position[450,230]
-                            // we also need playerID
-                            // apply position updates to this particular player on the server.
-                            float posXUpdate = float.Parse(splitted[2]);
-                            float posYUpdate = float.Parse(splitted[3]);
-
-
-                            Player e = (Player)playersInGame[index];                // replace the index 
-                            e.setPlayerPosition(posXUpdate, posYUpdate);        // set the updates
-                            
-                            Console.WriteLine("[" + RoomName + "] Applied position update to player: " + index + " { " + content + " }" );
-
-
-                            // Encode the game data and send it as a very long string to client.
-                            // Example: 
-
-                            // Fomat: playerID{playerPosX|playerPosY}playerID{playerPosX|playerPosY}
-                            String updateS = "";
-
-                            for (int i = 0; i < playersInGame.Count; i++) {
-                                Player k = (Player)playersInGame[i];
-                                updateS += "*" + k.playerID + "|" + k.positionX + "|" + k.positionY + "|"; // slight edit to ensure playerInGameCount is always viewable
-                            }
-
-                            SendGame(handler, "[update]" + updateS);
-                            Console.WriteLine("Sent this string: " + updateS);
-                        }
-
-                         // CASE 3: If player gave a "status" update, the game server, game server will update ALL situations.
-                        // example: player triggers a tower.
-                        else if (content.Contains("statusUpdate"))
-                        {
-
-                            // NOT YET FINISHED 
-                            // GET THE PLAYER ID from the packet
-
-                            String[] splitted = content.Split('|');
-
-                            int index = int.Parse(splitted[1]);
-                            // Code to add here to extract the string
-                            // position[450,230]
-                            // we also need playerID
-                            // apply position updates to this particular player on the server.
-                    
-
-
-                            // Encode the game data and send it as a very long string to client.
-                            // Example: 
-
-                            // Fomat: playerID{playerPosX|playerPosY}playerID{playerPosX|playerPosY}
-                            String updateS = "";
-
-                            for (int i = 0; i < playersInGame.Count; i++)
-                            {
-                                Player k = (Player)playersInGame[i];
-                                updateS += "*" + k.playerID + "|" + k.positionX + "|" + k.positionY + "|"; // slight edit to ensure playerInGameCount is always viewable
-                                SendGame(k.getSock(), "[update]" + updateS);
-
-                            }
-
-                        }
+                        
+      
+                         
                         //CASE 4: If player gave a "score" update, the Scoreboard gets updated.
-                        else if (content.Contains("scoreUpdate"))
+                        else if (content.Contains("score"))
                         {
                             String[] splitted = content.Split('|');
 
@@ -379,9 +367,29 @@ class GameHandler
                             int scoreUpdate = int.Parse(splitted[2]);
 
                             sk.SetScore(username, scoreUpdate); //Sets the score
+
+                
+                            //Send out score to players
+                            SendGame(handler, "score set");
+                
+
                         }
+                        //CASE 5: If player gave a "goodbye" update, the player gets removed from the scoreboard and the array of players
+                        else if (content.Contains("goodbye"))
+                        {
+                            String[] splitted = content.Split('|');
 
+                            int playerIndex = int.Parse(splitted[1]);
+                            string username = splitted[2];
 
+                            sk.RemovePlayer(username);
+
+                            Player e = (Player)playersInGame[playerIndex]; //Get disconnecting player 
+                            e.setPlayerPosition(-100000, -100000);        // put player waaaay off of the board
+
+                            SendGame(handler, "[disconnection]|"+playerIndex);
+                        }
+                        
 
                     }
                     else {

@@ -74,7 +74,7 @@ public class Trap : MonoBehaviour {
         //For each human inside the trap's death radius...
         foreach (GameObject human in humans)
         {
-            if (sendDebugMessages) Debug.Log(human.name + " has been slain!");
+            if (sendDebugMessages) //Debug.Log(human.name + " has been slain!");
 
             //Get the human's player controller, and use it to trigger their death.
             human.GetComponent<HumanController>().triggerDeath();
@@ -87,7 +87,7 @@ public class Trap : MonoBehaviour {
     
     public void triggerTrap()
     {
-        if (sendDebugMessages) Debug.Log(this.gameObject.name + ": Trap.cs : triggerTrap()");
+        if (sendDebugMessages) //Debug.Log(this.gameObject.name + ": Trap.cs : triggerTrap()");
         triggered = true;
         timestampForActivation = Time.time + timeToActivate;
     }

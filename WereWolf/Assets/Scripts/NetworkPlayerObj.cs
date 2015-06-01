@@ -17,49 +17,48 @@ public class NetworkPlayerObj {
 		}
 	public NetworkPlayerObj(string id)
 		{
+			
 			playerID = id;
-
 			
 		}
 		
 	public void ping()
 	{
-		//print ("You have pinged this player: " + playerID);
+		g.transform.position += new Vector3 (1.0f, 0.0f);
 	}
 
-		public void updatePosition(float x, float y)
-		{
-			g.transform.position = new Vector3 (x, y);
-			//print ("Moving other player (not me): " + g.transform.position);
-		}
+	public void updatePosition(float x, float y)
+	{
+		g.transform.position = new Vector3 (x, y);
+	}
 		
-		public string getID()
-		{
-			return playerID;
-		}
+	public string getID()
+	{
+		return playerID;
+	}
 		
-		public GameObject getObj()
-		{
-			return g;
-		}
+	public GameObject getObj()
+	{
+		return g;
+	}
 
 
-		// Shouldn't need to get the position, we're just settting.
+	// Shouldn't need to get the position, we're just settting.
 		
-		public void BecomeWereWolf()
-		{
-			// Load werewolf sprite here
-			//print (this.gameObject.name + " has become a werewolf!");
-			isHuman = false;
-		}
-
-		// Use this for initialization
-		void Start () {
+	public void BecomeWereWolf()
+	{
+		// Load werewolf sprite here
+		//print (this.gameObject.name + " has become a werewolf!");
+		isHuman = false;
+	}
+        
+	// Use this for initialization
+	void Start () {
 	
-		}
+	}
 	
-		// Update is called once per frame
-		void Update () {
+	// Update is called once per frame
+	void Update () {
 	
 	}
 }	

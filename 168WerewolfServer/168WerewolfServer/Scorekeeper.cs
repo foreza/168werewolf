@@ -23,11 +23,6 @@ namespace _168WerewolfServer {
             db.CreateTable(tableName, columnNames, columnTypes);
         }
 
-        //Deletes table when garbage collected
-        //public ~Scorekeeper() {
-        //    db.BasicQuery("DROP TABLE "+tableName);
-        //}
-
         //Sets a player's score to a specified number
         public void SetScore(string username, int newScore) {
             ArrayList results = db.SingleSelectWhere(tableName, "username", "username", "=", username.ToString());
@@ -62,11 +57,23 @@ namespace _168WerewolfServer {
         //Resets everyone's score to 0
         public void ResetAllScores() {
             ArrayList players = db.SingleSelect(tableName, "username");
-            foreach (int playerID in players) {
-                db.BasicQuery("UPDATE " + tableName + " SET score = '0' WHERE username = '" + playerID + "'");
+            foreach (int username in players) {
+                db.BasicQuery("UPDATE " + tableName + " SET score = '0' WHERE username = '" + username + "'");
             }
         }
 
+        //Returns a 2D arraylist of database
+        public ArrayList GetAllScores()
+        {
+            return db.ReadFullTable(tableName);
+        }
+
+
+        //Removes a player from the scoreboard
+        public void RemovePlayer(string username)
+        {
+            db.BasicQuery("DELETE FROM " + tableName + " WHERE username = '" + username + "'");
+        }
 
     }
 }

@@ -3,16 +3,49 @@ using System.Collections;
 
 public class ServerMessageHandler : MonoBehaviour {
 
-	// Use this for initialization
+	GameObject player;				// Do not initialize until game starts!
+	GameObject sceneHandler;
+	int msgCount = 0;
+	bool Welcome = false;
+
 	void Start () {
-	
 	}
 	
-	// Update is called once per frame
 	void Update () {
 	
 	}
 
+	public void DoWelcome(string s)
+	{
+			// Helpful debug statement.
+			print ("Recieved welcome message.");
+			string [] splitResp = s.Split('|');
+
+			// Assigned played ID here
+			this.gameObject.SendMessage("SetMyPID", splitResp[0].Substring(9));
+			this.gameObject.SendMessage("SetMySpawnerPID", splitResp[0].Substring(9));
+
+			// get the login size,
+			int loginSize = int.Parse (splitResp[1]);
+
+ 
+			
+			print (msgCount + " I was assigned this player ID: " + splitResp[0].Substring(9) + " , currently this many players: " + loginSize);
+			this.gameObject.SendMessage("SetTrack", loginSize);
+
+			// Invokes the network spawner to spawn the initial players.
+			// The players will be moved to the appropriate places once an update is recieved.
+			// Spawn 1 less to keep track of the player
+			this.SendMessage("SpawnInitialPlayers", loginSize-1);
+			sceneHandler = GameObject.Find ("SceneHandler");
+		//player = GameObject.Find("BBPlayer");			// save the reference
+
+
+
+
+		msgCount++;
+
+	}
 
 	public void HandleServerMessage(string s)
 	{
@@ -20,41 +53,34 @@ public class ServerMessageHandler : MonoBehaviour {
 		// Recieve from the server the following information:
 		// - Current # of players active
 		// - My Player ID
-		print ("Handling server message...: " + s);
 
-		if(s.Contains("welcome"))
+		print (msgCount + " - ServerMessageHandler: handling this server message: " + s);
+
+		if(s.Contains("welcome") && !Welcome)
 		{
-			print ("Recieved a welcome message. (HandleServerMessage)");
-			string [] splitResp = s.Split('|');
+			// Let DoWelcome function handle.
+			DoWelcome(s);
+			Welcome = true;			// let this only send once.
 
-			// Assigned played ID here
-			this.gameObject.SendMessage("SetMyPID", splitResp[0].Substring(9));
-			// get the login size,
-			int loginSize = int.Parse (splitResp[1]);
-			
-			print ("I was assigned this player ID: " + splitResp[0].Substring(9) + " , currently this many players: " + loginSize);
-			this.gameObject.SendMessage("SetTrack", loginSize);
-
-			// Invokes the network spawner to spawn the initial players.
-			// The players will be moved to the appropriate places once an update is recieved.
-			// Spawn 1 less to keep track of the player
-			this.SendMessage("SpawnInitialPlayers", loginSize-1);
-			
-			
 		}
 		
-		
-		
-		// Update = general updates message
-		// Each general update message contains the following:
-		// - Location of every player, along with their PID
-		// - Total # of players 
-		
-		// If there is a change in the # of players, invoke the network spawner to be able to handle it.
 		else if (s.Contains("update"))
 		{
-			this.gameObject.SendMessage("UpdateTracking", s);
+			print("Position + score update: " + s);
+
+			string [] split = s.Split('~');
+
+			string temp = split[0];
+			string temp2 = split[1];
+
+			print ("Attempting to communicate with playerTrack");
+			sceneHandler.SendMessage("UpdatePlayerTracking", temp);
+			player = GameObject.Find("BBPlayer");			// save the reference
+			player.SendMessage("UpdateScoreBoard", temp2);
+			print ("Should have to communicate with playerTrack");
+
 		}
+	
 		
 		// This method should be invoked every time an objective is reached.
 		else if (s.Contains("stateUpdate"))
@@ -63,16 +89,17 @@ public class ServerMessageHandler : MonoBehaviour {
 			
 		}
 
-		else if (s.Contains("scoreUpdate"))
-		{
-			this.gameObject.SendMessage("UpdateScoreBoard", s);
-		}
-		// This method is invoked at the end of the game. 
-		// Response game should contain some useful information.
-		else if (s.Contains("endGame"))
-		{
-			this.gameObject.SendMessage("EndGame", s);
-		}
+        else if (s.Contains("disconnection"))
+        {
+        }
+
+
+        // This method is invoked at the end of the game. 
+        // Response game should contain some useful information.
+        else if (s.Contains("endGame"))
+        {
+            this.gameObject.SendMessage("EndGame", s);
+        }
 
 		
 	}

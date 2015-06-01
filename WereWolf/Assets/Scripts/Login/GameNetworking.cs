@@ -11,21 +11,23 @@ using System.Text;
 public class GameNetworking : MonoBehaviour {
 	
 	// The port number for the remote lobby server.
-	public int portGame = 11002;			// this should change upon login.
+	public int portGame = 0;			// this should change upon login.
 	public string roomName = "";
 	public GameObject myself;
     public string username;
 	public bool noSpawn = true;
 
+	public bool gameInstanceBegin;
 	public int loginSize;
-	public String myPlayerID;					// Need to know my PID here.
+	public static String myPlayerID;					// Need to know my PID here.
 
+
+	public int msgCount = 0;
 	// The response from the remote device.
 	public String responseGame = String.Empty;
 	
 	void Start () {
-
-		//
+		gameInstanceBegin = false;
 		myself = GameObject.Find ("SceneHandler");
 	
 	}
@@ -37,6 +39,11 @@ public class GameNetworking : MonoBehaviour {
             username = GameObject.Find("Username").GetComponent<InputField>().text;
         }
 
+	}
+
+	public string GetMyID()
+	{
+		return myPlayerID;
 	}
 
 	public void setGamePort(string [] s)
@@ -76,51 +83,62 @@ public class GameNetworking : MonoBehaviour {
 		myPlayerID = i;
 	}
 
-	public void BeginGame()
+	// Is called by ButtonHandler to begin the game.
+	public void StartTheGame()
 	{
-		// Start the game. Send "join game" to tell the server to initialize initial contact
-		SendServerMessage ("joinGame");
-		print ("Send server message. Joining game!");
+		if(!gameInstanceBegin)
+		{
+			//Send "join game" to tell the server to initialize initial contact
+			SendServerMessage ("joinGame");
+
+			// Set gameInstanceBegin to true; message should only be sent once.
+			gameInstanceBegin = true;
+		}
+
+		else
+		{
+			print("Game instance already active; cannot begin game again!");
+		}
 	}
 
+	// Method called to pass current player position to the server.
 	public void PassPosition(String s)
 	{
 		// Called by the main game loop to pass positions.
-	
-		// Old deprecated move method for milestone 3
-		//SendServerMessage ("position" + "|" + s + "|"+username+"|0|"); //the zero is a test score
-
-
 		SendServerMessage ("position" + "|" + myPlayerID + "|" + s + "|");
+
 		// TODO: Incorporate player facing direction and various other things LATER
 
 	}
 
+
+	// Method called to pass current player score to the server.
     public void PassScore(String scoreUpdate)
     {
-        SendServerMessage("scoreUpdate"+"|"+username+"|"+scoreUpdate+"|");
+    	// Called by the main game loop to pass positions.
+		SendServerMessage("score"+"|"+username+"|"+scoreUpdate+"|");
+
+		// TODO: Do more fun things with the score.
+
     }
 
 
-	// Method call by game engine to change the state of the game.
+    // TODO: Implement this metho.d
 	public void PassStateChange(String s)
 	{
 		// Called by the main game loop to pass positions.
-		SendServerMessage ("stateUpdate" + "|" + myPlayerID + "|" + s + "|");
-
-
+		//SendServerMessage ("stateUpdate" + "|" + myPlayerID + "|" + s + "|");
 
 	}
 	
-
+	// Main form of connection with remote server.
 	public void SendServerMessage(String s) {
-		// Connect to a remote device.
 		try {
 			
 			IPHostEntry ipHostInfo = Dns.GetHostEntry(Networking.IPaddress);
 			IPAddress ipAddress = ipHostInfo.AddressList[0];
 			IPEndPoint remoteEP = new IPEndPoint(ipAddress, portGame);
-			responseGame = String.Empty;		// Start with an empty string.
+			// responseGame = String.Empty;		// Start with an empty string.
 			
 			// Create a TCP/IP socket.
 			Socket client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -130,16 +148,16 @@ public class GameNetworking : MonoBehaviour {
 			connectDoneGame.WaitOne();
 
 			// Server will recieve an appropriate message and respond accordingly.
-			print ("About to send: " + s);
+			print (msgCount + " - About to send: " + s + "<EOF>");
+
 			SendGame(client,s + "<EOF>");
 			sendDoneGame.WaitOne();
 
 			// Receive the responseGame from the remote device.
 			ReceiveGame(client);
 			receiveDoneGame.WaitOne();
-			
-			// Write the response to the console.
-			print ("Response received : {0}" + responseGame);
+
+			print (msgCount + " - Response received:" + responseGame);
 
 			// Pass the message to the server messagehandler.
 			this.gameObject.SendMessage("HandleServerMessage", responseGame);
@@ -147,6 +165,8 @@ public class GameNetworking : MonoBehaviour {
 			// Release the socket.
 			client.Shutdown(SocketShutdown.Both);
 			client.Close();
+
+			msgCount++;
 			
 		} catch (Exception e) {
 			print(e.ToString());
@@ -161,7 +181,7 @@ public class GameNetworking : MonoBehaviour {
 			// Complete the connection.
 			client.EndConnect(ar);
 			
-			print("Socket connected to {0}" + client.RemoteEndPoint.ToString());
+			print(msgCount + " - Socket connected to {0}" + client.RemoteEndPoint.ToString());
 			
 			// Signal that the connection has been made.
 			connectDoneGame.Set();
@@ -193,7 +213,7 @@ public class GameNetworking : MonoBehaviour {
 			StateObject state = (StateObject) ar.AsyncState;
 			Socket client = state.workSocket;
 
-			print ("Waiting for message!");
+			//print ("Waiting for message!");
 			// Read data from the remote device.
 			int bytesRead = client.EndReceive(ar);
 			
@@ -235,7 +255,7 @@ public class GameNetworking : MonoBehaviour {
 			
 			// Complete sending the data to the remote device.
 			int bytesSent = client.EndSend(ar);
-			print ("Sent {0} bytes to server." + bytesSent);
+			//print ("Sent {0} bytes to server." + bytesSent);
 			
 			// Signal that all bytes have been sent.
 			sendDoneGame.Set();
@@ -243,7 +263,14 @@ public class GameNetworking : MonoBehaviour {
 			print(e.ToString());
 		}
 	}
-	
+
+
+    void OnApplicationQuit()
+    {
+        print("Quitting application...");
+        SendServerMessage("goodbye|" + myPlayerID + "|" + username + "|");
+    }
+
 
 }
 

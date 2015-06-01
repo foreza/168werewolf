@@ -6,30 +6,34 @@ public class ButtonHandler : MonoBehaviour {
 	// This script is used by the TITLE scene.
 	// Any additional button functionality should use this script. 
 
-	bool showInstruction;										// indicates whether instructions are showing
 	GameObject instructions;									// gets a reference to the instructions object
 	GameObject sceneHandler;
 
 	void Start () {
 
-		// showInstruction = false;								// Initialize as false
 		instructions = GameObject.Find("InstructionHelper");	// Save reference to the game object
-		sceneHandler = GameObject.Find ("SceneHandler");
 		hideInstruction ();										// Hide the instructions at start
 	
 	}
 
 	// Method that is run to start the game.
+	// Activaterd through button press.
 	public void startGame()
 	{
-		print ("Attempting to begin game instance");
+		// Helpful debug statement.
+		print ("Attempting to begin game instance. (ButtonHandler)");
+
+		// Find the scenehandler.
+		sceneHandler = GameObject.Find ("SceneHandler");
+
+		// Tell the game server to begin the game.
 		sceneHandler.SendMessage ("StartTheGame");
+
+		// Place any barriers here.
+		Application.LoadLevel (Scenes.GAMELEVEL);					// Change the name of scene as necessary.
+
 	}
 
-	public void confirmBeginGame()
-	{
-		Application.LoadLevel (Scenes.GAMELEVEL);					// Change the name of scene as necessary.
-	}
 
     public void transitionToTitle()
     {

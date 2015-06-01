@@ -58,15 +58,23 @@ public class dbAccess {
         return readArray; // return matches
     }
 
-    //Honestly not sure that this function works
-    //but we're not using it, so whatever.
-    //It's supposed to put everything in the table into a DataTable object
-    public DataTable ReadFullTable(string TableName) {
+    //Puts all data into 2D arraylist
+    public ArrayList ReadFullTable(string TableName) {
         string query = "SELECT * FROM " + TableName;
+        dbcmd = dbcon.CreateCommand();
         dbcmd.CommandText = query;
         reader = dbcmd.ExecuteReader();
-        DataTable toReturn = reader.GetSchemaTable();
-        return toReturn;
+        ArrayList readArray = new ArrayList();
+        while (reader.Read())
+        {
+            ArrayList lineArray = new ArrayList();
+            for (int i = 0; i < reader.FieldCount; i++)
+            {
+                lineArray.Add(reader.GetValue(i));
+            }
+            readArray.Add(lineArray);
+        }
+        return readArray;
     }
 
     //Deletes everything in the specified table. Dangerous.
