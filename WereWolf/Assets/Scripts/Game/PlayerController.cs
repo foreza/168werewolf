@@ -22,6 +22,8 @@ public class PlayerController : MonoBehaviour {
 	public Sprite rightSprite;
     public Sprite deadSprite;
 
+    public string currentlyFacing; //stupid way to do this, should either use bit calculation stuff or at least an enum.
+
     public bool isDead = false;
     public AudioClip deathNoise;
     protected AudioSource deathNoiseSource;
@@ -42,10 +44,10 @@ public class PlayerController : MonoBehaviour {
 	public void RequestUpdateToServer()
 	{
 		string position = "" + transform.position.x + "|" + transform.position.y + "";
-		sceneHandler.SendMessage("PassPosition", position);
+		//sceneHandler.SendMessage("PassPosition", position);
 
         string scoreUpdate = ((int)Math.Floor(Time.time - startTime)).ToString(); //currently keeps track of how many seconds the player is in game
-        sceneHandler.SendMessage("PassScore", scoreUpdate);
+        //sceneHandler.SendMessage("PassScore", scoreUpdate);
 	}
 
 	// Use this for initialization
@@ -86,7 +88,7 @@ public class PlayerController : MonoBehaviour {
 		// Mirroed on server
 		// Fomat: playerID{playerPosX|playerPosY}playerID{playerPosX|playerPosY}
 
-		 
+        Debug.Log(currentlyFacing);
 
 
 	}
@@ -105,12 +107,15 @@ public class PlayerController : MonoBehaviour {
             if (Input.GetKey("right"))
             {
                 if(sendDebugMessages) Debug.Log("Right button pressed");
+                currentlyFacing = "right";
                 currSprite.sprite = rightSprite;
+
                 this.transform.position += new Vector3(speed, 0.0f, 0.0f);
             }
             else if (Input.GetKey("left"))
             {
                 currSprite.sprite = leftSprite;
+                currentlyFacing = "left";
                 this.transform.position -= new Vector3(speed, 0.0f, 0.0f);
 
             }
@@ -118,12 +123,14 @@ public class PlayerController : MonoBehaviour {
             if (Input.GetKey("up"))
             {
                 currSprite.sprite = fowardSprite;
+                currentlyFacing = "up";
                 this.transform.position += new Vector3(0.0f, speed, 0.0f);
 
             }
             else if (Input.GetKey("down"))
             {
                 currSprite.sprite = downSprite;
+                currentlyFacing = "down";
                 this.transform.position -= new Vector3(0.0f, speed, 0.0f);
             }
 
@@ -135,7 +142,7 @@ public class PlayerController : MonoBehaviour {
 
 
 
-	void getSkill()
+	protected virtual void getSkill()
 	{
 		if (Input.GetKeyDown("space"))
 		{
@@ -150,8 +157,9 @@ public class PlayerController : MonoBehaviour {
 			// interact with building.
 		
 				print ("Bringing up scoreboard");
-			
 		}
+
+
 
 	}
 
@@ -175,4 +183,6 @@ public class PlayerController : MonoBehaviour {
 
         return human;
     }
+
+
 }
