@@ -124,7 +124,7 @@ class GameHandler
                     // Complete the connection.
                     client.EndConnect(ar);
 
-                    Console.WriteLine("Socket connected to {0}" + client.RemoteEndPoint.ToString());
+                    //Console.WriteLine("Socket connected to {0}" + client.RemoteEndPoint.ToString());
 
                     // Signal that the connection has been made.
                     gameconnectDone.Set();
@@ -211,13 +211,13 @@ class GameHandler
                         // Set the event to nonsignaled state.
                         allDoneGame.Reset();
 
-                        Console.WriteLine("Game room: [" + RoomName + "] is active. :)");
+                        //Console.WriteLine("Game room: [" + RoomName + "] is active. :)");
 
                         // Start an asynchronous socket to listen for connections.
                         //Console.WriteLine("[" + RoomName + "] Waiting for Game Data");
                         listener.BeginAccept(new AsyncCallback(AcceptGameCallback), listener);
                         // Wait until a connection is made before continuing.
-                        allDoneGame.WaitOne(5000);
+                        allDoneGame.WaitOne();
 
                         // Allow Gamemessages to be sent out to update the Game list of "available" players.
 
@@ -297,7 +297,7 @@ class GameHandler
                             Player e = (Player)playersInGame[index];                // replace the index 
                             e.setPlayerPosition(posXUpdate, posYUpdate);        // set the updates
                             
-                            Console.WriteLine("[" + RoomName + "] Applied position update to player: " + index + " { " + content + " }" );
+                            // Console.WriteLine("[" + RoomName + "] Applied position update to player: " + index + " { " + content + " }" );
 
 
                             // Encode the game data and send it as a very long string to client.
@@ -328,7 +328,7 @@ class GameHandler
 
 
                             SendGame(handler, "[update]" + updateS + '~' + scoreboard);
-                            Console.WriteLine("Sent this string: " + updateS);
+                            // Console.WriteLine("Sent this string: " + updateS);
                         }
 
 
