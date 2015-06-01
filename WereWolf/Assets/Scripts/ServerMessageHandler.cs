@@ -37,8 +37,9 @@ public class ServerMessageHandler : MonoBehaviour {
 			// The players will be moved to the appropriate places once an update is recieved.
 			// Spawn 1 less to keep track of the player
 			this.SendMessage("SpawnInitialPlayers", loginSize-1);
-			player = GameObject.Find("BBPlayer");			// save the reference
 			sceneHandler = GameObject.Find ("SceneHandler");
+		//player = GameObject.Find("BBPlayer");			// save the reference
+
 
 
 
@@ -60,6 +61,7 @@ public class ServerMessageHandler : MonoBehaviour {
 			// Let DoWelcome function handle.
 			DoWelcome(s);
 			Welcome = true;			// let this only send once.
+
 		}
 		
 		else if (s.Contains("update"))
@@ -73,7 +75,8 @@ public class ServerMessageHandler : MonoBehaviour {
 
 			print ("Attempting to communicate with playerTrack");
 			sceneHandler.SendMessage("UpdatePlayerTracking", temp);
-			//player.SendMessage("UpdateScoreBoard", temp2);
+			player = GameObject.Find("BBPlayer");			// save the reference
+			player.SendMessage("UpdateScoreBoard", temp2);
 			print ("Should have to communicate with playerTrack");
 
 		}

@@ -357,7 +357,7 @@ class GameHandler
                         }
                         
       
-                            /*
+                         
                         //CASE 4: If player gave a "score" update, the Scoreboard gets updated.
                         else if (content.Contains("score"))
                         {
@@ -389,7 +389,7 @@ class GameHandler
 
                             SendGame(handler, "[disconnection]|"+playerIndex);
                         }
-                        */
+                        
 
                     }
                     else {

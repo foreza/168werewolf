@@ -1,12 +1,12 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Login\GameNetworking.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\NetworkGameManager.cs">
     <Files>
-      <File FileName="Assets\Scripts\NetworkSpawner.cs" Line="24" Column="51" />
-      <File FileName="Assets\Scripts\Login\GameNetworking.cs" Line="171" Column="26" />
-      <File FileName="Assets\Scripts\ServerMessageHandler.cs" Line="52" Column="3" />
-      <File FileName="Assets\Scripts\Game\PlayerController.cs" Line="73" Column="3" />
-      <File FileName="Assets\Scripts\NetworkGameManager.cs" Line="79" Column="87" />
+      <File FileName="Assets\Scripts\Login\GameNetworking.cs" Line="152" Column="4" />
+      <File FileName="Assets\Scripts\NetworkSpawner.cs" Line="62" Column="53" />
+      <File FileName="Assets\Scripts\ServerMessageHandler.cs" Line="75" Column="59" />
+      <File FileName="Assets\Scripts\NetworkGameManager.cs" Line="91" Column="4" />
+      <File FileName="Assets\Scripts\Scoreboard.cs" Line="10" Column="19" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
