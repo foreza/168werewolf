@@ -135,9 +135,9 @@ using _168WerewolfServer;
 
         Console.WriteLine("Lobby is now running.");
 
-        Console.WriteLine("Testing game server functionality...");
+       // Console.WriteLine("Testing game server functionality...");
 
-        StartNewGameThread("Game1", 1);
+        //StartNewGameThread("Game1", 1);
 
 
         // Data buffer for incoming data.
@@ -290,15 +290,10 @@ using _168WerewolfServer;
                 else if (content.Contains("joinGame"))
                 {
                     Console.WriteLine("Player: " + handler.LocalEndPoint.ToString() + " is now joining game instance...");
-                    SendLobby(handler, "startGame");
+                    //SendLobby(handler, "startGame");
                 }
 
-                // Add the player into the data structure.
 
-                else
-                { 
-                SendLobby(handler, content);
-                }
             }
             else
             {

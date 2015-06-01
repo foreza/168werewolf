@@ -21,13 +21,13 @@ public class LobbyNetworking : MonoBehaviour {
 	// The response from the remote device.
 	private static String responseLobby = String.Empty;
 
+	private static int messageCounter = 0;
 
 	void Start () {
 		// Find scenehandler, and bind it to h.
 		h = GameObject.Find("SceneHandler");
 
 		// Find the buttonHandler, bind it to the buttonHandler.
-		buttonHandler = GameObject.Find ("ButtonHandler");
 
 	}
 
@@ -61,18 +61,15 @@ public class LobbyNetworking : MonoBehaviour {
 		MessageLobby ("joinLobby~" + r + "~");
 
 	}
-
-	// Called by ButtonHandler to begin the game on start keypress.
-	public void StartTheGame()
-	{
-		print ("Recieved message; changing display screen.");
-		MessageLobby ("joinGame");
-	}
-
+	
 	// Handles the messages received from the remote server.
-	public static void LobbyMessageHandler(string s)
+	public  static void LobbyMessageHandler(string s)
 	{
-		if(s.Contains("joinLobby"))
+
+		print (messageCounter + "- Handling message: " + s);
+		messageCounter++;
+
+		if(s.Contains("welcome"))
 			{
 				// Load the Title screen.
 				Application.LoadLevel("Title");
@@ -87,18 +84,16 @@ public class LobbyNetworking : MonoBehaviour {
 				h.SendMessage("setGamePort", split);
 
 			}
-			 if (s == "joinGame")
+		/*
+			 else if (s == "startGame")
 			{
 				// Helpful debug statement.
 				print("Lobby Message Handler recieved joinGame request.");
 
-				// Tell the buttonHandler to load the game scene.
-				buttonHandler.SendMessage("confirmBeginGame");
-
 				// Tells the local game client to begin connection to assigned game server.
 				h.SendMessage("BeginGame");
 			}
-
+		*/
 	}
 		
 
@@ -106,7 +101,7 @@ public class LobbyNetworking : MonoBehaviour {
 	public static void MessageLobby(String s) {
 		try {
 			// Print debug statement.
-			print ("Sending message to lobby server.");
+			print (messageCounter + " - (MessageLobby)Sending message to lobby server.");
 
 			// Socketing essentials.
 			IPHostEntry ipHostInfo = Dns.GetHostEntry(Networking.IPaddress);	// Get address of client host from DNS
@@ -120,7 +115,7 @@ public class LobbyNetworking : MonoBehaviour {
 			client.BeginConnect( remoteEP, new AsyncCallback(ConnectCallbackLobby), client);
 
 			// Wait for a response. Note: 3000ms waittimeout specified here!
-			connectDoneLobby.WaitOne(3000);
+			connectDoneLobby.WaitOne();
 				
 			// Print debug statement.
 			print ("Sending data to lobby: " + s);
@@ -129,13 +124,13 @@ public class LobbyNetworking : MonoBehaviour {
 			SendLobby(client,s + "<EOF>");
 
 			// Wait for a response. Note: 3000ms waittimeout specified here!
-			sendDoneLobby.WaitOne(3000);
+			sendDoneLobby.WaitOne();
 				
 			// Receive the responseLobby from the remote device.
 			ReceiveLobby(client);
 
 			// Wait for a response. Note: 3000ms waittimeout specified here!
-			receiveDoneLobby.WaitOne(1000);
+			receiveDoneLobby.WaitOne();
 				
 			// Print/Debug the response to the console.
 			print ("Response received : {0}" + responseLobby);

@@ -66,14 +66,16 @@ public class NetworkGameManager : MonoBehaviour {
 
 	// Update loop that is called. String of locations is passed in and parsed and applied.
 	//Recieves the string and updates player positions as appropriate here.
-	public void UpdateTracking(string s)
+	public void UpdatePlayerTracking(string s)
 	{
-		// Split the string.
+
+
+		print ("Update tracking called!"); // Split the string.
 		s = s.Substring(9);
 		string [] split = s.Split('*'); 
 
 		// Debug statement.
-		print ("Number of players to process in this packet: " + split.Length);
+		print ("Number of players to process in this packet: " + split.Length + " }} trackSize: " + trackSize);
 
 
 		// Check the current size with the new size. trackSize != size, spawn a new player.	
@@ -81,10 +83,14 @@ public class NetworkGameManager : MonoBehaviour {
 		// trackSize was 2, which will then become 3 after we spawn, so we have [0][1][2] and tracksize 3.	
 		if (trackSize < split.Length) {
 			// Debug print statement.
-			print ("New player has logged in; spawning additional player");
+			print ("New player has logged in; spawning additional player.");
+			print ("New player has entered; spawning 209-348523-09458203-94582039-4852-0349852-3485-2039485-203495");
+			print ("New player has entered; spawning 209-348523-09458203-94582039-4852-0349852-3485-2039485-203495");
+			print ("New player has entered; spawning 209-348523-09458203-94582039-4852-0349852-3485-2039485-203495");
+
 
 			// send message and add a player
-			this.gameObject.SendMessage("SpawnAddPlayer", trackSize);
+			this.gameObject.SendMessage("SpawnAddPlayer", trackSize.ToString());
 
 			// increase track size
 			++trackSize;													

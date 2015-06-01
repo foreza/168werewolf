@@ -217,7 +217,7 @@ class GameHandler
                         //Console.WriteLine("[" + RoomName + "] Waiting for Game Data");
                         listener.BeginAccept(new AsyncCallback(AcceptGameCallback), listener);
                         // Wait until a connection is made before continuing.
-                        allDoneGame.WaitOne(1000);
+                        allDoneGame.WaitOne(5000);
 
                         // Allow Gamemessages to be sent out to update the Game list of "available" players.
 
@@ -279,30 +279,8 @@ class GameHandler
                         // client. Display it on the console.
                         // Console.WriteLine("Read {0} bytes from socket. \n Data : {1}", content.Length, content);
 
-                        // CASE 1: If player gave a "joinGame" request, the game server will enqueue the player.
-                        if (content.Contains("joinGame")) {
-
-                            Player newPlayer = new Player();
-                            Socket newSock = new Socket(AddressFamily.InterNetwork,
-                                                   SocketType.Stream, ProtocolType.Tcp);
-                            newSock = handler;          // set the new socket = to the handler.
-                            // Set player info here.
-                            newPlayer.setPlayerPosition(0.0f, 0.0f);
-                            newPlayer.IPEndPoint = handler.RemoteEndPoint;
-                            newPlayer.sock = newSock;
-                            newPlayer.playerID = playersInGame.Count; // PID will be set by the number of players.
-                            
-                            
-                            // Add the player to the game.
-                            playersInGame.Insert(newPlayer.playerID, newPlayer);     // Player is now added to GameServer and is active!
-                            Console.WriteLine("[" + RoomName + "] Player has been added to this game! Player ID [" + newPlayer.playerID + "] with IP Endpoint {" + newPlayer.IPEndPoint);
-
-                            // Send the player a confirmation, along with their ID, total # of players.
-                            SendGame(handler, "[welcome]" + newPlayer.playerID + "|" + playersInGame.Count);            // Send the player the ID that they will use to keep track of things.
-
-                        }
                         // CASE 2: If player gave a "position" update, the game server, game server will update ALL coordinates/situations.
-                        else if (content.Contains("position")) {
+                         if (content.Contains("position")) {
                             // GET THE PLAYER ID from the packet
 
                             String[] splitted = content.Split('|');
@@ -353,8 +331,33 @@ class GameHandler
                             Console.WriteLine("Sent this string: " + updateS);
                         }
 
-      
 
+
+                        // CASE 1: If player gave a "joinGame" request, the game server will enqueue the player.
+                        else if (content.Contains("joinGame")) {
+
+                            Player newPlayer = new Player();
+                            Socket newSock = new Socket(AddressFamily.InterNetwork,
+                                                   SocketType.Stream, ProtocolType.Tcp);
+                            newSock = handler;          // set the new socket = to the handler.
+                            // Set player info here.
+                            newPlayer.setPlayerPosition(0.0f, 0.0f);
+                            newPlayer.IPEndPoint = handler.RemoteEndPoint;
+                            newPlayer.sock = newSock;
+                            newPlayer.playerID = playersInGame.Count; // PID will be set by the number of players.
+                            
+                            
+                            // Add the player to the game.
+                            playersInGame.Insert(newPlayer.playerID, newPlayer);     // Player is now added to GameServer and is active!
+                            Console.WriteLine("[" + RoomName + "] Player has been added to this game! Player ID [" + newPlayer.playerID + "] with IP Endpoint {" + newPlayer.IPEndPoint);
+
+                            // Send the player a confirmation, along with their ID, total # of players.
+                            SendGame(handler, "[welcome]" + newPlayer.playerID + "|" + playersInGame.Count);            // Send the player the ID that they will use to keep track of things.
+
+                        }
+                        
+      
+                            /*
                         //CASE 4: If player gave a "score" update, the Scoreboard gets updated.
                         else if (content.Contains("score"))
                         {
@@ -386,7 +389,7 @@ class GameHandler
 
                             SendGame(handler, "[disconnection]|"+playerIndex);
                         }
-
+                        */
 
                     }
                     else {

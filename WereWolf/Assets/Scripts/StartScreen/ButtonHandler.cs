@@ -17,6 +17,7 @@ public class ButtonHandler : MonoBehaviour {
 	}
 
 	// Method that is run to start the game.
+	// Activaterd through button press.
 	public void startGame()
 	{
 		// Helpful debug statement.
@@ -25,14 +26,14 @@ public class ButtonHandler : MonoBehaviour {
 		// Find the scenehandler.
 		sceneHandler = GameObject.Find ("SceneHandler");
 
-		// Tell the lobbyserver to begin the game.
+		// Tell the game server to begin the game.
 		sceneHandler.SendMessage ("StartTheGame");
+
+		// Place any barriers here.
+		Application.LoadLevel (Scenes.GAMELEVEL);					// Change the name of scene as necessary.
+
 	}
 
-	public void confirmBeginGame()
-	{
-		Application.LoadLevel (Scenes.GAMELEVEL);					// Change the name of scene as necessary.
-	}
 
     public void transitionToTitle()
     {

@@ -73,7 +73,7 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void PositionUpdateRepeat() {
-		InvokeRepeating("RequestUpdateToServer", 1, 0.5F);
+		InvokeRepeating("RequestUpdateToServer", 0.2f, 0.05F);
 	}
 
 	void ScoreUpdateRepeat() {

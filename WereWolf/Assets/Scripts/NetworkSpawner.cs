@@ -52,8 +52,12 @@ public class NetworkSpawner : MonoBehaviour {
 		GameObject s = GameObject.Find ("SceneHandler");
 
 
-			print ("New player has entered; spawning");
-		
+			print ("New player has entered; spawning 209-348523-09458203-94582039-4852-0349852-3485-2039485-203495");
+		print ("New player has entered; spawning 209-348523-09458203-94582039-4852-0349852-3485-2039485-203495");
+		print ("New player has entered; spawning 209-348523-09458203-94582039-4852-0349852-3485-2039485-203495");
+		print ("New player has entered; spawning 209-348523-09458203-94582039-4852-0349852-3485-2039485-203495");
+		print ("New player has entered; spawning 209-348523-09458203-94582039-4852-0349852-3485-2039485-203495");
+
 			// Create a new network player obj
 			NetworkPlayerObj player = new NetworkPlayerObj();
 

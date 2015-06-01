@@ -4,9 +4,11 @@ using System.Collections;
 public class ServerMessageHandler : MonoBehaviour {
 
 	GameObject player;				// Do not initialize until game starts!
+	GameObject sceneHandler;
+	int msgCount = 0;
+	bool Welcome = false;
 
 	void Start () {
-	
 	}
 	
 	void Update () {
@@ -28,7 +30,7 @@ public class ServerMessageHandler : MonoBehaviour {
 
  
 			
-			print ("I was assigned this player ID: " + splitResp[0].Substring(9) + " , currently this many players: " + loginSize);
+			print (msgCount + " I was assigned this player ID: " + splitResp[0].Substring(9) + " , currently this many players: " + loginSize);
 			this.gameObject.SendMessage("SetTrack", loginSize);
 
 			// Invokes the network spawner to spawn the initial players.
@@ -36,6 +38,11 @@ public class ServerMessageHandler : MonoBehaviour {
 			// Spawn 1 less to keep track of the player
 			this.SendMessage("SpawnInitialPlayers", loginSize-1);
 			player = GameObject.Find("BBPlayer");			// save the reference
+			sceneHandler = GameObject.Find ("SceneHandler");
+
+
+
+		msgCount++;
 
 	}
 
@@ -46,12 +53,13 @@ public class ServerMessageHandler : MonoBehaviour {
 		// - Current # of players active
 		// - My Player ID
 
-		print ("ServerMessageHandler: handling this server message: " + s);
+		print (msgCount + " - ServerMessageHandler: handling this server message: " + s);
 
-		if(s.Contains("welcome"))
+		if(s.Contains("welcome") && !Welcome)
 		{
 			// Let DoWelcome function handle.
 			DoWelcome(s);
+			Welcome = true;			// let this only send once.
 		}
 		
 		else if (s.Contains("update"))
@@ -60,8 +68,14 @@ public class ServerMessageHandler : MonoBehaviour {
 
 			string [] split = s.Split('~');
 
-			this.gameObject.SendMessage("UpdateTracking", split[0]);
-			player.SendMessage("UpdateScoreBoard", split[1]);
+			string temp = split[0];
+			string temp2 = split[1];
+
+			print ("Attempting to communicate with playerTrack");
+			sceneHandler.SendMessage("UpdatePlayerTracking", temp);
+			//player.SendMessage("UpdateScoreBoard", temp2);
+			print ("Should have to communicate with playerTrack");
+
 		}
 	
 		

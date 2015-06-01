@@ -21,6 +21,8 @@ public class GameNetworking : MonoBehaviour {
 	public int loginSize;
 	public static String myPlayerID;					// Need to know my PID here.
 
+
+	public int msgCount = 0;
 	// The response from the remote device.
 	public String responseGame = String.Empty;
 	
@@ -81,8 +83,8 @@ public class GameNetworking : MonoBehaviour {
 		myPlayerID = i;
 	}
 
-	// Is called by LobbyNetworking to begin the game.
-	public void BeginGame()
+	// Is called by ButtonHandler to begin the game.
+	public void StartTheGame()
 	{
 		if(!gameInstanceBegin)
 		{
@@ -146,7 +148,8 @@ public class GameNetworking : MonoBehaviour {
 			connectDoneGame.WaitOne();
 
 			// Server will recieve an appropriate message and respond accordingly.
-			print ("About to send: " + s);
+			print (msgCount + " - About to send: " + s + "<EOF>");
+
 			SendGame(client,s + "<EOF>");
 			sendDoneGame.WaitOne();
 
@@ -154,7 +157,7 @@ public class GameNetworking : MonoBehaviour {
 			ReceiveGame(client);
 			receiveDoneGame.WaitOne();
 
-			print ("Response received:" + responseGame);
+			print (msgCount + " - Response received:" + responseGame);
 
 			// Pass the message to the server messagehandler.
 			this.gameObject.SendMessage("HandleServerMessage", responseGame);
@@ -162,6 +165,8 @@ public class GameNetworking : MonoBehaviour {
 			// Release the socket.
 			client.Shutdown(SocketShutdown.Both);
 			client.Close();
+
+			msgCount++;
 			
 		} catch (Exception e) {
 			print(e.ToString());
@@ -176,7 +181,7 @@ public class GameNetworking : MonoBehaviour {
 			// Complete the connection.
 			client.EndConnect(ar);
 			
-			print("Socket connected to {0}" + client.RemoteEndPoint.ToString());
+			print(msgCount + " - Socket connected to {0}" + client.RemoteEndPoint.ToString());
 			
 			// Signal that the connection has been made.
 			connectDoneGame.Set();
@@ -208,7 +213,7 @@ public class GameNetworking : MonoBehaviour {
 			StateObject state = (StateObject) ar.AsyncState;
 			Socket client = state.workSocket;
 
-			print ("Waiting for message!");
+			//print ("Waiting for message!");
 			// Read data from the remote device.
 			int bytesRead = client.EndReceive(ar);
 			
@@ -250,7 +255,7 @@ public class GameNetworking : MonoBehaviour {
 			
 			// Complete sending the data to the remote device.
 			int bytesSent = client.EndSend(ar);
-			print ("Sent {0} bytes to server." + bytesSent);
+			//print ("Sent {0} bytes to server." + bytesSent);
 			
 			// Signal that all bytes have been sent.
 			sendDoneGame.Set();
