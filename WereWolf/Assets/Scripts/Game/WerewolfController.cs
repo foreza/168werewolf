@@ -5,7 +5,7 @@ public class WerewolfController : PlayerController {
 
     public Sprite minimapIcon;
 
-    SlashSkill slashAreaOfEffect;
+    //SlashSkill slashAreaOfEffect;
 
 
 	// Use this for initialization
@@ -28,7 +28,7 @@ public class WerewolfController : PlayerController {
         transform.Find("Lantern Light").gameObject.SetActive(false);
         currSprite.sprite = downSprite;
 
-        slashAreaOfEffect = this.transform.Find("Slash Area of Effects").GetComponent<SlashSkill>();
+        //slashAreaOfEffect = this.transform.Find("Slash Area of Effects").GetComponent<SlashSkill>();
 	}
 	
 	// Update is called once per frame
@@ -49,6 +49,7 @@ public class WerewolfController : PlayerController {
 
     void skillSlash()
     {
-        slashAreaOfEffect.useSkill(currentlyFacing);
+		print ("Using slash!");
+        //slashAreaOfEffect.useSkill(currentlyFacing);
     }
 }

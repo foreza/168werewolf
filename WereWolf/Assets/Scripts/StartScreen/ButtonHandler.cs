@@ -30,7 +30,7 @@ public class ButtonHandler : MonoBehaviour {
 		sceneHandler.SendMessage ("StartTheGame");
 
 		// Place any barriers here.
-		Application.LoadLevel (Scenes.CONNORSCENE);					// Change the name of scene as necessary.
+		Application.LoadLevel (Scenes.GAMELEVEL);					// Change the name of scene as necessary.
 
 	}
 

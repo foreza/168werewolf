@@ -32,6 +32,8 @@ class GameHandler
             public  int GamePort = 0;             // Port is increased, client will know to connect to this.
             // Thread signal.
             public  ManualResetEvent allDoneGame = new ManualResetEvent(false);
+              
+
             public  ManualResetEvent GameMessageRound = new ManualResetEvent(false);
 
             public  bool GameStart;
@@ -216,8 +218,9 @@ class GameHandler
                         // Start an asynchronous socket to listen for connections.
                         //Console.WriteLine("[" + RoomName + "] Waiting for Game Data");
                         listener.BeginAccept(new AsyncCallback(AcceptGameCallback), listener);
+                        
                         // Wait until a connection is made before continuing.
-                        allDoneGame.WaitOne(100);
+                        allDoneGame.WaitOne();
 
                         // Allow Gamemessages to be sent out to update the Game list of "available" players.
 
@@ -245,6 +248,7 @@ class GameHandler
                 // Console.WriteLine("[" + RoomName + "] Obtaining Game Data from" + handler.LocalEndPoint );
 
 
+                
 
                 // Create the state object.
                 GameStateObject state = new GameStateObject();
@@ -321,13 +325,9 @@ class GameHandler
                                 scoreboard += "*" + ((ArrayList)allScores[i])[0] + "|" + ((ArrayList)allScores[i])[1]; // "*username|score"
                             }
 
-
-
-
-
-
-
                             SendGame(handler, "[update]" + updateS + '~' + scoreboard);
+                            gamesendDone.WaitOne(1000);
+
                             // Console.WriteLine("Sent this string: " + updateS);
                         }
 

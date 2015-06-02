@@ -144,17 +144,17 @@ public class GameNetworking : MonoBehaviour {
 			
 			// Connect to the remote endpoint.
 			client.BeginConnect( remoteEP, new AsyncCallback(ConnectCallbackGame), client);
-			connectDoneGame.WaitOne(100);
+			connectDoneGame.WaitOne();
 
 			// Server will recieve an appropriate message and respond accordingly.
 			print (msgCount + " - About to send: " + s + "<EOF>");
 
 			SendGame(client,s + "<EOF>");
-			sendDoneGame.WaitOne(100);
+			sendDoneGame.WaitOne();
 
 			// Receive the responseGame from the remote device.
 			ReceiveGame(client);
-			receiveDoneGame.WaitOne(100);
+			receiveDoneGame.WaitOne();
 
 			print (msgCount + " - Response received:" + responseGame);
 
