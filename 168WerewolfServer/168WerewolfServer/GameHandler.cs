@@ -54,6 +54,9 @@ class GameHandler
             private  ManualResetEvent gamereceiveDone =
                 new ManualResetEvent(false);
 
+            // Scoreboard.
+            private Scorekeeper sk = new Scorekeeper("SCOREBOARD");
+
             public GameAsynchronousSocketListener() {
 
             }
@@ -69,54 +72,67 @@ class GameHandler
                 GamePort = i;
                 Console.WriteLine("Constructed a new server with name: " + n +  " and port: " + i);
 
+                playersInGame = new ArrayList();
+
+
+                Thread hb = new Thread(GameHeartbeat);
+                hb.Start();
+
+    
+
+
             }
 
-            // Deprecated as of Milestone 3.
-            public  void SendPositionUpdates() {
-                // This loop will constantly send out position updates to all connected clients.
-                /*
-                while(true)
+            // "Heartbeat" function
+
+            public void GameHeartbeat()
+            {
+
+                Console.WriteLine("[" + RoomName + "] heartbeat is now active.");
+
+
+                while (true)    // Heartbeat never die. Hehe. TODO: Replace.
                 {
+                    // Encode the game data and send it as a very long string to client.
+                    // Example: 
 
-                    // Console.WriteLine("HIHI" + GameStart);
-                    // This will not run until the game has started.
-                    if(playersInGame != null && playersInGame.Count != 0)
+                    // Fomat: playerID{playerPosX|playerPosY}playerID{playerPosX|playerPosY}
+                    String updateS = "[update]";            // Indicates to client that this is an update message.
+                    
+
+                    foreach (Player k in playersInGame)
                     {
-                        Console.WriteLine("Begin position updates!");
-
-                        String updateString = "testStringUpdate";
-                        // Convert the string data to byte data using ASCII encoding.
-                        byte[] byteData = Encoding.ASCII.GetBytes(updateString);
-
-
-                        ArrayList iterable = playersInGame;     // Make a new temporary arraylist.
-
-                        for (int i = 0; i < iterable.Count; i++)
-                        {
-                            Player p = (Player)iterable[i];     // Store player in temporary variable.
-                            Socket s = p.getSock();             // Gets the socket of the player. THIS MAY NOT WORK AND WE MAY GO BACK TO THE DRAWING BOARD.
-                            // REPLACE W/ POSITION DATA
-                            //Console.WriteLine("Sending this player the position update: " + s.RemoteEndPoint);
-                            //SendGame(s, "position data put here");
-                            //Console.WriteLine("Updating this player: " + p.getPID() + " ");
-                            GameStateObject state = new GameStateObject();
-
-                            s.BeginConnect(p.IPEndPoint, new AsyncCallback(GameConnectCallback), s);
-                            gameconnectDone.WaitOne();
-                            Console.WriteLine("Connected. Sending data to player: " + p.getPID());
-                            SendGame(s, updateString + "<EOF>");
-                            gamesendDone.WaitOne(1000);
-                            gameReceive(s);
-                            gamereceiveDone.WaitOne(1000);
-                           // s.BeginSendTo(byteData, 0, byteData.Length, 0, p.IPEndPoint, new AsyncCallback(SendGameCallback), state);
-
-
-                        }
-
+                        updateS += "*" + k.playerID + "|" + k.positionX + "|" + k.positionY + "|"; // slight edit to ensure playerInGameCount is always viewable
                     }
+
+                    updateS += '~';         // seperation between position update and score updates.
+
+                    //Compile scores into single string
+                    string scoreboard = "";
+                    ArrayList allScores = sk.GetAllScores();
+                    for (int i = 0; i < allScores.Count; i++) // Iterates through all users in database
+                    {
+                        scoreboard += "*" + ((ArrayList)allScores[i])[0] + "|" + ((ArrayList)allScores[i])[1]; // "*username|score"
+                    }
+
+                    updateS += "<EOF>";
+         
+                    // Updates all the clients (updates their statuses) and then sleeps. 
+                    foreach (Player p in playersInGame)
+                    {
+                        // Helpful debug statement.
+                        Console.WriteLine("[" + RoomName + "] Updating this player: " + p.playerID + " with this: " + updateS);
+
+                        // Invoke the sendgame method, add <EOF> to end of the update string to signal to remote client that it is all.
+                        SendGame(p.sock, updateS);
+                    }
+
+                    // Sleeps for 100 MS aftr updating all players then continues. 
+                    Thread.Sleep(100); 
+
                 }
-                 * */
             }
+            
 
             private  void GameConnectCallback(IAsyncResult ar) {
                 try {
@@ -186,7 +202,6 @@ class GameHandler
             // This allows players to enter the Game, storing their information into an available data structure of players that the game instances can run on.
             public  void StartGameListening() {
                 // This is dangerous; make sure to run the Game listener before the status checks.
-                playersInGame = new ArrayList();
 
                 Console.WriteLine("Game room: [" + RoomName + "] is now running.");
 
@@ -222,9 +237,6 @@ class GameHandler
                         // Wait until a connection is made before continuing.
                         allDoneGame.WaitOne();
 
-                        // Allow Gamemessages to be sent out to update the Game list of "available" players.
-
-
                     }
 
                 }
@@ -245,11 +257,6 @@ class GameHandler
                 Socket listener = (Socket)ar.AsyncState;
                 Socket handler = listener.EndAccept(ar);
 
-                // Console.WriteLine("[" + RoomName + "] Obtaining Game Data from" + handler.LocalEndPoint );
-
-
-                
-
                 // Create the state object.
                 GameStateObject state = new GameStateObject();
                 state.workSocket = handler;
@@ -259,8 +266,6 @@ class GameHandler
 
             public  void ReadGameCallback(IAsyncResult ar) {
                 String content = String.Empty;
-
-                Scorekeeper sk = new Scorekeeper("SCOREBOARD");
 
                 // Retrieve the state object and the handler socket
                 // from the asynchronous state object.
@@ -298,37 +303,11 @@ class GameHandler
                             float posYUpdate = float.Parse(splitted[3]);
 
 
+                            // Find the player, and update his/her position accordingly!
+
+
                             Player e = (Player)playersInGame[index];                // replace the index 
                             e.setPlayerPosition(posXUpdate, posYUpdate);        // set the updates
-                            
-                            // Console.WriteLine("[" + RoomName + "] Applied position update to player: " + index + " { " + content + " }" );
-
-
-                            // Encode the game data and send it as a very long string to client.
-                            // Example: 
-
-                            // Fomat: playerID{playerPosX|playerPosY}playerID{playerPosX|playerPosY}
-                            String updateS = "";
-
-                            for (int i = 0; i < playersInGame.Count; i++) {
-                                Player k = (Player)playersInGame[i];
-                                updateS += "*" + k.playerID + "|" + k.positionX + "|" + k.positionY + "|"; // slight edit to ensure playerInGameCount is always viewable
-                            }
-
-
-
-                            //Compile scores into single string
-                            string scoreboard = "";
-                            ArrayList allScores = sk.GetAllScores();
-                            for (int i = 0; i < allScores.Count; i++) // Iterates through all users in database
-                            {
-                                scoreboard += "*" + ((ArrayList)allScores[i])[0] + "|" + ((ArrayList)allScores[i])[1]; // "*username|score"
-                            }
-
-                            SendGame(handler, "[update]" + updateS + '~' + scoreboard);
-                            gamesendDone.WaitOne(1000);
-
-                            // Console.WriteLine("Sent this string: " + updateS);
                         }
 
 
@@ -336,15 +315,14 @@ class GameHandler
                         // CASE 1: If player gave a "joinGame" request, the game server will enqueue the player.
                         else if (content.Contains("joinGame")) {
 
+                            // Create a new player and add him!
                             Player newPlayer = new Player();
-                            Socket newSock = new Socket(AddressFamily.InterNetwork,
-                                                   SocketType.Stream, ProtocolType.Tcp);
-                            newSock = handler;          // set the new socket = to the handler.
-                            // Set player info here.
-                            newPlayer.setPlayerPosition(0.0f, 0.0f);
-                            newPlayer.IPEndPoint = handler.RemoteEndPoint;
-                            newPlayer.sock = newSock;
-                            newPlayer.playerID = playersInGame.Count; // PID will be set by the number of players.
+                 
+                            // Set player info here.                            
+                            newPlayer.setPlayerPosition(0.0f, 0.0f);            // Set the initial player position to the center of the map. TODO: Change this to randomly spawn within a certain boundary
+                            newPlayer.IPEndPoint = handler.RemoteEndPoint;      // Get the remote endpoint so we can print out helpful debug information.
+                            newPlayer.sock = handler;                           // Set the player socket = to the handler.  
+                            newPlayer.playerID = playersInGame.Count;           // PID will be set by the number of players.
                             
                             
                             // Add the player to the game.
@@ -361,6 +339,10 @@ class GameHandler
                         //CASE 4: If player gave a "score" update, the Scoreboard gets updated.
                         else if (content.Contains("score"))
                         {
+
+
+                            // Leaving this case in here for later implementation.
+
                             String[] splitted = content.Split('|');
 
                             string username = splitted[1].ToString();
@@ -374,6 +356,7 @@ class GameHandler
                 
 
                         }
+
                         //CASE 5: If player gave a "goodbye" update, the player gets removed from the scoreboard and the array of players
                         else if (content.Contains("goodbye"))
                         {
@@ -382,12 +365,23 @@ class GameHandler
                             int playerIndex = int.Parse(splitted[1]);
                             string username = splitted[2];
 
+                            // Removes player from DB
                             sk.RemovePlayer(username);
+
+
+                            // Not sure if neccesary but I'll leave here for now.
 
                             Player e = (Player)playersInGame[playerIndex]; //Get disconnecting player 
                             e.setPlayerPosition(-100000, -100000);        // put player waaaay off of the board
 
                             SendGame(handler, "[disconnection]|"+playerIndex);
+
+
+                            // Handle the disconnect properly.
+                            handler.Shutdown(SocketShutdown.Both);
+                            handler.Close();
+
+
                         }
                         
 
@@ -418,8 +412,9 @@ class GameHandler
                     int bytesSent = handler.EndSend(ar);
                     // Console.WriteLine("[" + RoomName + "] Sent {0} bytes to this client: " + handler.LocalEndPoint, bytesSent);
 
-                    handler.Shutdown(SocketShutdown.Both);
-                    handler.Close();
+                    // Do not close handler until client d/c
+                   // handler.Shutdown(SocketShutdown.Both);
+                    //handler.Close();
 
                 }
                 catch (Exception e) {
