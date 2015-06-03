@@ -90,8 +90,8 @@ class GameHandler
 
                 Console.WriteLine("[" + RoomName + "] heartbeat is now active.");
 
-
-                while (true)    // Heartbeat never die. Hehe. TODO: Replace.
+                // While there are players in the server.
+                while (playersInGame.Count > 0)    // Heartbeat never die. Hehe. TODO: Replace.
                 {
                     // Encode the game data and send it as a very long string to client.
                     // Example: 
@@ -128,7 +128,9 @@ class GameHandler
                     }
 
                     // Sleeps for 100 MS aftr updating all players then continues. 
-                    Thread.Sleep(100); 
+                    Thread.Sleep(1000);
+
+                    Console.WriteLine("Heartbeat!");
 
                 }
             }
@@ -308,6 +310,9 @@ class GameHandler
 
                             Player e = (Player)playersInGame[index];                // replace the index 
                             e.setPlayerPosition(posXUpdate, posYUpdate);        // set the updates
+
+                            SendGame(handler, "recievedUpdate");            // Send the player the ID that they will use to keep track of things.
+
                         }
 
 

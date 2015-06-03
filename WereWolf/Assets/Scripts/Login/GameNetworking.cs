@@ -21,6 +21,8 @@ public class GameNetworking : MonoBehaviour {
 	public int loginSize;
 	public static String myPlayerID;					// Need to know my PID here.
 
+	Socket myServer;						// Socket for the remote server.
+
 
 	public int msgCount = 0;
 	// The response from the remote device.
@@ -76,6 +78,12 @@ public class GameNetworking : MonoBehaviour {
 		new ManualResetEvent(false);
 
 
+	// A manualresetevent for just this threaded listener method:
+	
+	public ManualResetEvent allDoneGame = new ManualResetEvent(false);
+
+
+
 	public void SetMyPID(string i)
 	{
 		print ("Setting my Player ID");
@@ -87,8 +95,18 @@ public class GameNetworking : MonoBehaviour {
 	{
 		if(!gameInstanceBegin)
 		{
+			print("Initializing Server connection!");
+
 			//Send "join game" to tell the server to initialize initial contact
-			SendServerMessage ("joinGame");
+			//SendServerMessage ("joinGame");
+
+			Thread isc = new Thread(InitializeServerConnection);
+			isc.Start();
+
+			//InitializeServerConnection();		// initialize the server connection.
+
+			print("Game Thread active!");
+
 
 			// Set gameInstanceBegin to true; message should only be sent once.
 			gameInstanceBegin = true;
@@ -100,78 +118,62 @@ public class GameNetworking : MonoBehaviour {
 		}
 	}
 
-	// Method called to pass current player position to the server.
-	public void PassPosition(String s)
+
+	// 	This is run ONCE.
+	public void InitializeServerConnection()
 	{
-		// Called by the main game loop to pass positions.
-		SendServerMessage ("position" + "|" + myPlayerID + "|" + s + "|");
-
-		// TODO: Incorporate player facing direction and various other things LATER
-
-	}
-
-
-	// Method called to pass current player score to the server.
-    public void PassScore(String scoreUpdate)
-    {
-    	// Called by the main game loop to pass positions.
-		SendServerMessage("score"+"|"+username+"|"+scoreUpdate+"|");
-
-		// TODO: Do more fun things with the score.
-
-    }
-
-
-    // TODO: Implement this metho.d
-	public void PassStateChange(String s)
-	{
-		// Called by the main game loop to pass positions.
-		//SendServerMessage ("stateUpdate" + "|" + myPlayerID + "|" + s + "|");
-
-	}
-	
-	// Main form of connection with remote server.
-	public void SendServerMessage(String s) {
 		try {
-			
+			connectDoneGame.Reset();
+
 			IPHostEntry ipHostInfo = Dns.GetHostEntry(Networking.IPaddress);
 			IPAddress ipAddress = ipHostInfo.AddressList[0];
 			IPEndPoint remoteEP = new IPEndPoint(ipAddress, portGame);
 			// responseGame = String.Empty;		// Start with an empty string.
 			
-			// Create a TCP/IP socket.
-			Socket client = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-			
-			// Connect to the remote endpoint.
-			client.BeginConnect( remoteEP, new AsyncCallback(ConnectCallbackGame), client);
+			// Create the TCP/IP socket using my Client.
+			myServer = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+
+
+			print ("Attempting to join game instance! + " + remoteEP.Address);
+
+			//return;
+			// Begin Connect to the remote endpoint.
+			myServer.BeginConnect( remoteEP, new AsyncCallback(ConnectCallbackGame), myServer);
 			connectDoneGame.WaitOne();
-
+			
 			// Server will recieve an appropriate message and respond accordingly.
-			print (msgCount + " - About to send: " + s + "<EOF>");
 
-			SendGame(client,s + "<EOF>");
-			sendDoneGame.WaitOne();
+			// Send the server a status message.
+			SendGame(myServer,"joinGame<EOF>");
+			sendDoneGame.WaitOne(2000);
+
+			print ("Received data from remote server!!111");
 
 			// Receive the responseGame from the remote device.
-			ReceiveGame(client);
-			receiveDoneGame.WaitOne();
-
-			print (msgCount + " - Response received:" + responseGame);
-
-			// Pass the message to the server messagehandler.
-			this.gameObject.SendMessage("HandleServerMessage", responseGame);
-	
-			// Release the socket.
-			client.Shutdown(SocketShutdown.Both);
-			client.Close();
-
-			msgCount++;
+			ReceiveGame(myServer);
+			receiveDoneGame.WaitOne(2000);
 			
+			print ("Handling initial welcome message....");
+
+
+			// Pass the confirmation message to the server messagehandler.
+			this.gameObject.SendMessage("HandleServerMessage", responseGame);
+
+			// Now, begin the active listener.
+
+			print ("Game listening is now beginning.");
+
+
+			Thread lt = new Thread(StartGameListening); // Start it on a seperate thread.
+			
+
 		} catch (Exception e) {
 			print(e.ToString());
 		}
+
 	}
-	
+
+	// Belongs to the initialize game thread. This is good.
 	public  void ConnectCallbackGame(IAsyncResult ar) {
 		try {
 			// Retrieve the socket from the state object.
@@ -188,15 +190,16 @@ public class GameNetworking : MonoBehaviour {
 			print(e.ToString());
 		}
 	}
+	// Belongs to the initialize game thread.!!!!!
 	
 	public  void ReceiveGame(Socket client) {
 		try {
 			// Create the state object.
 			StateObject state = new StateObject();
 			state.workSocket = client;
-
-
-
+			
+			print ("RecieveGame hit.");
+			
 			// Begin receiving the data from the remote device.
 			client.BeginReceive( state.buffer, 0, StateObject.BufferSize, 0,
 			                    new AsyncCallback(ReceiveCallbackGame), state);
@@ -211,12 +214,17 @@ public class GameNetworking : MonoBehaviour {
 			// from the asynchronous state object.
 			StateObject state = (StateObject) ar.AsyncState;
 			Socket client = state.workSocket;
-
+			
 			//print ("Waiting for message!");
 			// Read data from the remote device.
 			int bytesRead = client.EndReceive(ar);
+
+			print ("ReceiveCallbackGame hit.");
 			
 			if (bytesRead > 0) {
+
+				print ("Waitin on more data!" );
+
 				// There might be more data, so store the data received so far.
 				state.sb.Append(Encoding.ASCII.GetString(state.buffer,0,bytesRead));
 				
@@ -227,6 +235,10 @@ public class GameNetworking : MonoBehaviour {
 				// All the data has arrived; put it in response.
 				if (state.sb.Length > 1) {
 					responseGame = state.sb.ToString();
+
+					print ("ReceiveCallbackGame done, result: " + responseGame);
+
+
 				}
 				// Signal that all bytes have been received.
 				receiveDoneGame.Set();
@@ -238,7 +250,161 @@ public class GameNetworking : MonoBehaviour {
 			print(e.ToString());
 		}
 	}
+
+
+
+
+
+
+	// This begins a listener on the client that receive and processes updates.
+	public  void StartGameListening() {
+		// This is dangerous; make sure to run the Game listener before the status checks.
+		
+		Console.WriteLine("Client now listening for updates.");
+		
+		// Data buffer for incoming data.
+		byte[] bytes = new Byte[1024];
+
+
+
+		IPHostEntry lgameipHostInfo;
+		IPAddress lgameipAddress;
+		IPEndPoint serverEndPoint;
+
+
+		// Establish the local endpoint for the server socket on the client side.
+		lgameipHostInfo = Dns.Resolve(Dns.GetHostName());
+		lgameipAddress = lgameipHostInfo.AddressList[0];
+		serverEndPoint = new IPEndPoint(lgameipAddress, portGame);
+		
+		// Create a TCP/IP socket that is essentially the same as myServer, but will be used only by this THREAD.
+		Socket listener = new Socket(AddressFamily.InterNetwork,
+		                             SocketType.Stream, ProtocolType.Tcp);
+		
+		// Bind the socket to the local endpoint and listen for incoming connections.
+		try {
+			listener.Bind(serverEndPoint);
+			listener.Listen(100);
+			
+			// Handle Game entrances here.
+			while (true) {
+				// Set the event to nonsignaled state.
+				allDoneGame.Reset();
+				
+				//Console.WriteLine("Game room: [" + RoomName + "] is active. :)");
+				// Start an asynchronous socket to listen for connections.
+				listener.BeginAccept(new AsyncCallback(AcceptGameCallback), listener);
+				
+				// Wait until a connection is made before continuing.
+				allDoneGame.WaitOne();
+				
+			}
+			
+		}
+		catch (Exception e) {
+			Console.WriteLine(e.ToString());
+		}
+		
+		Console.WriteLine("\nPress ENTER to continue...");
+		Console.Read();
+		
+	}
+
+	// Only run/called by the GameListening thread/method.
+	public  void AcceptGameCallback(IAsyncResult ar) {
+		// Signal the main thread to continue.
+		allDoneGame.Set();
+		
+		// Get the socket that handles the client request.
+		Socket alistener = (Socket)ar.AsyncState;
+		Socket ahandler = alistener.EndAccept(ar);
+		
+		// Create the state object.
+		StateObject astate = new StateObject();
+		astate.workSocket = ahandler;
+		ahandler.BeginReceive(astate.buffer, 0, StateObject.BufferSize, 0,
+		                     new AsyncCallback(ReadGameCallback), astate);
+	}
+
+	// Only run/called by the GameListening thread/method.
+	public void ReadGameCallback(IAsyncResult ar) {
+		String content = String.Empty;
+		
+		// Retrieve the state object and the handler socket
+		// from the asynchronous state object.
+		StateObject astate = (StateObject)ar.AsyncState;
+		Socket ahandler = astate.workSocket;
+		
+		// Read data from the client socket. 
+		int bytesRead = ahandler.EndReceive(ar);
+		
+		if (bytesRead > 0) {
+			// There  might be more data, so store the data received so far.
+			astate.sb.Append(Encoding.ASCII.GetString(
+				astate.buffer, 0, bytesRead));
+			
+			// Check for end-of-file tag. If it is not there, read 
+			// more data.
+			content = astate.sb.ToString();
+
+			if (content.IndexOf("<EOF>") > -1) {
+				// All the data has been read from the server.
+
+
+				if (content.Contains("update")) {
+					// Let HandleServerMessage process the update and move on.
+					print("Received update from server; letting server message handler handle.");
+					this.gameObject.SendMessage("HandleServerMessage", content);
+
+				}
+				
+
+			}
+			else {
+				// Not all data received. Get more.
+				ahandler.BeginReceive(astate.buffer, 0, StateObject.BufferSize, 0,
+				                     new AsyncCallback(ReadGameCallback), astate);
+			}
+		}
+	}
+
+
+
+	public void ShutDownServerConnection()
+	{
+		// Release the socket.
+		myServer.Shutdown(SocketShutdown.Both);
+		myServer.Close();
+	}
+
+
+	// Main form of connection with remote server.
+	// Note: Make sure myServer is define first by initializing the connection with InitializeServerConnection
+	public void SendServerMessage(String s) {
 	
+		try {
+
+			// Send the server a message.
+			SendGame(myServer,s + "<EOF>");
+			sendDoneGame.WaitOne();
+
+			// Receive the responseGame from the remote device. If we have a particular message, flag it down here.
+			ReceiveGame(myServer);
+			receiveDoneGame.WaitOne();
+
+			print (msgCount + " - Response received:" + responseGame);
+
+			// Pass the message to the server messagehandler.
+			this.gameObject.SendMessage("HandleServerMessage", responseGame);
+
+			msgCount++;
+			
+		} catch (Exception e) {
+			print(e.ToString());
+		}
+	}
+
+
 	public  void SendGame(Socket client, String data) {
 		// Convert the string data to byte data using ASCII encoding.
 		byte[] byteData = Encoding.ASCII.GetBytes(data);
@@ -269,6 +435,31 @@ public class GameNetworking : MonoBehaviour {
         print("Quitting application...");
         SendServerMessage("goodbye|" + myPlayerID + "|" + username + "|");
     }
+
+
+	// OTHER METHODS THAT HELP
+
+
+	// Method called to pass current player position to the server.
+	public void PassPosition(String s)
+	{
+		// Called by the main game loop to pass positions.
+		SendServerMessage ("position" + "|" + myPlayerID + "|" + s + "|");
+		
+		// TODO: Incorporate player facing direction and various other things LATER
+		
+	}
+	
+	
+	// Method called to pass current player score to the server.
+	public void PassScore(String scoreUpdate)
+	{
+		// Called by the main game loop to pass positions.
+		SendServerMessage("score"+"|"+username+"|"+scoreUpdate+"|");
+		
+		// TODO: Do more fun things with the score.
+		
+	}
 
 
 }

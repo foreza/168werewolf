@@ -13,6 +13,8 @@ public class LobbyNetworking : MonoBehaviour {
 	public static GameObject buttonHandler;			// Button handler scripts/methods reference.
 	public static GameObject h;						// Reference to this game object, without using this.<name>
 
+
+
 	// ManualResetEvent instances signal completion.
 	private static ManualResetEvent connectDoneLobby = new ManualResetEvent(false);
 	private static ManualResetEvent sendDoneLobby = new ManualResetEvent(false);
@@ -61,7 +63,8 @@ public class LobbyNetworking : MonoBehaviour {
 		MessageLobby ("joinLobby~" + r + "~");
 
 	}
-	
+
+
 	// Handles the messages received from the remote server.
 	public  static void LobbyMessageHandler(string s)
 	{

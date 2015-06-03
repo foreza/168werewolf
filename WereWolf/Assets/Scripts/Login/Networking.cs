@@ -41,7 +41,6 @@ public class Networking : MonoBehaviour {
 
 	}
 
-
 	// State object for receiving data from remote device.
 	public class StateObject {
 		// Client socket.
@@ -53,8 +52,6 @@ public class Networking : MonoBehaviour {
 		// Received data string.
 		public StringBuilder sb = new StringBuilder();
 	}
-	
-
 
 		
 		// ManualResetEvent instances signal completion.
