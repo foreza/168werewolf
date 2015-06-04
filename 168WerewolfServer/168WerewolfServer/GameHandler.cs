@@ -65,7 +65,7 @@ class GameHandler
 
 
                 Thread hb = new Thread(GameHeartbeat);
-                //hb.Start();
+                hb.Start();
 
             }
 
@@ -193,6 +193,9 @@ class GameHandler
             }
 
             public  void ReadGameCallback(IAsyncResult ar) {
+
+                bool TerminatePlayer = false;
+
                 String content = String.Empty;
 
                 // Retrieve the state object and the handler socket
@@ -309,19 +312,26 @@ class GameHandler
                             handler.Shutdown(SocketShutdown.Both);
                             handler.Close();
 
+                            // Signal to this call that we terminated a player, so we don't try to re-use the handler.
+                            TerminatePlayer = true;
+
+                            // remove player from data structure so heartbeat does not affect 
+                            playersInGame.Remove(e);
+
 
                         }
 
+                         if (!TerminatePlayer)
+                         {
+                             Console.WriteLine("Finished processing. What now?");
 
 
+                             GameStateObject newstate = new GameStateObject();
+                             newstate.workSocket = handler;
 
-                         Console.WriteLine("Finished processing. What now?");
-                         // Signal the main thread to continue.
-                         allDoneGame.Set();
-
-                        // ENd the recieving!
-
-
+                             handler.BeginReceive(newstate.buffer, 0, GameStateObject.BufferSize, 0,
+                             new AsyncCallback(ReadGameCallback), newstate);
+                         }
                         
 
                     }
