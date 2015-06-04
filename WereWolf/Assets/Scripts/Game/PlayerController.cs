@@ -4,7 +4,7 @@ using System;
 
 public class PlayerController : MonoBehaviour {
 
-    public bool sendDebugMessages = true;
+    public bool sendDebugMessages = false;
     public int playerID;
     public bool isClientControlled = false;
 
@@ -34,7 +34,7 @@ public class PlayerController : MonoBehaviour {
 
     void Awake() {
         deathNoiseSource = GetComponent<AudioSource>();
-
+		sendDebugMessages = false;
         startTime = Time.time;
     }
 
@@ -47,7 +47,7 @@ public class PlayerController : MonoBehaviour {
 
         string scoreUpdate = ((int)Math.Floor(Time.time - startTime)).ToString(); //currently keeps track of how many seconds the player is in game
         sceneHandler.SendMessage("PassScore", scoreUpdate);
-
+		 
 	}
 
 	public void RequestScoreToServer()
@@ -77,11 +77,11 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void PositionUpdateRepeat() {
-		InvokeRepeating("RequestUpdateToServer", 10.0f, 0.2F);
+		InvokeRepeating("RequestUpdateToServer", 2.0f, 0.2F);
 	}
 
 	void ScoreUpdateRepeat() {
-		InvokeRepeating("RequestScoreToServer", 10.0f, 5.0F);
+		//InvokeRepeating("RequestScoreToServer", 2.0f, 5.0F);
 	}
 
 	
@@ -101,7 +101,7 @@ public class PlayerController : MonoBehaviour {
 		// Mirroed on server
 		// Fomat: playerID{playerPosX|playerPosY}playerID{playerPosX|playerPosY}
 
-        Debug.Log(currentlyFacing);
+        //Debug.Log(currentlyFacing);
 
 
 	}

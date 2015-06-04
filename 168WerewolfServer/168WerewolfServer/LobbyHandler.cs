@@ -137,7 +137,7 @@ using _168WerewolfServer;
 
        // Console.WriteLine("Testing game server functionality...");
 
-        //StartNewGameThread("Game1", 1);
+        StartNewGameThread("Game1", 1);
 
 
         // Data buffer for incoming data.

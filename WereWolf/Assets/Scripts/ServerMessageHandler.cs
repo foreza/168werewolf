@@ -82,8 +82,11 @@ public class ServerMessageHandler : MonoBehaviour {
 		// Set the spawner ID as well. (used by the spawner)
 		this.gameObject.SendMessage("SetMySpawnerPID", splitResp[0].Substring(9));
 		
-		// get the login size,
-		int loginSize = int.Parse (splitResp[1]);
+		// get the login size, |"9<EOF>"
+
+
+
+		int loginSize = int.Parse (splitResp[1].Substring(0,splitResp[1].Length-5));
 		
 		// Helpful debug statement.
 		print (" I was assigned this player ID: " + splitResp[0].Substring(9) + " , currently this many players: " + loginSize);
