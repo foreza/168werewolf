@@ -111,13 +111,13 @@ class GameHandler
                         }
 
                         // Sleeps for 100 MS aftr updating all players then continues. 
-                        Thread.Sleep(1000);
+                        Thread.Sleep(100);
 
                         Console.WriteLine("Heartbeat!");
 
                     }
 
-                    Thread.Sleep(1000);
+                    Thread.Sleep(100);
 
                 }
             }

@@ -118,6 +118,9 @@ public class NetworkGameManager : MonoBehaviour {
 				limitPlayersTracking[givenID].updatePosition(float.Parse(split2[1]),float.Parse(split2[2]));
 
 			}
+
+			else
+				print("This is MY ID, NOT CHANGING POSITION");
 		}
 	}
 

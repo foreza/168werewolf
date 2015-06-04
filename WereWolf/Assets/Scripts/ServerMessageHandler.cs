@@ -45,8 +45,9 @@ public class ServerMessageHandler : MonoBehaviour {
 			print ("Attempting to communicate with playerTrack");
 			sceneHandler.SendMessage("UpdatePlayerTracking", temp);
 			player = GameObject.Find("BBPlayer");			// save the reference
-			player.SendMessage("UpdateScoreBoard", temp2);
+			//player.SendMessage("UpdateScoreBoard", temp2);
 			print ("Should have to communicate with playerTrack");
+
 
 		}
 	
@@ -60,6 +61,9 @@ public class ServerMessageHandler : MonoBehaviour {
 			this.gameObject.SendMessage("ShutDownServerConnection");
         }
 
+
+		print ("Waiting for more heartbeams.... <3");
+	
 		
 	}
 

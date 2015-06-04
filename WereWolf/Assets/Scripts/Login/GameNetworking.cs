@@ -32,7 +32,7 @@ public class GameNetworking : MonoBehaviour {
 	public static ManualResetEvent allDoneGameClient = new ManualResetEvent(false);
 	public static ManualResetEvent receiveDoneGameClient = new ManualResetEvent(false);
 
-	
+	bool newUpdate = false;
 	
 	public GameObject g;
 
@@ -49,6 +49,15 @@ public class GameNetworking : MonoBehaviour {
             username = GameObject.Find("Username").GetComponent<InputField>().text;
         }
 
+
+		// If new update flag aka flag dirty.
+		if (newUpdate) {
+			print("THERE IS A NEW UPDATE OH MY GOD");			// HELPFUL PRINT STATEMENT.
+			StartHeartBeatListen();			// Listen again
+			g.SendMessage ("HandleServerMessage", responseGame);			// handle the response
+		}
+
+		print ("No new updates.");
 	}
 	
 	// Method called by LobbyNetworking to set the game port. (NOT CALLED BY THE NETWORK MANAGER)
@@ -132,12 +141,12 @@ public class GameNetworking : MonoBehaviour {
 
 				// Pass the confirmation message to the server messagehandler.
 
-				print ("Sending the message...");
 
 				g.SendMessage ("HandleServerMessage", responseGame);
-
 				print ("No heartbeams???");
 				// Begin client heartbeat.
+
+
 				StartHeartBeatListen();
 
 
@@ -185,7 +194,7 @@ public class GameNetworking : MonoBehaviour {
 			print(e.ToString());
 		}
 	}
-	// Recieve once.
+	// Recieve.
 	public  void ReceiveCallbackGame( IAsyncResult ar ) {
 		try {
 			// Retrieve the state object and the client socket 
@@ -213,6 +222,8 @@ public class GameNetworking : MonoBehaviour {
 
 				responseGame = content;			// store the response string in here!
 
+				newUpdate = true;				// signal to main game loop that there is something new!
+
 			}
 
 			else {
@@ -232,6 +243,8 @@ public class GameNetworking : MonoBehaviour {
 
 			// Set done recieve.
 			receiveDoneGame.Set();
+
+
 
 		} catch (Exception e) {
 			print(e.ToString());
@@ -346,124 +359,25 @@ public class GameNetworking : MonoBehaviour {
 	}
 
 	// This allows players to enter the Game, storing their information into an available data structure of players that the game instances can run on.
-	public  void StartHeartBeatListen() {
-		// This is dangerous; make sure to run the Game listener before the status checks.
-		
-		Console.WriteLine("Now listening for updates. <3 HEARTBEAT@!");
-		
-		// Data buffer for incoming data.
-		byte[] bytes = new Byte[1024];
-		
-		// Establish the local endpoint for the socket.
-		
-		IPHostEntry gameipHostInfo = Dns.Resolve(Dns.GetHostName());
-		IPAddress gameipAddress = gameipHostInfo.AddressList[0];
-		IPEndPoint gamelocalEndPoint = new IPEndPoint(gameipAddress, portGame);
-		
-		// Create a TCP/IP socket.
-		Socket listener = new Socket(AddressFamily.InterNetwork,
-		                      SocketType.Stream, ProtocolType.Tcp);
-		
-		// Bind the socket to the local endpoint and listen for incoming connections.
-		try {
-			listener.Bind(gamelocalEndPoint);
-			listener.Listen(100);
-			
-			// Handle Game entrances here.
-			while (true) {
-				// Set the event to nonsignaled state.
-				Console.WriteLine("Back to loop a callback; thread has been blocked.");
-				allDoneGameClient.Reset();
-
-				//Console.WriteLine("Game room: [" + RoomName + "] is active. :)");
-				
-				// Start an asynchronous socket to listen for connections.
-				Console.WriteLine("Waiting for Game Data");
-				listener.BeginAccept(new AsyncCallback(AcceptGameCallback), listener);
-				Console.WriteLine("Accepting a callback; thread has been locked.");
-				
-				allDoneGameClient.WaitOne(); // Wait until a connection is made before continuing.
-
-				// Should update responseGame?
-				print ("Now passing along the message...: " + responseUpdate);
-				g.SendMessage ("HandleServerMessage", responseUpdate);
-				
-			}
-			
-		}
-		catch (Exception e) {
-			Console.WriteLine(e.ToString());
-		}
-		
-		Console.WriteLine("\nPress ENTER to continue...");
-		Console.Read();
-		
-	}
 
 
-	public void AcceptGameCallback(IAsyncResult ar) {
-		
-		allDoneGameClient.Set (); // let main thread continue.
-		
-		Console.WriteLine("Sets the state of the event to signaled.");
-		
-		// Get the socket that handles the client request.
-		Socket listener = (Socket)ar.AsyncState;
-		Socket handler = listener.EndAccept(ar);
-		
-		// Create the state object.
-		StateObject state = new StateObject();
-		state.workSocket = handler;
-		handler.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
-		                     new AsyncCallback(ReadGameCallback), state);
-	}
 
-	public  void ReadGameCallback(IAsyncResult ar) {
-		try {
-			// Retrieve the state object and the client socket 
-			StateObject state = (StateObject) ar.AsyncState;
-			Socket client = state.workSocket;
-			String content = String.Empty;
+	public void StartHeartBeatListen()
+	{
 
-			int bytesRead = client.EndReceive(ar);
+			Console.WriteLine ("Now listening for updates. <3 HEARTBEAT@!");
+			newUpdate = false;
 
-			state.sb.Append(Encoding.ASCII.GetString(state.buffer, 0, bytesRead));
+			//receiveDoneGame.Reset ();
 
-			content = state.sb.ToString();
-			
-			print ("ReadGameCallback hit: " + content);
+			ReceiveGame (myServer);
 
-			if (content.IndexOf("<EOF>") > -1) {
-				
-				responseUpdate = content;			// store the response string in here!
-				
-			}
-			
-			else {
-				// All the data has arrived; put it in response.
-				if (state.sb.Length > 1) {
-					responseGame = state.sb.ToString();
-					
-					print ("ReadGameCallback done, result: " + responseUpdate);
-					
-					
-				}
-
-				
-			}
-			
-			// Set done recieve.
-
-		} catch (Exception e) {
-			print(e.ToString());
-		}
-
+			//receiveDoneGame.WaitOne ();
 
 	}
-	
-	
-	
-	
+
+
+
 	
 	
 }
