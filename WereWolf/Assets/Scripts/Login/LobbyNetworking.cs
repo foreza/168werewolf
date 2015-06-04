@@ -87,16 +87,6 @@ public class LobbyNetworking : MonoBehaviour {
 				h.SendMessage("setGamePort", split);
 
 			}
-		/*
-			 else if (s == "startGame")
-			{
-				// Helpful debug statement.
-				print("Lobby Message Handler recieved joinGame request.");
-
-				// Tells the local game client to begin connection to assigned game server.
-				h.SendMessage("BeginGame");
-			}
-		*/
 	}
 		
 

@@ -1,0 +1,223 @@
+From 14e9c90e9a6de13edf8b94158d61542513de9ced Mon Sep 17 00:00:00 2001
+From: Arthur Valadares <arthur00@gmail.com>
+Date: Wed, 3 Jun 2015 18:16:34 -0700
+Subject: [PATCH] New changes
+
+---
+ 168WerewolfServer/168WerewolfServer/GameHandler.cs | 164 +++++++--------------
+ 1 file changed, 56 insertions(+), 108 deletions(-)
+
+diff --git a/168WerewolfServer/168WerewolfServer/GameHandler.cs b/168WerewolfServer/168WerewolfServer/GameHandler.cs
+index 634a64e..cfdfcaf 100644
+--- a/168WerewolfServer/168WerewolfServer/GameHandler.cs
++++ b/168WerewolfServer/168WerewolfServer/GameHandler.cs
+@@ -88,50 +88,52 @@ class GameHandler
+             public void GameHeartbeat()
+             {
+ 
+-                Console.WriteLine("[" + RoomName + "] heartbeat is now active.");
+-
+-                // While there are players in the server.
+-                while (playersInGame.Count > 0)    // Heartbeat never die. Hehe. TODO: Replace.
+-                {
+-                    // Encode the game data and send it as a very long string to client.
+-                    // Example: 
+-
+-                    // Fomat: playerID{playerPosX|playerPosY}playerID{playerPosX|playerPosY}
+-                    String updateS = "[update]";            // Indicates to client that this is an update message.
+-                    
+-
+-                    foreach (Player k in playersInGame)
+-                    {
+-                        updateS += "*" + k.playerID + "|" + k.positionX + "|" + k.positionY + "|"; // slight edit to ensure playerInGameCount is always viewable
+-                    }
+-
+-                    updateS += '~';         // seperation between position update and score updates.
+-
+-                    //Compile scores into single string
+-                    string scoreboard = "";
+-                    ArrayList allScores = sk.GetAllScores();
+-                    for (int i = 0; i < allScores.Count; i++) // Iterates through all users in database
+-                    {
+-                        scoreboard += "*" + ((ArrayList)allScores[i])[0] + "|" + ((ArrayList)allScores[i])[1]; // "*username|score"
+-                    }
+-
+-                    updateS += "<EOF>";
+-         
+-                    // Updates all the clients (updates their statuses) and then sleeps. 
+-                    foreach (Player p in playersInGame)
+-                    {
+-                        // Helpful debug statement.
+-                        Console.WriteLine("[" + RoomName + "] Updating this player: " + p.playerID + " with this: " + updateS);
+-
+-                        // Invoke the sendgame method, add <EOF> to end of the update string to signal to remote client that it is all.
+-                        SendGame(p.sock, updateS);
+-                    }
+-
+-                    // Sleeps for 100 MS aftr updating all players then continues. 
+-                    Thread.Sleep(1000);
+-
+-                    Console.WriteLine("Heartbeat!");
+-
++                Console.WriteLine("[" + RoomName + "] heartbeat is now active.");
++                while (true)
++                {
++                    // While there are players in the server.
++                    while (playersInGame.Count > 0)    // Heartbeat never die. Hehe. TODO: Replace.
++                    {
++                        // Encode the game data and send it as a very long string to client.
++                        // Example: 
++
++                        // Fomat: playerID{playerPosX|playerPosY}playerID{playerPosX|playerPosY}
++                        String updateS = "[update]";            // Indicates to client that this is an update message.
++
++
++                        foreach (Player k in playersInGame)
++                        {
++                            updateS += "*" + k.playerID + "|" + k.positionX + "|" + k.positionY + "|"; // slight edit to ensure playerInGameCount is always viewable
++                        }
++
++                        updateS += '~';         // seperation between position update and score updates.
++
++                        //Compile scores into single string
++                        string scoreboard = "";
++                        ArrayList allScores = sk.GetAllScores();
++                        for (int i = 0; i < allScores.Count; i++) // Iterates through all users in database
++                        {
++                            scoreboard += "*" + ((ArrayList)allScores[i])[0] + "|" + ((ArrayList)allScores[i])[1]; // "*username|score"
++                        }
++
++                        updateS += "<EOF>";
++
++                        // Updates all the clients (updates their statuses) and then sleeps. 
++                        foreach (Player p in playersInGame)
++                        {
++                            // Helpful debug statement.
++                            Console.WriteLine("[" + RoomName + "] Updating this player: " + p.playerID + " with this: " + updateS);
++
++                            // Invoke the sendgame method, add <EOF> to end of the update string to signal to remote client that it is all.
++                            SendGame(p.sock, updateS);
++                        }
++
++                        // Sleeps for 100 MS aftr updating all players then continues. 
++                        Thread.Sleep(1000);
++                        Console.WriteLine("Player Exists!!");
++                    }
++                    Thread.Sleep(1000);
++                    Console.WriteLine("Heartbeat!");
+                 }
+             }
+             
+@@ -153,54 +155,6 @@ class GameHandler
+                     Console.WriteLine(e.ToString());
+                 }
+             }
+-
+-            private  void gameReceive(Socket client) {
+-                try {
+-                    // Create the state object.
+-                    StateObject state = new StateObject();
+-                    state.workSocket = client;
+-
+-                    // Begin receiving the data from the remote device.
+-                    client.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
+-                                        new AsyncCallback(gameReceiveCallback), state);
+-                }
+-                catch (Exception e) {
+-                    Console.WriteLine(e.ToString());
+-                }
+-            }
+-
+-            private  void gameReceiveCallback(IAsyncResult ar) {
+-                try {
+-                    // Retrieve the state object and the client socket 
+-                    // from the asynchronous state object.
+-                    StateObject state = (StateObject)ar.AsyncState;
+-                    Socket client = state.workSocket;
+-
+-                    // Read data from the remote device.
+-                    int bytesRead = client.EndReceive(ar);
+-
+-                    if (bytesRead > 0) {
+-                        // There might be more data, so store the data received so far.
+-                        state.sb.Append(Encoding.Unicode.GetString(state.buffer, 0, bytesRead));
+-
+-                        // Get the rest of the data.
+-                        client.BeginReceive(state.buffer, 0, StateObject.BufferSize, 0,
+-                                            new AsyncCallback(gameReceiveCallback), state);
+-                    }
+-                    else {
+-                        // All the data has arrived; put it in response.
+-                        if (state.sb.Length > 1) {
+-                            response = state.sb.ToString();
+-                        }
+-                        // Signal that all bytes have been received.
+-                        gamereceiveDone.Set();
+-                    }
+-                }
+-                catch (Exception e) {
+-                    Console.WriteLine(e.ToString());
+-                }
+-            }
+-
+             // This allows players to enter the Game, storing their information into an available data structure of players that the game instances can run on.
+             public  void StartGameListening() {
+                 // This is dangerous; make sure to run the Game listener before the status checks.
+@@ -296,7 +250,8 @@ class GameHandler
+ 
+                             String[] splitted = content.Split('|');
+ 
+-                            int index = int.Parse(splitted[1]);
++                            //int index = int.Parse(splitted[1]);
++                            int index = 0;
+                             // Code to add here to extract the string
+                             // position[450,230]
+                             // we also need playerID
+@@ -311,7 +266,7 @@ class GameHandler
+                             Player e = (Player)playersInGame[index];                // replace the index 
+                             e.setPlayerPosition(posXUpdate, posYUpdate);        // set the updates
+ 
+-                            SendGame(handler, "recievedUpdate");            // Send the player the ID that they will use to keep track of things.
++                            //SendGame(handler, "recievedUpdate");            // Send the player the ID that they will use to keep track of things.
+ 
+                         }
+ 
+@@ -387,15 +342,14 @@ class GameHandler
+                             handler.Close();
+ 
+ 
+-                        }
+-                        
+-
+-                    }
+-                    else {
+-                        // Not all data received. Get more.
+-                        handler.BeginReceive(state.buffer, 0, GameStateObject.BufferSize, 0,
+-                        new AsyncCallback(ReadGameCallback), state);
++                        }
+                     }
++                    // Not all data received. Get more.
++                    GameStateObject newstate = new GameStateObject();
++                    newstate.workSocket = handler;
++
++                    handler.BeginReceive(newstate.buffer, 0, GameStateObject.BufferSize, 0,
++                    new AsyncCallback(ReadGameCallback), newstate);
+                 }
+             }
+ 
+@@ -415,12 +369,6 @@ class GameHandler
+ 
+                     // Complete sending the data to the remote device.
+                     int bytesSent = handler.EndSend(ar);
+-                    // Console.WriteLine("[" + RoomName + "] Sent {0} bytes to this client: " + handler.LocalEndPoint, bytesSent);
+-
+-                    // Do not close handler until client d/c
+-                   // handler.Shutdown(SocketShutdown.Both);
+-                    //handler.Close();
+-
+                 }
+                 catch (Exception e) {
+                     Console.WriteLine(e.ToString());
+-- 
+1.9.5.msysgit.0
+
