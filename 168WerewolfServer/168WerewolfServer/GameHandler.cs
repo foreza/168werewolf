@@ -18,7 +18,7 @@ class GameHandler
         // Client  socket.
         public Socket workSocket = null;
         // Size of receive buffer.
-        public const int BufferSize = 1024;
+        public const int BufferSize = 2048;
         // Receive buffer.
         public byte[] buffer = new byte[BufferSize];
         // Received data string.
@@ -75,7 +75,10 @@ class GameHandler
                 sk = new Scorekeeper("SCOREBOARD");
                 while (true)
                 {
-                    Console.WriteLine("[" + RoomName + "] heartbeat is now active.");
+                    //Console.WriteLine("[" + RoomName + "] heartbeat is now active.");
+
+                    ArrayList allScores;
+                    string scoreboard;
 
                     // While there are players in the server.
                     while (playersInGame.Count > 0)    
@@ -83,6 +86,9 @@ class GameHandler
                         // Encode the game data and send it as a very long string to client.
                         // Fomat: playerID{playerPosX|playerPosY}playerID{playerPosX|playerPosY}
                         String updateS = "[update]";            // Indicates to client that this is an update message.
+
+                        // Declare and init the array here.
+                        allScores = sk.GetAllScores();
 
                         foreach (Player k in playersInGame)
                         {
@@ -92,15 +98,31 @@ class GameHandler
                         updateS += '~';         // seperation between position update and score updates.
 
                         //Compile scores into single string
-                        string scoreboard = "";
-                        ArrayList allScores = sk.GetAllScores();
+                        scoreboard = "";
+
+                        try
+                        {
+                            foreach (ArrayList i in allScores)
+                            {
+                                scoreboard += "*" + i[0] + "|" + i[1]; // "*username|score"
+                               // Console.WriteLine(i + " - Scoreboard appender: " + scoreboard);
+                                //Thread.Sleep(50);
+                            }
+                        }
+                        catch (Exception e) 
+                        {
+                            Console.WriteLine("Handling exception MY way." + e.ToString());
+                        }
+
+                        /*
                         for (int i = 0; i < allScores.Count; i++) // Iterates through all users in database
                         {
                             scoreboard += "*" + ((ArrayList)allScores[i])[0] + "|" + ((ArrayList)allScores[i])[1]; // "*username|score"
-                        }
-                        updateS += scoreboard;
+                            Console.WriteLine(i + " - Scoreboard appender: " + scoreboard);
 
-                        updateS += "~<EOF>";
+                        }
+                         */
+                        updateS += scoreboard += "~<EOF>";
 
                         // Updates all the clients (updates their statuses) and then sleeps. 
                         foreach (Player p in playersInGame)
@@ -113,9 +135,9 @@ class GameHandler
                         }
 
                         // Sleeps for 100 MS aftr updating all players then continues. 
-                        Thread.Sleep(100);
+                        Thread.Sleep(200);
 
-                        Console.WriteLine("Heartbeat!");
+                       // Console.WriteLine("Heartbeat!");
 
                     }
 
@@ -216,12 +238,19 @@ class GameHandler
                     if (content.IndexOf("<EOF>") > -1) {
                         // All the data has been read from the client. Display it on the console.
                          Console.WriteLine("Read {0} bytes from socket. \n Data : {1}", content.Length, content);
+                         try
+                         {
+                            
 
                         // CASE 1: If player gave a "position" update, the game server, game server will update ALL coordinates/situations.
                          if (content.Contains("position")) {
                             // GET THE PLAYER ID from the packet
 
                             String[] splitted = content.Split('|');
+
+                             // 50 ms sleep.
+                            Thread.Sleep(50);
+
 
                             int index = int.Parse(splitted[1]);
                             // Code to add here to extract the string
@@ -238,6 +267,7 @@ class GameHandler
 
                             Console.WriteLine("Player set position!");
 
+                            Thread.Sleep(50);
 
                         }
 
@@ -248,6 +278,9 @@ class GameHandler
 
                             // Create a new player and add him!
                             Player newPlayer = new Player();
+
+                            Thread.Sleep(50);
+
                  
                             // Set player info here.                            
                             newPlayer.setPlayerPosition(0.0f, 0.0f);            // Set the initial player position to the center of the map. TODO: Change this to randomly spawn within a certain boundary
@@ -271,7 +304,7 @@ class GameHandler
       
                          
                         //CASE 3: If player gave a "score" update, the Scoreboard gets updated.
-                        else if (content.Contains("score"))
+                        else if (content.Contains("[score]"))
                         {
 
                             // Leaving this case in here for later implementation.
@@ -281,9 +314,12 @@ class GameHandler
                             string username = splitted[1].ToString();
                             int scoreUpdate = int.Parse(splitted[2]);
 
+                            Thread.Sleep(50);
+
                             sk.SetScore(username, scoreUpdate); //Sets the score
 
-                
+                            Console.WriteLine("Score set for this player: " + username + " | " + scoreUpdate);
+
                             //Send out score to players
                             //SendGame(handler, "score set");
                 
@@ -334,6 +370,13 @@ class GameHandler
                              handler.BeginReceive(newstate.buffer, 0, GameStateObject.BufferSize, 0,
                              new AsyncCallback(ReadGameCallback), newstate);
                          }
+
+                         }
+                         catch (Exception e)
+                         {
+                             Console.WriteLine("Handling exception MY way." + e.ToString());
+                         }
+
                         
 
                     }

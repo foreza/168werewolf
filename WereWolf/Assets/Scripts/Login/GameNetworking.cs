@@ -52,12 +52,12 @@ public class GameNetworking : MonoBehaviour {
 
 		// If new update flag aka flag dirty.
 		if (newUpdate) {
-			print("THERE IS A NEW UPDATE OH MY GOD");			// HELPFUL PRINT STATEMENT.
+			//print("THERE IS A NEW UPDATE OH MY GOD");			// HELPFUL PRINT STATEMENT.
 			StartHeartBeatListen();			// Listen again
 			g.SendMessage ("HandleServerMessage", responseGame);			// handle the response
 		}
 
-		print ("No new updates.");
+		//print ("No new updates.");
 	}
 	
 	// Method called by LobbyNetworking to set the game port. (NOT CALLED BY THE NETWORK MANAGER)
@@ -270,7 +270,7 @@ public class GameNetworking : MonoBehaviour {
 			s += "<EOF>";
 
 			// Helpful debug statement.
-			 // print ("Sending message: " + s);
+			  print ("Sending message: " + s);
 
 			// Send async.
 			myServer.BeginSend(Encoding.ASCII.GetBytes(s), 0, Encoding.ASCII.GetBytes(s).Length, 0, null, null);
