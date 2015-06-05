@@ -57,6 +57,7 @@ public class ServerMessageHandler : MonoBehaviour {
 		{
 			// End the connection.
 			print ("Tower message recieved! Time to turn on the tower.");
+			GameObject.Find("Tower").SendMessage("remoteTrigger");
 	
 		}
 

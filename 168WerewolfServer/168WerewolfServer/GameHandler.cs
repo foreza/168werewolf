@@ -115,6 +115,9 @@ class GameHandler
 
                     Console.WriteLine("Checking for events is now broadcasting to clients that a tower is active.");
                 }
+
+                Console.WriteLine("bOING");
+
             }
 
 
@@ -130,9 +133,7 @@ class GameHandler
                     ArrayList allScores;
                     string scoreboard;
 
-                    // Check for Game events here!
-                    CheckForEvents();
-
+                    
                      
                     // While there are players in the server.
                     while (playersInGame.Count > 0)    
@@ -140,6 +141,11 @@ class GameHandler
                         // Encode the game data and send it as a very long string to client.
                         // Fomat: playerID{playerPosX|playerPosY}playerID{playerPosX|playerPosY}
                         String updateS = "[update]";            // Indicates to client that this is an update message.
+
+
+                        // Check for Game events here!
+                        CheckForEvents();
+
 
                         // Declare and init the array here.
                         allScores = sk.GetAllScores();

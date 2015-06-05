@@ -22,7 +22,7 @@ public class Interactable : MonoBehaviour {
 
 		thisRender = this.gameObject.GetComponent<SpriteRenderer>();		// get reference to this object's sprite renderer
 
-		global = GameObject.Find ("GlobalObjectives");						// get the global
+		global = GameObject.Find ("SceneHandler");						// get the global (changed to scenehandler)
 
 
 		canInteract = false;		// objects should be non-interactable at start
@@ -43,6 +43,15 @@ public class Interactable : MonoBehaviour {
 			thisRender.color = new Color (1f, 1f, 1f, .5f);
 		}
 	}
+
+	void remoteTrigger()
+
+	{
+		print ("Remote client triggered this tower!");
+		thisRender.sprite = triggeredSprite;
+		triggered = true;
+	}
+
 
 	void trigger() // player will call this
 	{

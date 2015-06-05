@@ -325,6 +325,12 @@ public class GameNetworking : MonoBehaviour {
 
 	// OTHER METHODS THAT HELP
 
+	// Test event to allow me to trigger the tower.
+	public void PassEvent(String s)
+	{
+		SendServerMessage ("tower");
+
+	}
 
 	// Method called to pass current player position to the server.
 	public void PassPosition(String s)

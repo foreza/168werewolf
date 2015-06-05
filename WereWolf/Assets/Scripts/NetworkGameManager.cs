@@ -131,6 +131,15 @@ public class NetworkGameManager : MonoBehaviour {
 		}
 	}
 
+	public void modifyGlobal(string s)
+	{
+		if (s == "Tower") {
+			print ("Game manager recieved this towering request..(HAHA)");
+			this.gameObject.SendMessage("PassEvent",s);
+		}
+	}
+
+
 	// TODO: Finish this method for game state tracking.
 	public void UpdateStateTracking(string s)
 	{
