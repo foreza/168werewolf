@@ -340,7 +340,7 @@ public class GameNetworking : MonoBehaviour {
 	public void PassScore(String scoreUpdate)
 	{
 		// Called by the main game loop to pass positions.
-		//SendServerMessage("score"+"|"+username+"|"+scoreUpdate+"|");
+		SendServerMessage("[score]"+"|"+username+"|"+scoreUpdate+"|");
 		
 		// TODO: Do more fun things with the score.
 		

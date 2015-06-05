@@ -72,6 +72,7 @@ class GameHandler
             // "Heartbeat" function
             public void GameHeartbeat()
             {
+                sk = new Scorekeeper("SCOREBOARD");
                 while (true)
                 {
                     Console.WriteLine("[" + RoomName + "] heartbeat is now active.");
@@ -97,8 +98,9 @@ class GameHandler
                         {
                             scoreboard += "*" + ((ArrayList)allScores[i])[0] + "|" + ((ArrayList)allScores[i])[1]; // "*username|score"
                         }
+                        updateS += scoreboard;
 
-                        updateS += "<EOF>";
+                        updateS += "~<EOF>";
 
                         // Updates all the clients (updates their statuses) and then sleeps. 
                         foreach (Player p in playersInGame)
@@ -215,7 +217,7 @@ class GameHandler
                         // All the data has been read from the client. Display it on the console.
                          Console.WriteLine("Read {0} bytes from socket. \n Data : {1}", content.Length, content);
 
-                        // CASE 2: If player gave a "position" update, the game server, game server will update ALL coordinates/situations.
+                        // CASE 1: If player gave a "position" update, the game server, game server will update ALL coordinates/situations.
                          if (content.Contains("position")) {
                             // GET THE PLAYER ID from the packet
 
@@ -236,11 +238,12 @@ class GameHandler
 
                             Console.WriteLine("Player set position!");
 
+
                         }
 
 
 
-                        // CASE 1: If player gave a "joinGame" request, the game server will enqueue the player.
+                        // CASE 2: If player gave a "joinGame" request, the game server will enqueue the player.
                         else if (content.Contains("joinGame")) {
 
                             // Create a new player and add him!
@@ -267,10 +270,9 @@ class GameHandler
                         
       
                          
-                        //CASE 4: If player gave a "score" update, the Scoreboard gets updated.
+                        //CASE 3: If player gave a "score" update, the Scoreboard gets updated.
                         else if (content.Contains("score"))
                         {
-
 
                             // Leaving this case in here for later implementation.
 
