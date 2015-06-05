@@ -50,6 +50,11 @@ class GameHandler
             // Scoreboard.
             private Scorekeeper sk = new Scorekeeper("SCOREBOARD");
 
+            // Game Variables.
+
+            public bool UpdateGameState;            // A flag we can set.
+            public bool TowerActive;                // For demo purposes, we want to show this.
+
             public GameAsynchronousSocketListener() {
 
             }
@@ -67,15 +72,66 @@ class GameHandler
                 Thread hb = new Thread(GameHeartbeat);
                 hb.Start();
 
+
+                UpdateGameState = false;
+                TowerActive = false;                    // Tower initially is inactive.
+
             }
+
+            // Function called to trigged events.
+            public void GameEventMessage(string s)
+            {
+                // Make a new event string
+                string eventString = "[event]" + s;
+
+                // Append <EOF>
+                eventString += "<EOF>";
+
+                // Broadcast to all players.
+                foreach (Player p in playersInGame)
+                {
+                    // Helpful debug statement.
+                    Console.WriteLine("[" + RoomName + "] Updating this player with an event: " + p.playerID + " with this: " + eventString);
+
+                    // Invoke the sendgame method, add <EOF> to end of the update string to signal to remote client that it is all.
+                    SendGameHeartBeat(p.sock, eventString);
+                }
+
+                Console.WriteLine("Finished updating players with event: " + eventString);
+
+
+            }
+
+            // Called by the heartbeat, similar to a game loop.
+            public void CheckForEvents()
+            {
+                if (UpdateGameState && TowerActive)
+                {
+                    //If both are true, a tower was just set active! Broad cast it.
+                    UpdateGameState = false;            // set to false so we don't trigger again.
+
+                    // For testing purposes, we will send the clients [event]tower and have them signal to activate their towers as well.
+                    GameEventMessage("tower");
+
+                    Console.WriteLine("Checking for events is now broadcasting to clients that a tower is active.");
+                }
+            }
+
+
 
             // "Heartbeat" function
             public void GameHeartbeat()
             {
                 while (true)
                 {
-                    Console.WriteLine("[" + RoomName + "] heartbeat is now active.");
+                    //Console.WriteLine("[" + RoomName + "] heartbeat is now active.");
 
+                    // Check for Game events here!
+
+                    CheckForEvents();
+
+                    ArrayList allScores = sk.GetAllScores();
+                     
                     // While there are players in the server.
                     while (playersInGame.Count > 0)    
                     {
@@ -85,20 +141,25 @@ class GameHandler
 
                         foreach (Player k in playersInGame)
                         {
+                            // Original Update string   MODIFY THIS FOR UPDATE
                             updateS += "*" + k.playerID + "|" + k.positionX + "|" + k.positionY + "|"; // slight edit to ensure playerInGameCount is always viewable
+
+                            // We want ID, player position XY, facing direction, status (alive/werewolf) 
                         }
 
                         updateS += '~';         // seperation between position update and score updates.
 
                         //Compile scores into single string
                         string scoreboard = "";
-                        ArrayList allScores = sk.GetAllScores();
+                      
                         for (int i = 0; i < allScores.Count; i++) // Iterates through all users in database
                         {
-                            scoreboard += "*" + ((ArrayList)allScores[i])[0] + "|" + ((ArrayList)allScores[i])[1]; // "*username|score"
+                            string scoreU = "" + ((ArrayList)allScores[i])[0] + "|" + ((ArrayList)allScores[i])[1];
+                            scoreboard += "*" + scoreU; // "*username|score"
+                            Console.WriteLine("Score add: " + i + "[{ " + scoreU);
                         }
 
-                        updateS += "<EOF>";
+                        updateS += scoreboard + "<EOF>";
 
                         // Updates all the clients (updates their statuses) and then sleeps. 
                         foreach (Player p in playersInGame)
@@ -264,14 +325,29 @@ class GameHandler
                             SendGame(handler, makeString);            // Send the player the ID that they will use to keep track of things.
 
                         }
-                        
+
+                        // Sample case of event driven messages. TODO: Improve this to not only have towers.
+                        // The client that triggered the tower will then send this message to server: tower<EOF>
+
+                         else if (content.Contains("tower"))
+                         {
+                             // GET THE PLAYER ID from the packet
+
+                             // Set flags that will be picked up by the main thread.
+                             UpdateGameState = true;
+                             TowerActive = true;
+
+                             Console.WriteLine("Player has activated a tower!!!!!");
+
+                         }
+
       
                          
                         //CASE 4: If player gave a "score" update, the Scoreboard gets updated.
                         else if (content.Contains("score"))
                         {
 
-
+                            Console.WriteLine("Recieved a score update. Parsint this: " + content);
                             // Leaving this case in here for later implementation.
 
                             String[] splitted = content.Split('|');

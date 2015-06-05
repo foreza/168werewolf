@@ -57,7 +57,7 @@ public class GameNetworking : MonoBehaviour {
 			g.SendMessage ("HandleServerMessage", responseGame);			// handle the response
 		}
 
-		print ("No new updates.");
+		//print ("No new updates.");
 	}
 	
 	// Method called by LobbyNetworking to set the game port. (NOT CALLED BY THE NETWORK MANAGER)
@@ -270,7 +270,7 @@ public class GameNetworking : MonoBehaviour {
 			s += "<EOF>";
 
 			// Helpful debug statement.
-			 // print ("Sending message: " + s);
+			 print ("Sending message: " + s);
 
 			// Send async.
 			myServer.BeginSend(Encoding.ASCII.GetBytes(s), 0, Encoding.ASCII.GetBytes(s).Length, 0, null, null);
@@ -339,8 +339,8 @@ public class GameNetworking : MonoBehaviour {
 	// Method called to pass current player score to the server.
 	public void PassScore(String scoreUpdate)
 	{
-		// Called by the main game loop to pass positions.
-		//SendServerMessage("score"+"|"+username+"|"+scoreUpdate+"|");
+		// Called by the main game loop to pass scores.
+		SendServerMessage("score"+"|"+username+"|"+scoreUpdate+"|");
 		
 		// TODO: Do more fun things with the score.
 		

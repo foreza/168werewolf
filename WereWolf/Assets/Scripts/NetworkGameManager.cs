@@ -16,6 +16,7 @@ public class NetworkGameManager : MonoBehaviour {
 	// OR THIS
 	public List<NetworkPlayerObj> playersTracking;		// List of networked players that the client tracks.
 
+	public bool isReady;
 
 	void Start () {
 
@@ -24,7 +25,7 @@ public class NetworkGameManager : MonoBehaviour {
 		playersTracking = new List<NetworkPlayerObj> ();	// Initialize the list.
 
 		trackSize = 0;										// Initial tracking size is 0.
-		
+		isReady = false;
 	}
 	
 	void Update () {
@@ -32,6 +33,12 @@ public class NetworkGameManager : MonoBehaviour {
 	}
 
 	// SETTER METHODS.
+
+	// Signal that we are ready to use the manager. (after player enters)
+	public void SignalManagerReady()
+	{
+		isReady = true;
+	}
 
 	// Sets the initial amount of players being tracked.
 	public void SetTrack(int i)
@@ -50,7 +57,7 @@ public class NetworkGameManager : MonoBehaviour {
 		print ("My ID is: " + d);
 
 	}
-	                
+	            
 
 	// Adds a player to the current tracking list.
 	public void AddPlayerToTrack(NetworkPlayerObj p)
@@ -81,7 +88,7 @@ public class NetworkGameManager : MonoBehaviour {
 		// Check the current size with the new size. trackSize != size, spawn a new player.	
 		// We set the ID to be the trackSize. If 2 players in game [0][1] and [2] joins
 		// trackSize was 2, which will then become 3 after we spawn, so we have [0][1][2] and tracksize 3.	
-		if (trackSize < split.Length) {
+		if (trackSize < split.Length && isReady) {
 			// Debug print statement.
 			print ("New player has logged in; spawning additional player.");
 			print ("New player has entered; spawning 209-348523-09458203-94582039-4852-0349852-3485-2039485-203495");

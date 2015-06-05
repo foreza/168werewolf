@@ -36,7 +36,9 @@ public class Scoreboard: MonoBehaviour {
 
 		if (!isHidden) {
 		
-
+			scoreBoard = GameObject.Find ("ScoreBoardDisplay");
+			playerData = GameObject.Find ("PlayerColumnData").GetComponent<Text>();
+			scoreData = GameObject.Find ("ScoreColumnData").GetComponent<Text>();
 		
 			// Handle and parse the updates and put it in the score board.
 			// *username|score

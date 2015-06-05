@@ -45,11 +45,21 @@ public class ServerMessageHandler : MonoBehaviour {
 			print ("Attempting to communicate with playerTrack");
 			sceneHandler.SendMessage("UpdatePlayerTracking", temp);
 			player = GameObject.Find("BBPlayer");			// save the reference
-			//player.SendMessage("UpdateScoreBoard", temp2);
+			player.SendMessage("UpdateScoreBoard", temp2);
 			print ("Should have to communicate with playerTrack");
 
 
 		}
+
+		// This method is invoked at the end of the game. 
+		// Response game should contain some useful information.
+		else if (s.Contains("tower"))
+		{
+			// End the connection.
+			print ("Tower message recieved! Time to turn on the tower.");
+	
+		}
+
 	
 
         // This method is invoked at the end of the game. 
@@ -101,8 +111,10 @@ public class ServerMessageHandler : MonoBehaviour {
 		// The players will be moved to the appropriate places once an update is recieved.
 		// Spawn 1 less to keep track of the player
 		this.SendMessage("SpawnInitialPlayers", loginSize-1);
-		
-		
+
+		// Signal to the manager we are ready.
+		this.gameObject.SendMessage("SignalManagerReady");
+
 		
 	}
 }
