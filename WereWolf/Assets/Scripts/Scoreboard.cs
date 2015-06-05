@@ -5,7 +5,9 @@ using System.Collections;
 public class Scoreboard: MonoBehaviour {
 
 	GameObject scoreBoard;				// save a ref
+    GameObject tempPD;
 	Text playerData;
+    GameObject tempSD;
 	Text scoreData;
 	string usernames;
 	string scores;
@@ -15,8 +17,9 @@ public class Scoreboard: MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		scoreBoard = GameObject.Find ("ScoreBoardDisplay");
-		playerData = GameObject.Find ("PlayerColumnData").GetComponent<Text>();
-		scoreData = GameObject.Find ("ScoreColumnData").GetComponent<Text>();
+        playerData = GameObject.Find("PlayerColumnData").GetComponent<Text>();
+        scoreData = GameObject.Find("ScoreColumnData").GetComponent<Text>();
+        
 		HideScoreBoard ();				// hide from start
 
 	}

@@ -814,6 +814,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   trackSize: 0
   myID: 
+  maxLimitPlayerTracking: 100
 --- !u!114 &815526830
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -850,13 +851,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   portGame: 11002
-  roomName: 
-  myself: {fileID: 0}
-  username: 
-  noSpawn: 1
-  gameInstanceBegin: 0
   loginSize: 0
+  gameInstanceBegin: 0
   responseGame: 
+  responseUpdate: 
+  username: 
+  roomName: 
+  myPlayerID: 
+  g: {fileID: 0}
 --- !u!114 &815526833
 MonoBehaviour:
   m_ObjectHideFlags: 0

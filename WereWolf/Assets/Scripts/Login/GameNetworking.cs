@@ -52,7 +52,7 @@ public class GameNetworking : MonoBehaviour {
 
 		// If new update flag aka flag dirty.
 		if (newUpdate) {
-			print("THERE IS A NEW UPDATE OH MY GOD");			// HELPFUL PRINT STATEMENT.
+			//print("THERE IS A NEW UPDATE OH MY GOD");			// HELPFUL PRINT STATEMENT.
 			StartHeartBeatListen();			// Listen again
 			g.SendMessage ("HandleServerMessage", responseGame);			// handle the response
 		}
@@ -270,6 +270,7 @@ public class GameNetworking : MonoBehaviour {
 			s += "<EOF>";
 
 			// Helpful debug statement.
+
 			 print ("Sending message: " + s);
 
 			// Send async.
@@ -339,9 +340,10 @@ public class GameNetworking : MonoBehaviour {
 	// Method called to pass current player score to the server.
 	public void PassScore(String scoreUpdate)
 	{
+
 		// Called by the main game loop to pass scores.
 		SendServerMessage("score"+"|"+username+"|"+scoreUpdate+"|");
-		
+
 		// TODO: Do more fun things with the score.
 		
 	}

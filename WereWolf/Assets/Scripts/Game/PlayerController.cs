@@ -44,9 +44,7 @@ public class PlayerController : MonoBehaviour {
 	{
 		string position = "" + transform.position.x + "|" + transform.position.y + "";
 		sceneHandler.SendMessage("PassPosition", position);
-
-    
-		 
+		
 	}
 
 	public void RequestScoreUpdateToServer()
@@ -71,12 +69,16 @@ public class PlayerController : MonoBehaviour {
 		sceneHandler = GameObject.Find ("SceneHandler");
 	
 		PositionUpdateRepeat ();
-
+		ScoreUpdateRepeat ();
 	}
 
 	void PositionUpdateRepeat() {
 		InvokeRepeating("RequestUpdateToServer", 2.0f, 0.2F);
-		InvokeRepeating ("RequestScoreUpdateToServer", 5.0f, 1.0f);
+	}
+
+	void ScoreUpdateRepeat() {
+		InvokeRepeating("RequestScoreUpdateToServer", 2.0f, 1.0F);
+
 	}
 
 	
